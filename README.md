@@ -105,6 +105,29 @@ python scenario_english.py --demo --llm --ollama-host http://192.168.1.5:11434
   moderator's pick) — `--llm`/`--llm-moderator` never crash the demo, they
   just silently degrade to the non-LLM behavior.
 
+**Measuring how often the LLM actually overrides the trained moderator**, rather than eyeballing individual games:
+```bash
+python scenario_english.py --compare-llm --games 20
+python scenario_english.py --compare-llm --games 50 --seed 7   # different matched-seed sample
+```
+This runs `--games` games with the LLM moderator active, then the *same*
+number of games with only the trained moderator — using a matched RNG seed
+per game index across both halves, so game *i* sees the exact same secret
+word and the exact same agent proposals in both conditions. The only thing
+that can differ is whether the LLM's override actually gets applied, which
+isolates its effect from ordinary run-to-run randomness. Instead of
+per-turn debate text, it prints one summary:
+```
+Turns played: 71  |  LLM cast a usable vote on 71 of them (Ollama unreachable/unparsed on 0)
+  Agreed with trained moderator:    15 (21.1%)
+  Overrode trained moderator:       56 (78.9%)
+Win rate WITH LLM moderator:       98.0%  (49/50)
+Win rate baseline (trained only): 100.0%  (50/50)
+```
+This still makes real Ollama calls for every turn of the LLM-moderator
+half (bounded by `--games`, same as the normal demo — just multiplied by
+it), so a large `--games` will take a while.
+
 ### Macedonian Wordle
 ```bash
 python scenario_macedonian.py
