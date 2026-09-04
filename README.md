@@ -49,6 +49,23 @@ Each agent type also gets a weighted **letter_match_score** bonus:
 - Probabilist: weight 0.35 (highest — letter proximity matters most for likely-word guessing)
 - RiskTaker: weight 0.1 (lowest — exploratory guesses shouldn't be penalised)
 
+## LLM Integration (English Scenario)
+
+*A plain-language explanation of what was added and what we learned — see "LLM Debate (Ollama)" further down for the actual setup/usage instructions.*
+
+**The problem this solves:** the three agents and the moderator that picks between them are just small neural networks — every decision they make comes out as a number (a probability, a score), with nothing that explains *why* a word was chosen in a way a person could follow. The LLM integration adds a layer that can actually talk, on top of the existing game, without changing how the game itself is trained or played by default.
+
+**What it actually does — two separate, optional features:**
+1. **Debate (`--llm`):** each turn, after the three agents have already picked their words (using the same trained networks as before — nothing about *that* changes), a small LLM running locally via [Ollama](https://ollama.com) writes a short, in-character argument for each agent's word, and can react to what the other agents already said that turn. This is purely for readability — it does not affect which word gets played.
+2. **Moderator vote (`--llm-moderator`):** the LLM is also asked to vote on which of the three proposed words the team should actually play. The trained "moderator" network still makes its own pick every turn as normal; if the LLM disagrees, its vote is the one that gets played instead.
+
+**Important boundary:** the LLM is only ever used when watching a demo game — it is never called during training. Training the agents (the 15,000-episode learning process) is completely unaffected, costs nothing extra, and runs at the same speed whether or not any LLM feature is turned on.
+
+**What we tested, and what we found:** using `--compare-llm`, we ran 20 games with the LLM's vote active against 20 matched games using only the trained moderator (same secret words and same agent proposals in both, so the comparison isolates just the effect of the LLM's vote):
+- The LLM **overrode the trained moderator's pick on ~89% of turns** — it very rarely agreed with what the trained network wanted to play.
+- Despite disagreeing almost every turn, **both approaches won all 20/20 games.**
+- Takeaway: the LLM's judgment is built on completely different reasoning than the trained network (language-based impressions vs. a policy learned from thousands of reward-scored games), and the two disagree constantly — but in this game, that disagreement didn't cost any wins. It's a genuinely different way of deciding that turned out to be just as effective here, not a strictly better or worse one.
+
 ## Running the Scenarios
 
 ### English Wordle
@@ -104,6 +121,29 @@ python scenario_english.py --demo --llm --ollama-host http://192.168.1.5:11434
   safely and falls back to the deterministic template text (and the trained
   moderator's pick) — `--llm`/`--llm-moderator` never crash the demo, they
   just silently degrade to the non-LLM behavior.
+
+**Measuring how often the LLM actually overrides the trained moderator**, rather than eyeballing individual games:
+```bash
+python scenario_english.py --compare-llm --games 20
+python scenario_english.py --compare-llm --games 50 --seed 7   # different matched-seed sample
+```
+This runs `--games` games with the LLM moderator active, then the *same*
+number of games with only the trained moderator — using a matched RNG seed
+per game index across both halves, so game *i* sees the exact same secret
+word and the exact same agent proposals in both conditions. The only thing
+that can differ is whether the LLM's override actually gets applied, which
+isolates its effect from ordinary run-to-run randomness. Instead of
+per-turn debate text, it prints one summary:
+```
+Turns played: 71  |  LLM cast a usable vote on 71 of them (Ollama unreachable/unparsed on 0)
+  Agreed with trained moderator:    15 (21.1%)
+  Overrode trained moderator:       56 (78.9%)
+Win rate WITH LLM moderator:       98.0%  (49/50)
+Win rate baseline (trained only): 100.0%  (50/50)
+```
+This still makes real Ollama calls for every turn of the LLM-moderator
+half (bounded by `--games`, same as the normal demo — just multiplied by
+it), so a large `--games` will take a while.
 
 ### Macedonian Wordle
 ```bash

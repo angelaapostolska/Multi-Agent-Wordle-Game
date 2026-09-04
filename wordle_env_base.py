@@ -431,13 +431,24 @@ class Policy:
         p = self.forward(x)
 
         if valid_indices is not None:
-            mask        = np.zeros(len(p))
+            mask  = np.zeros(len(p))
             mask[valid_indices] = 1.0
-            p           = p * mask
-            p           = p / (p.sum() + 1e-9)   # Re-normalise
+            p     = p * mask
+            total = p.sum()
+            if total > 0:
+                p = p / total
+            else:
+                # After many training updates the network can become so
+                # confident in one word that every OTHER word's probability
+                # underflows to exactly 0.0. If that one confident word isn't
+                # a valid candidate anymore, masking zeroes out everything —
+                # fall back to a uniform pick among the valid words instead
+                # of crashing on a 0/0 division.
+                p = mask / mask.sum()
+        else:
+            p = p / p.sum()
 
-        p  = p / p.sum()
-        a  = rng.choice(len(p), p=p)
+        a = rng.choice(len(p), p=p)
         return a, p
 
     def pg_step(self, x, action, advantage, grad_clip=5.0):

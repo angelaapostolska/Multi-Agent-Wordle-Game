@@ -225,12 +225,16 @@ def train(episodes=EPISODES, lr=LR, seed=SEED):
 # 15,000-episode training loop — the trained agents/moderator are completely
 # unaffected either way.
 
-def _ollama_generate(prompt):
+def _ollama_generate(prompt, warn=True):
     """
     Send a prompt to a local Ollama server and return the model's reply text,
     or None on any failure (server not running, model not pulled, timeout...).
     Callers fall back to the deterministic template text when this returns None,
     so a missing/slow Ollama install never crashes the demo.
+
+    warn : print the failure reason (set False by compare_llm_moderator's
+    quiet games so a flaky Ollama server doesn't spam dozens of identical
+    lines across many games).
     """
     payload = {"model": OLLAMA_MODEL, "prompt": prompt, "stream": False}
     try:
@@ -244,7 +248,8 @@ def _ollama_generate(prompt):
         text = body.get("response", "").strip()
         return text or None
     except Exception as e:
-        print(f"    [Ollama unavailable, using template text — {e}]")
+        if warn:
+            print(f"    [Ollama unavailable, using template text — {e}]")
         return None
 
 
@@ -269,7 +274,7 @@ def generate_agent_argument(agent_id, guess_idx, cands):
         return f"I propose '{word}'. Partition quality (Gini) score: {pq}."
 
 
-def generate_agent_argument_llm(agent_id, guess_idx, cands, prior_arguments):
+def generate_agent_argument_llm(agent_id, guess_idx, cands, prior_arguments, warn=True):
     """
     Ask the local Ollama model to argue, in character, for this agent's
     already-chosen word — optionally responding to what the other two
@@ -304,13 +309,13 @@ def generate_agent_argument_llm(agent_id, guess_idx, cands, prior_arguments):
         + ". Do not propose a different word — only argue for this one."
     )
 
-    text = _ollama_generate(prompt)
+    text = _ollama_generate(prompt, warn=warn)
     if text is None:
         return generate_agent_argument(agent_id, guess_idx, cands)
     return text.replace("\n", " ").strip()
 
 
-def llm_moderator_vote(proposals, arguments, cands, turn):
+def llm_moderator_vote(proposals, arguments, cands, turn, warn=True):
     """
     Ask the local Ollama model to pick which of the 3 proposed words the
     team should actually play, given each agent's word and argument.
@@ -329,7 +334,7 @@ def llm_moderator_vote(proposals, arguments, cands, turn):
         "\n\nWhich proposal should the team actually play? "
         "Reply with ONLY the number 0, 1, or 2 — nothing else."
     )
-    text = _ollama_generate(prompt)
+    text = _ollama_generate(prompt, warn=warn)
     if text is None:
         return None
     match = re.search(r"[0-2]", text)
@@ -338,7 +343,8 @@ def llm_moderator_vote(proposals, arguments, cands, turn):
 
 # ── Demo: watch one game ───────────────────────────────────────────────────────
 
-def demo_game(agents, moderator, secret_word=None, use_llm=False, llm_moderator=False):
+def demo_game(agents, moderator, secret_word=None, use_llm=False, llm_moderator=False,
+              rng=None, verbose=True, override_log=None):
     """
     Play one game and print the board so you can see what happened.
 
@@ -350,8 +356,18 @@ def demo_game(agents, moderator, secret_word=None, use_llm=False, llm_moderator=
                     they disagree (implies use_llm). The trained moderator
                     network still runs every turn regardless — this only
                     decides which of the two picks gets played and printed.
+    rng           : pass a seeded np.random.default_rng(...) to make this game
+                    reproducible (same secret + same agent proposals every
+                    time). Defaults to a fresh, unseeded generator.
+    verbose       : set False to suppress all printing — used by
+                    compare_llm_moderator() to run many games without
+                    flooding the terminal with per-turn debate text.
+    override_log  : optional list; when llm_moderator is on, one dict per
+                    turn ({"trained_choice", "llm_choice"}) is appended to it
+                    so callers can compute agreement/override stats afterward.
     """
-    rng = np.random.default_rng()
+    if rng is None:
+        rng = np.random.default_rng()
 
     if secret_word is not None:
         secret = WORD_IDX[secret_word.lower()]
@@ -365,15 +381,16 @@ def demo_game(agents, moderator, secret_word=None, use_llm=False, llm_moderator=
 
     use_llm = use_llm or llm_moderator  # --llm-moderator implies --llm
 
-    print(f"\n{'='*45}")
-    print(f"  ENGLISH WORDLE DEMO")
-    print(f"  Secret word: {WORDS[secret].upper()}")
-    if use_llm:
-        tag = f"Ollama ({OLLAMA_MODEL})" + (" + moderator override" if llm_moderator else "")
-        print(f"  LLM debate: {tag}")
-    print(f"{'='*45}")
-    print(f"  {'AGENT':<12} {'GUESS':<8} {'RESULT':<8} {'CANDS'}")
-    print(f"  {'─'*12} {'─'*8} {'─'*8} {'─'*6}")
+    if verbose:
+        print(f"\n{'='*45}")
+        print(f"  ENGLISH WORDLE DEMO")
+        print(f"  Secret word: {WORDS[secret].upper()}")
+        if use_llm:
+            tag = f"Ollama ({OLLAMA_MODEL})" + (" + moderator override" if llm_moderator else "")
+            print(f"  LLM debate: {tag}")
+        print(f"{'='*45}")
+        print(f"  {'AGENT':<12} {'GUESS':<8} {'RESULT':<8} {'CANDS'}")
+        print(f"  {'─'*12} {'─'*8} {'─'*8} {'─'*6}")
 
     for turn in range(MAX_TURNS):
         a_state   = build_agent_state(cands, turn, absent, known_green, yellows, N)
@@ -383,13 +400,16 @@ def demo_game(agents, moderator, secret_word=None, use_llm=False, llm_moderator=
         # ── Debate round ──
         arguments = []
         if use_llm:
-            print(f"\n  --- Turn {turn+1} debate ({len(cands)} candidates left) ---")
+            if verbose:
+                print(f"\n  --- Turn {turn+1} debate ({len(cands)} candidates left) ---")
             for ai in range(3):
                 arg = generate_agent_argument_llm(
-                    ai, proposals[ai], cands, prior_arguments=list(enumerate(arguments))
+                    ai, proposals[ai], cands, prior_arguments=list(enumerate(arguments)),
+                    warn=verbose,
                 )
                 arguments.append(arg)
-                print(f"    [{AGENT_NAMES[ai]}] {WORDS[proposals[ai]].upper()}: {arg}")
+                if verbose:
+                    print(f"    [{AGENT_NAMES[ai]}] {WORDS[proposals[ai]].upper()}: {arg}")
         else:
             arguments = [generate_agent_argument(ai, proposals[ai], cands) for ai in range(3)]
 
@@ -399,13 +419,16 @@ def demo_game(agents, moderator, secret_word=None, use_llm=False, llm_moderator=
         choice = trained_choice
 
         if llm_moderator:
-            llm_choice = llm_moderator_vote(proposals, arguments, cands, turn)
+            llm_choice = llm_moderator_vote(proposals, arguments, cands, turn, warn=verbose)
+            if override_log is not None:
+                override_log.append({"trained_choice": trained_choice, "llm_choice": llm_choice})
             if llm_choice is not None and llm_choice != trained_choice:
-                print(f"    [LLM moderator] would play {AGENT_NAMES[llm_choice]}'s "
-                      f"'{WORDS[proposals[llm_choice]].upper()}' instead of the trained "
-                      f"moderator's {AGENT_NAMES[trained_choice]} pick — overriding.")
+                if verbose:
+                    print(f"    [LLM moderator] would play {AGENT_NAMES[llm_choice]}'s "
+                          f"'{WORDS[proposals[llm_choice]].upper()}' instead of the trained "
+                          f"moderator's {AGENT_NAMES[trained_choice]} pick — overriding.")
                 choice = llm_choice
-            elif llm_choice is not None:
+            elif llm_choice is not None and verbose:
                 print(f"    [LLM moderator] agrees with the trained pick: {AGENT_NAMES[choice]}.")
 
         final = proposals[choice]
@@ -414,7 +437,8 @@ def demo_game(agents, moderator, secret_word=None, use_llm=False, llm_moderator=
         fb_str  = fb_to_str(fb)
         solved  = (final == secret)
 
-        print(f"  {AGENT_NAMES[choice]:<12} {WORDS[final].upper():<8} {fb_str:<8} {len(cands)}")
+        if verbose:
+            print(f"  {AGENT_NAMES[choice]:<12} {WORDS[final].upper():<8} {fb_str:<8} {len(cands)}")
 
         for i in range(5):
             ch = WORDS[final][i]
@@ -429,11 +453,88 @@ def demo_game(agents, moderator, secret_word=None, use_llm=False, llm_moderator=
         cands     = new_cands if new_cands else cands
 
         if solved:
-            print(f"\n  ✓ Solved in {turn+1} guess{'es' if turn > 0 else ''}!")
+            if verbose:
+                print(f"\n  ✓ Solved in {turn+1} guess{'es' if turn > 0 else ''}!")
             return True
 
-    print(f"\n  ✗ Failed! The word was {WORDS[secret].upper()}")
+    if verbose:
+        print(f"\n  ✗ Failed! The word was {WORDS[secret].upper()}")
     return False
+
+
+# ── Compare: LLM moderator vs trained moderator, over many games ───────────────
+
+def compare_llm_moderator(agents, moderator, n_games=20, base_seed=123, secret_word=None):
+    """
+    Run n_games with the LLM moderator active, then the same n_games with
+    only the trained moderator — using a matched RNG seed per game index
+    across both runs, so game i sees the EXACT same secret word and the
+    EXACT same agent proposals in both conditions. The only thing that can
+    differ between the two runs of game i is whether the LLM's override
+    actually gets applied, which isolates its effect instead of mixing it
+    in with ordinary run-to-run randomness.
+
+    Prints one summary at the end instead of per-turn debate text (which
+    would be unreadable across many games) — see demo_game(verbose=...).
+
+    NOTE: this still makes real Ollama calls for every turn of every LLM
+    game (3 arguments + 1 moderator vote each) — it's bounded by n_games,
+    same as demo_game(), just multiplied by it, so a large n_games will
+    take a while.
+    """
+    print(f"\n[English] Comparing LLM moderator vs trained moderator over {n_games} games each...")
+    print("(this makes real Ollama calls for the LLM-moderator half — expect it to take a while)")
+
+    t0 = time.time()
+    override_log = []
+    llm_wins = 0
+    for i in range(n_games):
+        rng = np.random.default_rng(base_seed + i)
+        won = demo_game(agents, moderator, secret_word,
+                         use_llm=True, llm_moderator=True,
+                         rng=rng, verbose=False, override_log=override_log)
+        llm_wins += int(won)
+        print(f"  [LLM-moderator {i+1:>3}/{n_games}] {'won ' if won else 'lost'} "
+              f"| {time.time()-t0:6.1f}s elapsed")
+
+    print(f"  LLM-moderator half done in {time.time()-t0:.1f}s. "
+          f"Running the {n_games}-game baseline (no Ollama calls, should be quick)...")
+
+    t1 = time.time()
+    baseline_wins = 0
+    for i in range(n_games):
+        rng = np.random.default_rng(base_seed + i)  # same seed -> same secret + same proposals
+        won = demo_game(agents, moderator, secret_word,
+                         use_llm=False, llm_moderator=False,
+                         rng=rng, verbose=False)
+        baseline_wins += int(won)
+    print(f"  Baseline half done in {time.time()-t1:.1f}s.")
+
+    voted    = [e for e in override_log if e["llm_choice"] is not None]
+    no_vote  = len(override_log) - len(voted)
+    agreed   = sum(1 for e in voted if e["llm_choice"] == e["trained_choice"])
+    overrode = len(voted) - agreed
+
+    print("─" * 60)
+    print(f"Turns played: {len(override_log)}  |  LLM cast a usable vote on {len(voted)} of them "
+          f"(Ollama unreachable/unparsed on {no_vote})")
+    if voted:
+        print(f"  Agreed with trained moderator:  {agreed:4d} ({100*agreed/len(voted):.1f}%)")
+        print(f"  Overrode trained moderator:     {overrode:4d} ({100*overrode/len(voted):.1f}%)")
+    print(f"Win rate WITH LLM moderator:      {100*llm_wins/n_games:5.1f}%  ({llm_wins}/{n_games})")
+    print(f"Win rate baseline (trained only): {100*baseline_wins/n_games:5.1f}%  ({baseline_wins}/{n_games})")
+    print("─" * 60)
+
+    return {
+        "n_games":           n_games,
+        "turns_played":      len(override_log),
+        "turns_with_vote":   len(voted),
+        "agreed":            agreed,
+        "overrode":          overrode,
+        "no_vote":           no_vote,
+        "llm_win_rate":      llm_wins / n_games,
+        "baseline_win_rate": baseline_wins / n_games,
+    }
 
 
 # ── Save / load weights ────────────────────────────────────────────────────────
@@ -490,6 +591,15 @@ if __name__ == "__main__":
                          help=f"Ollama model name (default: {OLLAMA_MODEL}, or $OLLAMA_MODEL)")
     parser.add_argument("--ollama-host", type=str, default=None,
                          help=f"Ollama server URL (default: {OLLAMA_HOST}, or $OLLAMA_HOST)")
+    parser.add_argument("--compare-llm", action="store_true",
+                         help="Instead of the normal per-turn demo, run --games games "
+                              "with the LLM moderator active and the same number with "
+                              "only the trained moderator (matched RNG seeds -> same "
+                              "secrets/proposals in both), then print one agreement-rate "
+                              "/ win-rate summary. Ignores --llm/--llm-moderator. Makes "
+                              "real Ollama calls, so large --games will take a while.")
+    parser.add_argument("--seed", type=int, default=123,
+                         help="Base RNG seed for --compare-llm's matched game pairs")
     args = parser.parse_args()
 
     if args.ollama_model:
@@ -502,10 +612,14 @@ if __name__ == "__main__":
         agents, moderator = train()
         save_weights(agents, moderator)
 
-    print(f"\n[English] Running {args.games} demo game(s)...")
-    wins = sum(
-        demo_game(agents, moderator, args.word,
-                  use_llm=args.llm, llm_moderator=args.llm_moderator)
-        for _ in range(args.games)
-    )
-    print(f"\nResult: {wins}/{args.games} games won")
+    if args.compare_llm:
+        compare_llm_moderator(agents, moderator, n_games=args.games,
+                               base_seed=args.seed, secret_word=args.word)
+    else:
+        print(f"\n[English] Running {args.games} demo game(s)...")
+        wins = sum(
+            demo_game(agents, moderator, args.word,
+                      use_llm=args.llm, llm_moderator=args.llm_moderator)
+            for _ in range(args.games)
+        )
+        print(f"\nResult: {wins}/{args.games} games won")
