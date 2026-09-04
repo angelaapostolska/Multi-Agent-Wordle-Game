@@ -1,0 +1,206 @@
+# Real terminal output — `python scenario_english.py --demo --word crane --llm`
+# Debate mode only: the LLM (Ollama, llama3.2) writes each agent's argument each
+# turn, but never decides the guess — the trained moderator network picks alone,
+# exactly as it did before this feature existed. See README.md, section
+# "LLM Integration (English Scenario)", for what this demonstrates.
+
+((.venv) ) angelaapostolska@Mac Multi-Agent-Wordle-Game % rm -f weights_english.npz
+python scenario_english.py --demo --word crane --llm
+[English] Building pattern matrix for 535 words...
+[English] Pattern matrix ready.
+
+[English] Starting training: 15000 episodes, lr=0.003
+────────────────────────────────────────────────────────────
+  ep   1000 | win% 100.0 | avg guesses (won) 3.37 | 1.9s
+  ep   2000 | win%  99.8 | avg guesses (won) 3.34 | 3.7s
+  ep   3000 | win% 100.0 | avg guesses (won) 3.35 | 5.5s
+  ep   4000 | win%  99.8 | avg guesses (won) 3.29 | 7.4s
+  ep   5000 | win%  99.8 | avg guesses (won) 3.36 | 9.2s
+  ep   6000 | win%  99.8 | avg guesses (won) 3.32 | 11.1s
+  ep   7000 | win%  99.6 | avg guesses (won) 3.29 | 12.9s
+  ep   8000 | win%  99.6 | avg guesses (won) 3.34 | 14.8s
+  ep   9000 | win%  99.4 | avg guesses (won) 3.34 | 16.6s
+  ep  10000 | win% 100.0 | avg guesses (won) 3.34 | 18.5s
+  ep  11000 | win%  99.6 | avg guesses (won) 3.33 | 20.3s
+  ep  12000 | win%  99.8 | avg guesses (won) 3.37 | 22.2s
+  ep  13000 | win% 100.0 | avg guesses (won) 3.33 | 24.1s
+  ep  14000 | win%  99.8 | avg guesses (won) 3.30 | 25.9s
+  ep  15000 | win%  99.2 | avg guesses (won) 3.37 | 27.8s
+────────────────────────────────────────────────────────────
+[English] Training done. Win rate: 99.2%  Avg guesses: 3.37
+Weights saved → weights_english.npz
+
+[English] Running 5 demo game(s)...
+
+=============================================
+  ENGLISH WORDLE DEMO
+  Secret word: CRANE
+  LLM debate: Ollama (llama3.2)
+=============================================
+  AGENT        GUESS    RESULT   CANDS
+  ──────────── ──────── ──────── ──────
+
+  --- Turn 1 debate (535 candidates left) ---
+    [Eliminator] SLIDE: "SLIDE's got the stats on its side, and I'm not about to question the Eliminator's instincts. With an elimination percentage of 95 and a partition quality of 0.96, it's clear that this word has already done its job in narrowing down the field, and I'm willing to trust the process for this next guess."
+    [Probabilist] THERE: As a probabilist, I believe that 'THERE' remains a strong candidate for our next guess, given its already impressive elimination percentage of 95 and partition quality of 0.95. By continuing to trust the process, we're not only leveraging the Eliminator's instincts but also minimizing the impact of potential overfitting, allowing us to tap into the underlying structure of the word space that 'THERE' has already revealed.
+    [RiskTaker] NOTED: I disagree with my fellow agents, particularly the Eliminator and Probabilist. While 'THERE' is indeed a strong candidate, I believe 'NOTED' remains the best choice for our next guess, as it still has a high elimination percentage of 94, partition quality of 0.95, and has not been completely ruled out, allowing us to gather more information about the remaining candidates and test the boundaries of what we know so far.
+  Probabilist  THERE    ...YG    535
+
+  --- Turn 2 debate (26 candidates left) ---
+    [Eliminator] RAISE: "RAISE is the only logical choice at this point - we've got a decent partition quality and a high frequency rank, indicating that the eliminated letters are indeed unlikely to be part of the solution. By sticking with 'RAISE', we're not throwing away any potentially useful information about the eliminated letters, and we're keeping our chances of winning as high as possible."
+    [Probabilist] GRADE: "While the Eliminator may see RAISE as a logical choice, I believe 'GRADE' remains a strong contender due to its high frequency rank and decent partition quality. By not discarding too much information with RAISE, we're essentially leaving on the table a word that has already demonstrated a high likelihood of being part of the solution, making 'GRADE' a prudent choice to further investigate."
+    [RiskTaker] RIFLE: "I agree that RAISE and GRADE are strong contenders, but I'd argue that RIFLE remains a crucial choice due to its low elimination rate and decent partition quality. By sticking with RIFLE, we're not throwing away information about the eliminated letters, which could still be relevant to the solution, and we're keeping our options open to gather more data, rather than relying on a word with a relatively high frequency rank that might already be on the cusp of being eliminated."
+  Probabilist  GRADE    .GG.G    26
+
+  --- Turn 3 debate (2 candidates left) ---
+    [Eliminator] FRAME: The word 'FRAME' is a solid choice for this turn's guess, as it strikes a balance between covering common word patterns and avoiding overly specific combinations. By leveraging the high frequency rank and partition quality, I'm minimizing the risk of introducing new, unwarranted candidates into the mix.
+    [Probabilist] FRAME: As a probabilist, I stand by my initial choice of 'FRAME' as it efficiently leverages our existing knowledge to maximize our chances of success. By considering the high frequency rank and partition quality of this word, we're not only avoiding potential eliminations, but also making a calculated bet that our current understanding of the language is on the right track.
+    [RiskTaker] CRANE: I firmly believe that 'CRANE' is the optimal choice for this turn, as its unique combination of elimination percentage and partition quality indicates a substantial amount of linguistic information hidden within its structure. By sticking with 'CRANE', we are deliberately pushing the remaining candidates into distinct partitions, allowing us to split them as evenly as possible and gather more precise information about the actual word.
+  Probabilist  FRAME    .GG.G    2
+
+  --- Turn 4 debate (1 candidates left) ---
+    [Eliminator] CRANE: As the Eliminator, I'm choosing 'CRANE' because it's a word with a high frequency rank, which means it's likely to have a good balance of common letters and fewer possibilities. This makes it a great choice for our next guess, as it allows us to quickly eliminate or confirm many potential solutions and narrow down the remaining candidates.
+    [Probabilist] CRANE: As a Probabilist, I think 'CRANE' is a well-justified choice given its high frequency rank. The Eliminator's argument about quickly eliminating or confirming many potential solutions is spot on - with 'CRANE', we're already leveraging its high ranking to inform our next move, rather than taking a wild guess with a less common word.
+    [RiskTaker] CRANE: As the RiskTaker, I strongly agree with my colleagues' assessment of 'CRANE' as our next guess. By leveraging its high frequency rank, we're maximizing the information we can gather with each subsequent guess, effectively triaging our candidates to minimize unnecessary eliminations and maximize partition quality.
+  Probabilist  CRANE    GGGGG    1
+
+  ✓ Solved in 4 guesses!
+
+=============================================
+  ENGLISH WORDLE DEMO
+  Secret word: CRANE
+  LLM debate: Ollama (llama3.2)
+=============================================
+  AGENT        GUESS    RESULT   CANDS
+  ──────────── ──────── ──────── ──────
+
+  --- Turn 1 debate (535 candidates left) ---
+    [Eliminator] SLIDE: The Eliminator's logic is clear: with a 95% elimination rate and a high partition quality of 0.96, 'SLIDE' is the perfect choice to rapidly eliminate the most improbable words. By sticking with the proven winner, I can maximize the chance of uncovering the correct answer while minimizing the number of unnecessary guesses.
+    [Probabilist] THERE: While The Eliminator's approach may be efficient, I'm hesitant to sacrifice partition quality for the sake of speed. 'THERE' still boasts an impressive 0.95 partition quality and a relatively low elimination rate of 95%, making it a well-supported choice that balances the need for precision with the desire to minimize unnecessary guesses.
+    [RiskTaker] NOTED: I firmly stand by my choice of 'NOTED', as its 94% elimination rate and 0.95 partition quality suggest that it effectively splits the remaining candidates into more manageable groups, providing a valuable dataset for further analysis. By sticking with 'NOTED', I believe I can continue to refine my understanding of the word's properties while minimizing the introduction of unnecessary variance.
+  Probabilist  THERE    ...YG    535
+
+  --- Turn 2 debate (26 candidates left) ---
+    [Eliminator] PROSE: "PROSE is the only word that makes sense right now. With 86% elimination rate, it's clear that any other word would be a waste of time, throwing away good candidates, and with a frequency rank of 63, it's a top contender - we need to keep it in the running."
+    [Probabilist] DRIVE: "While Eliminator's argument about PROSE is compelling, I still believe DRIVE is a strong choice given its high frequency rank of 88. With a substantial 79% elimination rate, we can be confident that DRIVE is unlikely to be our target, freeing us from wasting resources on lower-scoring candidates."
+    [RiskTaker] PURSE: As the RiskTaker, I firmly stand by 'PURSE' as our current top choice. Although Eliminator highlighted PROSE's strengths and Probabilist emphasized DRIVE's frequency rank, I believe we can't dismiss the substantial 81% elimination rate associated with 'PURSE', as it still offers a unique partition quality and doesn't fall behind in the frequency rank comparison.
+  Probabilist  DRIVE    .G..G    26
+
+  --- Turn 3 debate (7 candidates left) ---
+    [Eliminator] PRONE: I've got 'PRONE' locked in as our next guess. It's a solid choice because it leverages the stats we've gathered so far - 77% elimination rate and 63% frequency rank - to minimize the number of new candidates we'd introduce. By sticking with 'PRONE', we're keeping our options narrow and reducing the likelihood of wasting time on unfruitful partitions.
+    [Probabilist] PROBE: While 'PRONE' may seem like a conservative choice, I firmly believe that sticking with 'PROBE' is the best move at this point. Given the high frequency rank of 64 and the substantial elimination rate of 69, 'PROBE' has already been significantly weeded out, making it less likely to introduce new, unfruitful partitions with 'PRONE'. By building upon the strong statistical foundation we've established with 'PROBE', we can minimize our exposure to suboptimal options and increase our chances of landing on the correct solution.
+    [RiskTaker] PRONE: "I agree that we've established a strong statistical foundation with 'PROBE', but let's not forget that we're trying to gather information, not build upon it. By sticking with 'PRONE', we're not abandoning the insights we've gained from 'PROBE', but rather using them to inform our next move and avoid introducing new variables into the mix – we want to split the remaining candidates as evenly as possible to gather more intel, not risk further diluting our chances."
+  Probabilist  PROBE    .G..G    7
+
+  --- Turn 4 debate (3 candidates left) ---
+    [Eliminator] FRAME: "FRAME is the perfect choice for this turn - its elimination percentage is alarmingly high, suggesting that it's far from the correct solution. By continuing to utilize this word, I'm not only reducing the number of candidates remaining, but also honing in on the words that are least likely to be correct, which will give me a crucial advantage in the game."
+    [Probabilist] CRANE: I strongly disagree with the eliminator's suggestion, as 'FRAME' being eliminated doesn't necessarily mean it's the correct word. In fact, 'CRANE' is a more plausible choice, given its high frequency rank and relatively low elimination percentage, indicating that it's still a strong contender despite being among the top guesses.
+    [RiskTaker] FRAME: "I agree with the Eliminator that 'FRAME' is a strong choice, given its high elimination percentage, which indicates that it's been ruled out by the majority of the population. By continuing to utilize 'FRAME', we're not only gathering information on the words that are least likely to be correct, but also validating our initial hypothesis that it's unlikely to be the correct solution, thereby confirming our suspicions about the remaining candidates."
+  Probabilist  CRANE    GGGGG    3
+
+  ✓ Solved in 4 guesses!
+
+=============================================
+  ENGLISH WORDLE DEMO
+  Secret word: CRANE
+  LLM debate: Ollama (llama3.2)
+=============================================
+  AGENT        GUESS    RESULT   CANDS
+  ──────────── ──────── ──────── ──────
+
+  --- Turn 1 debate (535 candidates left) ---
+    [Eliminator] SLIDE: As the Eliminator, I'm sticking with 'SLIDE' for this turn because it's already a strong contender, with a high elimination percentage and a relatively high frequency rank. By reusing this word, I can quickly eliminate a large portion of the remaining candidates and narrow down the pool, which is crucial in my quest to emerge victorious.
+    [Probabilist] THERE: I must respectfully disagree with my fellow agents' assessment of 'SLIDE' as the best contender. By choosing 'THERE', I'm leveraging the fact that it has already demonstrated a high level of partition quality and frequency rank, making it a strong candidate to be the solution. Its elimination percentage, although higher than 'SLIDE', suggests that it's a well-represented word in the remaining pool, which makes 'THERE' a more reliable choice to further refine our options.
+    [RiskTaker] NOTED: "I agree with my fellow agents that we need to split the remaining candidates as evenly as possible, but I believe 'NOTED' is the best choice to achieve that. By sticking with 'NOTED', we're not only reusing a word that has already shown promise in the early stages of the game, but we're also leveraging the fact that it has a relatively high frequency rank, which means it's likely to be well-represented in the remaining pool – allowing us to gather valuable information without overly concentrating our efforts on a single area."
+  Probabilist  THERE    ...YG    535
+
+  --- Turn 2 debate (26 candidates left) ---
+    [Eliminator] RANGE: I'm sticking with 'RANGE' for now. It's a strong word that covers a significant amount of linguistic and semantic space, allowing me to efficiently eliminate a large portion of the remaining possibilities. By choosing this word, I can quickly narrow down the pool of potential solutions and make informed decisions about which words to focus on next.
+    [Probabilist] LARGE: I disagree with the Eliminator's choice of 'RANGE'. While it's true that 'RANGE' covers a significant amount of linguistic space, it's also a relatively uncommon word that doesn't necessarily reflect the commonality of the solution. In contrast, 'LARGE' is a high-frequency word that is more likely to be the solution, given its strong partition quality and elimination percentage. By sticking with 'LARGE', we can maximize our chances of guessing the correct solution and make the most of our limited attempts.
+    [RiskTaker] PRIME: As the RiskTaker, I firmly believe that 'PRIME' is the best next guess, given its high partition quality and relatively low elimination percentage. While the Eliminator is correct that 'PRIME' doesn't cover as much linguistic space as 'RANGE', its strong partition quality suggests that it's a good candidate for being the correct solution, and its lower elimination percentage indicates that it's still a viable option among the remaining possibilities, making it a prudent choice to continue exploring its potential.
+  Probabilist  LARGE    .YY.G    26
+
+  --- Turn 3 debate (3 candidates left) ---
+    [Eliminator] ARISE: I'm sticking with 'ARISE' for this turn, as it's one of the most high-probability words in the English language, with a frequency rank that's a whopping 99%. With 44% elimination rate and 44% partition quality, it's already done a great job of narrowing down the possibilities - and it's still got 3 candidates remaining, making it a solid bet for this turn.
+    [Probabilist] FRAME: As a probabilist, I must respectfully disagree with the Eliminator's choice of 'ARISE'. While 'ARISE' does boast an extremely high frequency rank, its partition quality is a mere 44%, which suggests that it has already accounted for a substantial portion of the possible solutions. In contrast, 'FRAME' has a more modest but still respectable partition quality of 0.67, indicating that it still has a decent chance of being the correct word. Moreover, with only 66% elimination rate, 'FRAME' has not yet been ruled out as unfairly as 'ARISE' has, leaving it as a reasonable choice for this turn.
+    [RiskTaker] CRANE: As the RiskTaker, I'd like to point out that while 'ARISE' and 'FRAME' have high frequency ranks and respectable partition qualities, our current state is precisely one where we're looking to split the remaining candidates as evenly as possible. By sticking with 'CRANE', we're not trying to exploit a high-probability word like 'ARISE', but rather gathering more information by maintaining a diverse range of possibilities.
+  Probabilist  FRAME    .GG.G    3
+
+  --- Turn 4 debate (1 candidates left) ---
+    [Eliminator] CRANE: "CRANE is our best bet right now, as it's the only word I have left to consider. By guessing this word, I can immediately eliminate it from the pool of possibilities, giving me a clear path forward to test more promising candidates."
+    [Probabilist] CRANE: "Given the current state of the debate, CRANE is a prudent choice, as it is the only word left in the pool that has a reasonable probability of being correct. By eliminating CRANE, we're conserving our options and maximizing the information we gain from the outcome, which will ultimately help us make a more informed decision about our next move."
+    [RiskTaker] CRANE: "As the RiskTaker, I believe CRANE is an ideal choice because it allows us to maximize the gain of elimination, providing us with crucial information about the remaining candidates. By sticking with CRANE, we're not only hedging against uncertainty but also maintaining a strategic buffer, as we can't afford to risk further dilution of our information with a less impactful guess."
+  Probabilist  CRANE    GGGGG    1
+
+  ✓ Solved in 4 guesses!
+
+=============================================
+  ENGLISH WORDLE DEMO
+  Secret word: CRANE
+  LLM debate: Ollama (llama3.2)
+=============================================
+  AGENT        GUESS    RESULT   CANDS
+  ──────────── ──────── ──────── ──────
+
+  --- Turn 1 debate (535 candidates left) ---
+    [Eliminator] SLIDE: "SLIDE is the way to go, I've got a gut feeling it's still the best bet. With 95% elimination rate, it's clear we're on the right track - now it's time to nail it down and see if we can partition the remaining candidates."
+    [Probabilist] THERE: "I agree that our elimination rate is strong, but let's not rush into partitioning just yet. Our current 'THERE' guess has a significantly higher frequency rank percentage than 'SLIDE', indicating that it's a more common word, which increases its likelihood of being the correct solution."
+    [RiskTaker] NOTED: "I agree that we should be cautious with partitioning, but I believe 'NOTED' still offers a solid opportunity to split the remaining candidates effectively. Given its relatively high partition quality, we can make informed decisions about which words to pursue further, even if it doesn't have the highest frequency rank percentage."
+  Probabilist  THERE    ...YG    535
+
+  --- Turn 2 debate (26 candidates left) ---
+    [Eliminator] RAISE: "RAISE is the way to go, I've already got a strong foundation to work from. With 86% elimination percentage, we've eliminated a whopping 14 words, leaving us with a manageable pool of 26 candidates, and we've got a decent partition quality score of 0.86, which suggests we're on the right track."
+    [Probabilist] PRIZE: "As the Probabilist, I disagree with the Eliminator's strategy of diving into high-risk words like RAISE. PRIZE's lower elimination percentage, while not as low as some other options, indicates that we've still got a solid foundation to work from, and its relatively high partition quality score suggests we're on the right track, which aligns with the Eliminator's own metrics."
+    [RiskTaker] RAISE: "I'd like to respectfully disagree with my opponents. While I acknowledge the Eliminator's foundation is strong, I firmly believe 'RAISE' is the best choice right now due to its exceptional partition quality score, which suggests we're getting a good split in the remaining candidates. This word has allowed us to efficiently eliminate 14 words, and I'm confident that we can continue to gather valuable information from the remaining 26 candidates, making 'RAISE' an excellent choice to further refine our chances of success."
+  Probabilist  PRIZE    .G..G    26
+
+  --- Turn 3 debate (4 candidates left) ---
+    [Eliminator] CRANE: "CRANE" is a prime candidate for elimination due to its high frequency rank, indicating it's a relatively common word, making it a strong starting point to narrow down the options quickly. By choosing 'CRANE' as my next guess, I'm targeting a high-probability word that will either be correctly eliminated or provide valuable feedback to refine my search.
+    [Probabilist] CRANE: I agree with Eliminator that 'CRANE' is a strong choice, given its high frequency rank and relatively low elimination percentage. By sticking with 'CRANE', we're not only playing it safe but also leveraging our initial advantage to quickly narrow down the remaining options and make the most of the probability distribution we've gathered so far.
+    [RiskTaker] CRANE: "I agree with my colleagues that 'CRANE' is a top-notch choice, leveraging its high frequency rank to maximize the chances of either eliminating a strong candidate or gathering valuable feedback. By sticking with 'CRANE', we're not only playing it safe but also capitalizing on our initial advantage to rapidly narrow down the remaining options and make the most of the probability distribution we've gathered so far."
+  Probabilist  CRANE    GGGGG    4
+
+  ✓ Solved in 3 guesses!
+
+=============================================
+  ENGLISH WORDLE DEMO
+  Secret word: CRANE
+  LLM debate: Ollama (llama3.2)
+=============================================
+  AGENT        GUESS    RESULT   CANDS
+  ──────────── ──────── ──────── ──────
+
+  --- Turn 1 debate (535 candidates left) ---
+    [Eliminator] SLIDE: "SLIDE is a no-brainer at this point. We've already got a 95% elimination rate, which tells us that the word is quite different from the first guess. With a partition quality of 0.96, we've effectively partitioned the space into manageable chunks, making it even more likely that SLIDE is one of the remaining candidates."
+    [Probabilist] THERE: "I disagree with the Eliminator's assessment. While a 95% elimination rate does suggest a significant difference, it's essential to note that the high partition quality and still being a candidate for 'THERE' indicate that we've effectively narrowed down the possibilities without eliminating a substantial portion of the remaining options. SLIDE may be a popular word, but 'THERE' remains a pragmatic choice given the current state of the game."
+    [RiskTaker] NOTED: As the RiskTaker, I firmly believe that 'NOTED' is the right call to make next, despite the Eliminator's confidence in 'SLIDE'. By sticking with 'NOTED', we're leveraging our existing data and maintaining the most even partition of the remaining candidates, allowing us to continue to gather crucial information without introducing new variables that might skew our analysis.
+  Probabilist  THERE    ...YG    535
+
+  --- Turn 2 debate (26 candidates left) ---
+    [Eliminator] ARISE: "ARISE is the only word left standing, and for good reason. Its high elimination percentage and partition quality indicate that it's a strong candidate, and with 99% frequency rank, it's the most likely word to be the solution, making it a solid choice to rule out other possibilities quickly."
+    [Probabilist] RIDGE: "I disagree with the Eliminator's assertion that ARISE is the strongest candidate. While it's true that ARISE has a high frequency rank, RIDGE's relatively low elimination percentage of 77 suggests that it still has a significant chance of being the correct word, and its partition quality is still a strong indication that it's worth considering, even if it's not the most likely."
+    [RiskTaker] PRIZE: "I'm not swayed by the Eliminator's overconfidence in ARISE, as our own PRIZE has been quietly gathering data with an impressive 83% elimination rate. By continuing to split the remaining candidates as evenly as possible, we're actually bolstering our chances by eliminating other possibilities and keeping PRIZE in the running."
+  Probabilist  RIDGE    Y...G    26
+
+  --- Turn 3 debate (11 candidates left) ---
+    [Eliminator] PURSE: I'm sticking with PURSE, the tried and true favourite. With its relatively high partition quality of 0.84, it's proven to be a solid foundation for our strategy, and eliminating it now would be a waste - I'd rather take a calculated risk on it rather than gamble on a new, unproven option.
+    [Probabilist] PROBE: While PURSE has a respectable partition quality, its elimination rate of 82% suggests it's likely not the word we're looking for. With PROBE's relatively lower elimination rate of 82% and still being considered a strong candidate, it's a more cautious and data-driven choice that aligns with my probabilistic approach.
+    [RiskTaker] FORCE: "I disagree with both Eliminator and Probabilist, I believe 'FORCE' is a good choice given its high frequency rank and relatively low elimination rate, despite its lower partition quality compared to PURSE. By sticking with a proven favourite, we're not taking a huge risk, and its still-being-a-candidate status suggests it's still a strong contender, even if it's not the most statistically likely option."
+  Probabilist  PROBE    .G..G    11
+
+  --- Turn 4 debate (2 candidates left) ---
+    [Eliminator] FRAME: "FRAME" is a solid choice for this turn because it has already demonstrated a high frequency rank of 85, indicating a strong possibility of being the correct word. By sticking with a word that's already been performing well, I can quickly rule out a significant portion of the remaining candidates and continue to narrow down the field.
+    [Probabilist] FRAME: "I agree that sticking with a high-performing word like 'FRAME' is a sensible decision, as it allows us to quickly prune a substantial portion of the remaining candidates. By building on its frequency rank momentum, we can capitalize on the word's strong probability and minimize the impact of any potential eliminations."
+    [RiskTaker] FRAME: As the RiskTaker, I firmly believe that 'FRAME' remains the best choice for this turn, given its impressive frequency rank and the substantial portion of candidates it has already eliminated. By sticking with 'FRAME', we can efficiently partition the remaining candidates and continue to build on its strong probability, thereby maximizing the value of our next move.
+  Probabilist  FRAME    .GG.G    2
+
+  --- Turn 5 debate (1 candidates left) ---
+    [Eliminator] CRANE: I'm sticking with CRANE. It's a solid choice because it's already accounted for the high-frequency letters 'E' and 'N', which are likely to be present in the word. By starting with CRANE, I can quickly eliminate a large portion of the remaining possibilities and narrow down the field of potential candidates.
+    [Probabilist] CRANE: I completely agree with Eliminator, as 'CRANE' has already capitalized on the high-frequency letters 'E' and 'N', which are extremely common in the English language. By starting with this word, we're leveraging the probabilistic power of the most frequent letters to quickly narrow down the remaining possibilities and make informed guesses, rather than starting from a blank slate.
+    [RiskTaker] CRANE: "I couldn't agree more with my fellow agents, CRANE is a solid choice to start with. By building on the strong foundation of high-frequency letters 'E' and 'N', we're maximizing our chances of gathering valuable information and splitting the remaining candidates as evenly as possible."
+  Probabilist  CRANE    GGGGG    1
+
+  ✓ Solved in 5 guesses!
+
+Result: 5/5 games won
+((.venv) ) angelaapostolska@Mac Multi-Agent-Wordle-Game % 
