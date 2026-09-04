@@ -485,6 +485,7 @@ def compare_llm_moderator(agents, moderator, n_games=20, base_seed=123, secret_w
     print(f"\n[English] Comparing LLM moderator vs trained moderator over {n_games} games each...")
     print("(this makes real Ollama calls for the LLM-moderator half — expect it to take a while)")
 
+    t0 = time.time()
     override_log = []
     llm_wins = 0
     for i in range(n_games):
@@ -493,7 +494,13 @@ def compare_llm_moderator(agents, moderator, n_games=20, base_seed=123, secret_w
                          use_llm=True, llm_moderator=True,
                          rng=rng, verbose=False, override_log=override_log)
         llm_wins += int(won)
+        print(f"  [LLM-moderator {i+1:>3}/{n_games}] {'won ' if won else 'lost'} "
+              f"| {time.time()-t0:6.1f}s elapsed")
 
+    print(f"  LLM-moderator half done in {time.time()-t0:.1f}s. "
+          f"Running the {n_games}-game baseline (no Ollama calls, should be quick)...")
+
+    t1 = time.time()
     baseline_wins = 0
     for i in range(n_games):
         rng = np.random.default_rng(base_seed + i)  # same seed -> same secret + same proposals
@@ -501,6 +508,7 @@ def compare_llm_moderator(agents, moderator, n_games=20, base_seed=123, secret_w
                          use_llm=False, llm_moderator=False,
                          rng=rng, verbose=False)
         baseline_wins += int(won)
+    print(f"  Baseline half done in {time.time()-t1:.1f}s.")
 
     voted    = [e for e in override_log if e["llm_choice"] is not None]
     no_vote  = len(override_log) - len(voted)
