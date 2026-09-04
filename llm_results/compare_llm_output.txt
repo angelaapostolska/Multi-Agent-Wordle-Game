@@ -1,0 +1,44 @@
+# Real terminal output — `python scenario_english.py --compare-llm --games 20`
+# Runs 20 games with the LLM moderator active and 20 matched games with only the
+# trained moderator (same RNG seed per game index -> identical secret word and
+# identical agent proposals in both), then prints one agreement-rate / win-rate
+# summary. Result from this run: LLM overrode the trained moderator on 88.7% of
+# turns, yet both conditions won 20/20 games. See README.md, section
+# "LLM Integration (English Scenario)", for the full discussion of this finding.
+
+((.venv) ) angelaapostolska@Mac Multi-Agent-Wordle-Game % python scenario_english.py --compare-llm --games 20
+[English] Building pattern matrix for 535 words...
+[English] Pattern matrix ready.
+Weights loaded ← weights_english.npz
+
+[English] Comparing LLM moderator vs trained moderator over 20 games each...
+(this makes real Ollama calls for the LLM-moderator half — expect it to take a while)
+  [LLM-moderator   1/20] won  |   11.6s elapsed
+  [LLM-moderator   2/20] won  |   30.5s elapsed
+  [LLM-moderator   3/20] won  |   54.0s elapsed
+  [LLM-moderator   4/20] won  |   70.3s elapsed
+  [LLM-moderator   5/20] won  |   92.9s elapsed
+  [LLM-moderator   6/20] won  |  128.5s elapsed
+  [LLM-moderator   7/20] won  |  169.3s elapsed
+  [LLM-moderator   8/20] won  |  193.3s elapsed
+  [LLM-moderator   9/20] won  |  215.8s elapsed
+  [LLM-moderator  10/20] won  |  239.6s elapsed
+  [LLM-moderator  11/20] won  |  270.3s elapsed
+  [LLM-moderator  12/20] won  |  285.9s elapsed
+  [LLM-moderator  13/20] won  |  306.1s elapsed
+  [LLM-moderator  14/20] won  |  329.3s elapsed
+  [LLM-moderator  15/20] won  |  343.9s elapsed
+  [LLM-moderator  16/20] won  |  374.2s elapsed
+  [LLM-moderator  17/20] won  |  387.7s elapsed
+  [LLM-moderator  18/20] won  |  414.8s elapsed
+  [LLM-moderator  19/20] won  |  438.0s elapsed
+  [LLM-moderator  20/20] won  |  454.9s elapsed
+  LLM-moderator half done in 454.9s. Running the 20-game baseline (no Ollama calls, should be quick)...
+  Baseline half done in 0.0s.
+────────────────────────────────────────────────────────────
+Turns played: 62  |  LLM cast a usable vote on 62 of them (Ollama unreachable/unparsed on 0)
+  Agreed with trained moderator:     7 (11.3%)
+  Overrode trained moderator:       55 (88.7%)
+Win rate WITH LLM moderator:      100.0%  (20/20)
+Win rate baseline (trained only): 100.0%  (20/20)
+────────────────────────────────────────────────────────────
