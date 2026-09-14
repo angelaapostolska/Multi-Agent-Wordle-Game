@@ -123,6 +123,8 @@ DIFF_WEIGHTS = {
     RISKTAKER:   0.1,
 }
 
+INFO_GAIN_WEIGHT = 1.0
+
 
 # ── Core feedback function ─────────────────────────────────────────────────────
 
@@ -254,17 +256,21 @@ def expected_remaining_frac(guess_idx, cands, pattern_matrix):
 
 # ── Reward functions ───────────────────────────────────────────────────────────
 
-def task_reward(fb, solved, last_turn, guess_word=None, secret_word=None, which=None):
+def task_reward(fb, solved, last_turn, guess_word=None, secret_word=None, which=None,
+                 cands_before=None, cands_after=None, info_gain_weight=INFO_GAIN_WEIGHT):
     """
     Reward signal for the TEAM (used by the moderator).
 
     Parameters:
-        fb          : feedback tuple from compute_feedback, e.g. (2,1,0,0,2)
-        solved      : True if the guess matched the secret
-        last_turn   : True if this was the last allowed guess
-        guess_word  : the actual guess string (e.g. "crane")  — optional
-        secret_word : the actual secret string (e.g. "trace") — optional
-        which       : agent type (0/1/2) — used to pick diff_weight
+        fb              : feedback tuple from compute_feedback, e.g. (2,1,0,0,2)
+        solved          : True if the guess matched the secret
+        last_turn       : True if this was the last allowed guess
+        guess_word      : the actual guess string (e.g. "crane")  — optional
+        secret_word     : the actual secret string (e.g. "trace") — optional
+        which           : agent type (0/1/2) — used to pick diff_weight
+        cands_before    : number of candidates before this guess — optional
+        cands_after     : number of candidates after this guess  — optional
+        info_gain_weight: weight applied to the info-gain term
 
     Returns a float reward value.
 
@@ -273,6 +279,7 @@ def task_reward(fb, solved, last_turn, guess_word=None, secret_word=None, which=
         +0.05 per yellow (right letter, wrong position)
         -0.1  base penalty per turn (encourages solving quickly)
         +letter_match_score * weight  (how close was the guess in raw letters?)
+        +info_gain_weight * fraction of candidates eliminated this turn
         +5.0 if solved
         -1.0 if last turn and not solved
     """
@@ -281,10 +288,12 @@ def task_reward(fb, solved, last_turn, guess_word=None, secret_word=None, which=
 
     r = 0.2 * greens + 0.05 * yellows - 0.1
 
-    # Add raw letter-difference score if we have the actual words
     if guess_word is not None and secret_word is not None:
-        diff_weight = DIFF_WEIGHTS.get(which, 0.2)  # default 0.2 if unknown
+        diff_weight = DIFF_WEIGHTS.get(which, 0.2)
         r += diff_weight * letter_match_score(guess_word, secret_word)
+
+    if cands_before is not None and cands_after is not None and cands_before > 0:
+        r += info_gain_weight * (1.0 - (cands_after / cands_before))
 
     if solved:
         r += 5.0
