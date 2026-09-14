@@ -107,12 +107,17 @@ def run_episode(agents, moderator, rng, train_mode=True):
 
         proposals = []
         for ai, ag in enumerate(agents):
-            val_idx = cands if (ai == PROBABILIST or len(cands) <= 10) else None
+            val_idx = cands if (ai == PROBABILIST or len(cands) <= 25) else None
             guess_idx, _ = ag.sample(a_state, valid_indices=val_idx, rng=rng)
             proposals.append(guess_idx)
 
-        m_state        = build_mod_state(proposals, cands, turn, WORDS, PATTERN)
-        choice, _      = moderator.sample(m_state, rng=rng)
+        m_state = build_mod_state(proposals, cands, turn, WORDS, PATTERN)
+
+        if train_mode and rng.random() < 0.20:
+            choice = int(rng.integers(3))
+        else:
+            choice, _ = moderator.sample(m_state, rng=rng)
+
         final_guess    = proposals[choice]
 
         fb      = PATTERN[final_guess, secret]
@@ -130,6 +135,12 @@ def run_episode(agents, moderator, rng, train_mode=True):
             cands_before=len(cands),
             cands_after=len(next_cands),
         )
+
+        if len(cands) > 20:
+            elim_powers = [1.0 - expected_remaining_frac(p, cands, PATTERN) for p in proposals]
+            best_agent  = int(np.argmax(elim_powers))
+            tr += 0.6 if choice == best_agent else -0.2
+
         mod_mem.append((m_state, choice, tr))
 
         for ai in range(3):
