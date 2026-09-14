@@ -20,6 +20,7 @@ Reward system explanation:
 """
 
 import numpy as np
+from words_mk_pythonlist import WORDS_MK
 
 # ── Word list (English 5-letter words) ────────────────────────────────────────
 
@@ -126,18 +127,9 @@ WORDS_EN = [
 # ── Macedonian word list (5-letter Cyrillic words) ─────────────────────────────
 # Note: These are real Macedonian 5-letter words written in Cyrillic.
 # You can expand this list with more words from a Macedonian dictionary.
-WORDS_MK = [
-    "мајка","татко","земја","вода","оган","куќа","сонце","месец","ѕвезд","ветер",
-    "дрво","цвет","птица","риба","коњ","мачка","куче","овца","крава","свиња",
-    "леб","млеко","маса","столч","врата","прозо","книга","молив","школо","учите",
-    "море","езеро","река","гора","поле","ливад","камен","песок","небо","облак",
-    "снег","дожд","град","село","град","пат","мост","воз","кола","брод",
-    "рака","нога","глава","очи","уши","нос","уста","заби","коса","срце",
-    "живот","смрт","љубов","омраз","радос","тага","страв","смеа","плач","викот",
-    "бело","црно","црвен","жолто","зелен","сино","виоле","порток","розово","сиво",
-    "еден","двата","три","четир","пет","шест","седум","осум","девет","десет",
-    "голем","мал","висок","низок","брз","бавен","нов","стар","убав","грд",
-]
+
+# Filter to ensure 5-letter unique entries
+WORDS_MK = list(dict.fromkeys(w.strip().lower() for w in WORDS_MK if len(w.strip()) == 5))
 
 # Filter to only keep proper-length words and remove duplicates
 WORDS_EN = list(dict.fromkeys(w for w in WORDS_EN if len(w) == 5))
@@ -161,9 +153,9 @@ AGENT_NAMES = ["Eliminator", "Probabilist", "RiskTaker"]
 # RiskTaker gets a lower weight because it intentionally guesses
 # "far" words to gather information — we don't want to punish that.
 DIFF_WEIGHTS = {
-    ELIMINATOR:  0.2,
-    PROBABILIST: 0.35,
-    RISKTAKER:   0.1,
+    ELIMINATOR:  0.25,
+    PROBABILIST: 0.25,
+    RISKTAKER:   0.25,
 }
 
 INFO_GAIN_WEIGHT = 1.0
