@@ -33,8 +33,7 @@ MK_ALPHA_LEN = len(MK_ALPHABET)
 WORDS    = WORDS_MK
 N        = len(WORDS)
 WORD_IDX = {w: i for i, w in enumerate(WORDS)}
-
-HEURISTIC_LIMIT = 5
+HEURISTIC_LIMIT=25
 
 print(f"[Macedonian] Building pattern matrix for {N} words...")
 PATTERN = build_pattern_matrix(WORDS)
@@ -262,7 +261,7 @@ class GameTimer:
 
 # ── Single game with Debate Phase ──────────────────────────────────────────────
 
-def run_episode(agent_models, moderator, rng, secret=None, train_mode=True, stats=None):
+def run_episode(agent_models, moderator, rng, secret=None, train_mode=True, stats=None, heuristic_limit=HEURISTIC_LIMIT):
     if secret is None:
         secret = int(rng.integers(N))
 
@@ -281,8 +280,8 @@ def run_episode(agent_models, moderator, rng, secret=None, train_mode=True, stat
         a_state = mk_agent_state(cands, turn, absent, known_green, yellows)
         proposals = []
         for ai, ag in enumerate(agent_models):
-            # Restrict Eliminator & RiskTaker only when candidate pool is HEURISTIC_LIMIT
-            if ai == PROBABILIST or len(cands) <= HEURISTIC_LIMIT:
+            # Restrict Eliminator & RiskTaker only when candidate pool is <= 25
+            if ai == PROBABILIST or (heuristic_limit is not None and len(cands) <= heuristic_limit):
                 valid_idx = cands
             else:
                 valid_idx = None  # Allow full vocabulary search for exploratory info gain
@@ -358,7 +357,7 @@ def run_episode(agent_models, moderator, rng, secret=None, train_mode=True, stat
 
 # ── Training Loop ──────────────────────────────────────────────────────────────
 
-def train(episodes=EPISODES, lr=LR, seed=SEED, track_stats=True):
+def train(episodes=EPISODES, lr=LR, seed=SEED, track_stats=True, heuristic_limit=HEURISTIC_LIMIT):
     rng = np.random.default_rng(seed)
 
     agent_models = [
@@ -383,7 +382,7 @@ def train(episodes=EPISODES, lr=LR, seed=SEED, track_stats=True):
     for ep in range(episodes):
         ep_t0 = time.time()
         solved, n_guesses, agent_mem, mod_mem = run_episode(
-            agent_models, moderator, rng, train_mode=True, stats=stats
+            agent_models, moderator, rng, train_mode=True, stats=stats, heuristic_limit=heuristic_limit
         )
         ep_elapsed = time.time() - ep_t0
         timer.record(ep_elapsed, n_guesses, solved)
@@ -428,7 +427,7 @@ def train(episodes=EPISODES, lr=LR, seed=SEED, track_stats=True):
 
 # ── Interactive Demo with Debate Printing ──────────────────────────────────────
 
-def demo_game(agent_models, moderator, secret_word=None, stats=None):
+def demo_game(agent_models, moderator, secret_word=None, stats=None, heuristic_limit=HEURISTIC_LIMIT):
     rng = np.random.default_rng()
     secret = WORD_IDX.get(secret_word, int(rng.integers(N))) if secret_word else int(rng.integers(N))
 
@@ -451,7 +450,7 @@ def demo_game(agent_models, moderator, secret_word=None, stats=None):
 
         proposals = []
         for ai, ag in enumerate(agent_models):
-            if ai == PROBABILIST or len(cands) <= HEURISTIC_LIMIT:
+            if ai == PROBABILIST or (heuristic_limit is not None and len(cands) <= heuristic_limit):
                 valid_idx = cands
             else:
                 valid_idx = None
@@ -501,7 +500,7 @@ def demo_game(agent_models, moderator, secret_word=None, stats=None):
     return False
 
 
-def play_many_demo_games(agent_models, moderator, n_games, secret_word=None):
+def play_many_demo_games(agent_models, moderator, n_games, secret_word=None, heuristic_limit=HEURISTIC_LIMIT):
     """
     Play n_games demo games back-to-back, collecting AgentStats + GameTimer
     across all of them, then print a combined ranked summary at the end.
@@ -513,7 +512,9 @@ def play_many_demo_games(agent_models, moderator, n_games, secret_word=None):
         rng = np.random.default_rng()
         secret = WORD_IDX.get(secret_word, int(rng.integers(N))) if secret_word else int(rng.integers(N))
         t0 = time.time()
-        solved, n_guesses, _, _ = run_episode(agent_models, moderator, rng, stats=stats)
+        solved, n_guesses, _, _ = run_episode(
+            agent_models, moderator, rng, stats=stats, heuristic_limit=heuristic_limit
+        )
         elapsed = time.time() - t0
         timer.record(elapsed, n_guesses, solved)
         print(f"  Game {g+1}/{n_games}: {'WIN' if solved else 'LOSS'} "
@@ -557,28 +558,64 @@ def load_weights(filename="weights_macedonian_debate.npz", lr=LR):
 
 
 # ── Entry point ────────────────────────────────────────────────────────────────
-
+#
+# if __name__ == "__main__":
+#     parser = argparse.ArgumentParser()
+#     parser.add_argument("--word",  type=str, default=None)
+#     parser.add_argument("--games", type=int, default=1)
+#     parser.add_argument("--stats-only", action="store_true",
+#                          help="Skip printed debate text; just play --games games "
+#                               "and print the ranked agent leaderboard + timing stats.")
+#     args = parser.parse_args()
+#
+#     agent_models, moderator = load_weights()
+#     if agent_models is None:
+#         agent_models, moderator, _, _ = train()
+#         save_weights(agent_models, moderator)
+#
+#     if args.stats_only:
+#         print(f"\n[Macedonian] Playing {args.games} games for stats only...")
+#         play_many_demo_games(agent_models, moderator, args.games, args.word)
+#     else:
+#         print(f"\n[Macedonian] Demonstrating multi-agent debate and negotiation...")
+#         game_stats = AgentStats(AGENT_NAMES)
+#         for _ in range(args.games):
+#             demo_game(agent_models, moderator, args.word, stats=game_stats)
+#         if args.games > 1:
+#             game_stats.print_summary(total_episodes=args.games)
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--word",  type=str, default=None)
-    parser.add_argument("--games", type=int, default=1)
-    parser.add_argument("--stats-only", action="store_true",
-                         help="Skip printed debate text; just play --games games "
-                              "and print the ranked agent leaderboard + timing stats.")
-    args = parser.parse_args()
+    configs = {
+        "Config A (Strict N <= 25)": 25,
+        "Config B (Unrestricted)": None,
+        "Config C (Hybrid N <= 5)": 5
+    }
 
-    agent_models, moderator = load_weights()
-    if agent_models is None:
-        agent_models, moderator, _, _ = train()
-        save_weights(agent_models, moderator)
+    results = []
 
-    if args.stats_only:
-        print(f"\n[Macedonian] Playing {args.games} games for stats only...")
-        play_many_demo_games(agent_models, moderator, args.games, args.word)
-    else:
-        print(f"\n[Macedonian] Demonstrating multi-agent debate and negotiation...")
-        game_stats = AgentStats(AGENT_NAMES)
-        for _ in range(args.games):
-            demo_game(agent_models, moderator, args.word, stats=game_stats)
-        if args.games > 1:
-            game_stats.print_summary(total_episodes=args.games)
+    print("\n" + "=" * 75)
+    print(" RUNNING MACEDONIAN SCENARIO HEURISTIC EXPERIMENTS")
+    print("=" * 75)
+
+    for config_name, limit in configs.items():
+        # Train fresh model for this setting
+        agent_models, moderator, stats, timer = train(episodes=EPISODES, heuristic_limit=limit)
+
+        # Pull final statistics from the trained run
+        win_rate = (sum(stats.wins) / EPISODES) * 100
+        avg_turns = np.mean([t for sublist in stats.win_turns for t in sublist]) if any(stats.win_turns) else 0.0
+
+        results.append({
+            "config": config_name,
+            "win_rate": win_rate,
+            "avg_turns": avg_turns
+        })
+
+    # Print clean aggregated table at the very end
+    print("\n" + "═" * 75)
+    print("  FINAL COMPARISON RESULTS across 6,000 Episodes")
+    print("═" * 75)
+    print(f"{'Configuration':<30} | {'Win Rate (%)':<15} | {'Avg Turns to Win':<20}")
+    print("─" * 75)
+    for res in results:
+        print(f"{res['config']:<30} | {res['win_rate']:>12.2f}% | {res['avg_turns']:>18.2f}")
+    print("═" * 75)

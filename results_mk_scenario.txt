@@ -1,0 +1,86 @@
+C:\Users\Eva\PycharmProjects\Multi-Agent-Wordle-Game\.venv\Scripts\python.exe C:\Users\Eva\PycharmProjects\Multi-Agent-Wordle-Game\scenario_macedonian.py 
+[Macedonian] Building pattern matrix for 967 words...
+[Macedonian] Pattern matrix ready.
+
+[Macedonian] Starting training with LLM Debate: 6000 episodes
+────────────────────────────────────────────────────────────
+  ep   1000 | win%  98.0 | avg guesses (won) 3.76 | 10.8s
+  ep   2000 | win%  99.6 | avg guesses (won) 3.62 | 20.9s
+  ep   3000 | win% 100.0 | avg guesses (won) 3.57 | 30.8s
+  ep   4000 | win%  99.4 | avg guesses (won) 3.62 | 40.8s
+  ep   5000 | win%  99.4 | avg guesses (won) 3.64 | 50.7s
+  ep   6000 | win%  99.2 | avg guesses (won) 3.65 | 60.3s
+────────────────────────────────────────────────────────────
+[Macedonian] Done. Win rate: 99.2%  Avg guesses: 3.65
+
+════════════════════════════════════════════════════════════════════════
+  AGENT PERFORMANCE SUMMARY
+════════════════════════════════════════════════════════════════════════
+Rank Agent          Wins   Win %  Chosen  Pick %   Hit %  Avg Turn   Avg Rwd
+────────────────────────────────────────────────────────────────────────
+🥇 1  Probabilist    5176   86.9%   18869   85.9%   27.4%      3.63     1.358
+🥈 2  RiskTaker       394    6.6%    1544    7.0%   25.5%      3.76     1.074
+🥉 3  Eliminator      384    6.4%    1551    7.1%   24.8%      3.68     1.070
+────────────────────────────────────────────────────────────────────────
+  Most winning guesses:  Probabilist (5176 wins)
+  Fewest winning guesses: Eliminator (384 wins)
+
+  Raw proposal accuracy (proposed the secret word, regardless of whether the moderator chose it):
+    Eliminator     5604 / 21964  ( 25.5%)
+    Probabilist    6036 / 21964  ( 27.5%)
+    RiskTaker      5537 / 21964  ( 25.2%)
+
+  Episodes played: 6000
+  Total time: 60.3s  (10.05 ms/episode)
+════════════════════════════════════════════════════════════════════════
+
+────────────────────────────────────────────────────────────────────────
+  TIMING & GUESS-COUNT STATS
+────────────────────────────────────────────────────────────────────────
+  Episodes:            6000
+  Total time:          18.41s
+  Avg time / episode:  3.068 ms
+  Fastest episode:     1.934 ms
+  Slowest episode:     9.822 ms
+  Win rate:            99.2%
+  Avg guesses (won):   3.64
+  Best win (fewest guesses): 1
+  Worst win (most guesses):  6
+────────────────────────────────────────────────────────────────────────
+Weights saved → weights_macedonian_debate.npz
+
+[Macedonian] Demonstrating multi-agent debate and negotiation...
+
+=================================================================
+  МАКЕДОНСКИ ВОРДЛ — ДЕБАТА И КООРДИНАЦИЈА НА АГЕНТИ
+  Тајниот збор: БЕЛЕГ
+=================================================================
+
+--- Обид 1 (Преостанати кандидати: 967) ---
+  [Eliminator] -> Предлагам 'облак'. Елиминатор: овој збор отстранува околу 94% од кандидатите.
+  [Probabilist] -> Предлагам 'ветар'. Веројатност: индекс на честота е 81%, во игра: Да.
+  [RiskTaker] -> Предлагам 'белка'. Ризикер: коефициент на партиционирање е 0.96.
+ МОДЕРАТОРОТ го избра агентот **Probabilist** со зборот **ВЕТАР** | Резултат: .G...
+
+--- Обид 2 (Преостанати кандидати: 19) ---
+  [Eliminator] -> Предлагам 'астма'. Елиминатор: овој збор отстранува околу 57% од кандидатите.
+  [Probabilist] -> Предлагам 'мебел'. Веројатност: индекс на честота е 48%, во игра: Да.
+  [RiskTaker] -> Предлагам 'бурен'. Ризикер: коефициент на партиционирање е 0.8.
+ МОДЕРАТОРОТ го избра агентот **Probabilist** со зборот **МЕБЕЛ** | Резултат: .GYGY
+
+--- Обид 3 (Преостанати кандидати: 2) ---
+  [Eliminator] -> Предлагам 'белег'. Елиминатор: овој збор отстранува околу 50% од кандидатите.
+  [Probabilist] -> Предлагам 'белец'. Веројатност: индекс на честота е 91%, во игра: Да.
+  [RiskTaker] -> Предлагам 'белег'. Ризикер: коефициент на партиционирање е 0.5.
+ МОДЕРАТОРОТ го избра агентот **Probabilist** со зборот **БЕЛЕЦ** | Резултат: GGGG.
+
+--- Обид 4 (Преостанати кандидати: 1) ---
+  [Eliminator] -> Предлагам 'белег'. Елиминатор: овој збор отстранува околу 0% од кандидатите.
+  [Probabilist] -> Предлагам 'белег'. Веројатност: индекс на честота е 91%, во игра: Да.
+  [RiskTaker] -> Предлагам 'белег'. Ризикер: коефициент на партиционирање е 0.0.
+ МОДЕРАТОРОТ го избра агентот **Probabilist** со зборот **БЕЛЕГ** | Резултат: GGGGG
+
+  ✓ Успех! Зборот е погоден за 4 обид/и! (2.5 ms)
+  Winning guess proposed & played by: Probabilist
+
+Process finished with exit code 0
