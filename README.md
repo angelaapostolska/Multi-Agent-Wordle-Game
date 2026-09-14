@@ -75,6 +75,12 @@ python scenario_english.py --demo   # Demo only (loads saved weights)
 python scenario_english.py --word crane --games 3
 ```
 
+> **If you already have a `weights_english.npz` from before this update, delete it and retrain.**
+> The word list grew from 535 to 968 words and the reward function changed, so an old weights
+> file won't match the current network shape — `--demo` will load stale, incompatible weights
+> (or crash) instead of using the current training setup. Just run `rm -f weights_english.npz`
+> once, then the next `python scenario_english.py` call will retrain fresh automatically.
+
 #### LLM Debate (Ollama) — English scenario only
 
 The English scenario can optionally use a local [Ollama](https://ollama.com)

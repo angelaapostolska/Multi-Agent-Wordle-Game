@@ -77,7 +77,50 @@ WORDS_EN = [
     "wedge","weird","whale","whack","wheat","wheel","whiff","whirl","whisk","white",
     "whole","widen","widow","wield","witty","woman","women","woody","woozy","worse",
     "worst","worth","wound","wrath","wrist","wrote","yacht","yearn","yeast","yield",
-    "young","yours","youth","zebra","zonal",
+    "young","yours","youth","zebra","zonal","which","could","being","going","state",
+    "doing","times","based","later","using","black","makes","maybe","games","means",
+    "video","court","given","death","hours","wrong","along","needs","class","comes",
+    "looks","cause","third","among","check","asked","child","gonna","quite","works",
+    "bring","heard","words","board","seems","wants","fight","shows","above","share",
+    "april","weeks","break","takes","girls","added","alone","hands","tried","areas",
+    "books","lives","david","trade","chief","james","lower","style","blood","china",
+    "terms","legal","began","built","crazy","daily","knows","parts","whose","rules",
+    "below","build","cases","india","visit","wanna","gives","shall","write","album",
+    "eight","sales","spent","ahead","allow","brown","moved","plans","cross","loved",
+    "miles","jesus","agree","teams","coach","costs","claim","goals","gotta","lines",
+    "named","meant","civil","dance","trump","beach","ended","older","calls","color",
+    "names","doubt","drink","feels","basic","carry","crime","fully","japan","smith",
+    "texas","award","block","lived","peter","rates","avoid","catch","coast","obama",
+    "stars","broke","royal","types","begin","ideas","notes","plays","songs","worry",
+    "brand","count","smart","views","click","louis","paris","agent","apply","basis",
+    "chris","waste","adult","users","apart","aware","fifth","items","tells","birth",
+    "drugs","labor","units","alive","apple","cards","dress","liked","turns","cells",
+    "frank","funds","helps","henry","sites","forms","jones","likes","shoot","sides",
+    "steps","facts","harry","hello","links","scott","cheap","signs","steve","crowd",
+    "enemy","fixed","limit","asian","banks","chair","homes","honor","trees","email",
+    "drama","entry","grown","heads","keeps","lying","saved","shoes","tests","abuse",
+    "angry","italy","loves","lunch","actor","chain","korea","leads","posts","taxes",
+    "films","mixed","votes","blame","dying","falls","fired","shots","cream","mayor",
+    "minor","pages","voted","walls","draft","drunk","finds","talks","birds","cycle",
+    "goods","holds","wales","armed","aside","deals","empty","faces","folks","kinda",
+    "moves","spain","tools","admit","favor","teeth","bunch","crown","kevin","rooms",
+    "chose","crash","depth","dirty","error","roads","ships","bible","cable","dates",
+    "doors","irish","multi","broad","drawn","seats","tries","balls","bills","blind",
+    "brief","chest","debut","thats","clubs","exact","kinds","loans","yards","bread",
+    "greek","inner","roman","davis","faced","filed","marks","santa","latin","lewis",
+    "pants","sarah","simon","brian","chart","miami","tears","argue","awful","bound",
+    "cloud","files","hills","jason","angel","bonus","egypt","flash","gross","minds",
+    "uncle","woods","badly","chase","jimmy","kelly","roles","wings","clock","label",
+    "naked","opens","anger","comic","ghost","https","islam","newly","vegas","boost",
+    "crack","dutch","foods","hired","kings","steal","trans","buddy","cares","delay",
+    "elite","forth","hopes","marry","rugby","stops","syria","bench","idiot","medal",
+    "roger","towns","allen","angle","clark","firms","forum","gifts","grass","hence",
+    "lists","races","rocks","sucks","vital","bands","creek","fraud","honey","lands",
+    "scary","spell","waves","wayne","begun","cents","daddy","diego","drove","glory",
+    "juice","meets","dozen","fancy","holes","knock","ought","risks","bears","blues",
+    "boxes","bruce","flood","kills","maria","rally","roots","shops","swing","texts",
+    "alert","arena","billy","boots","brave","drops","fleet","jokes","parks","rings",
+    "robin","spots","stats","blast","bones","walks","fewer","grave",
 ]
 
 # ── Macedonian word list (5-letter Cyrillic words) ─────────────────────────────
@@ -122,6 +165,8 @@ DIFF_WEIGHTS = {
     PROBABILIST: 0.35,
     RISKTAKER:   0.1,
 }
+
+INFO_GAIN_WEIGHT = 1.0
 
 
 # ── Core feedback function ─────────────────────────────────────────────────────
@@ -254,17 +299,21 @@ def expected_remaining_frac(guess_idx, cands, pattern_matrix):
 
 # ── Reward functions ───────────────────────────────────────────────────────────
 
-def task_reward(fb, solved, last_turn, guess_word=None, secret_word=None, which=None):
+def task_reward(fb, solved, last_turn, guess_word=None, secret_word=None, which=None,
+                 cands_before=None, cands_after=None, info_gain_weight=INFO_GAIN_WEIGHT):
     """
     Reward signal for the TEAM (used by the moderator).
 
     Parameters:
-        fb          : feedback tuple from compute_feedback, e.g. (2,1,0,0,2)
-        solved      : True if the guess matched the secret
-        last_turn   : True if this was the last allowed guess
-        guess_word  : the actual guess string (e.g. "crane")  — optional
-        secret_word : the actual secret string (e.g. "trace") — optional
-        which       : agent type (0/1/2) — used to pick diff_weight
+        fb              : feedback tuple from compute_feedback, e.g. (2,1,0,0,2)
+        solved          : True if the guess matched the secret
+        last_turn       : True if this was the last allowed guess
+        guess_word      : the actual guess string (e.g. "crane")  — optional
+        secret_word     : the actual secret string (e.g. "trace") — optional
+        which           : agent type (0/1/2) — used to pick diff_weight
+        cands_before    : number of candidates before this guess — optional
+        cands_after     : number of candidates after this guess  — optional
+        info_gain_weight: weight applied to the info-gain term
 
     Returns a float reward value.
 
@@ -273,6 +322,7 @@ def task_reward(fb, solved, last_turn, guess_word=None, secret_word=None, which=
         +0.05 per yellow (right letter, wrong position)
         -0.1  base penalty per turn (encourages solving quickly)
         +letter_match_score * weight  (how close was the guess in raw letters?)
+        +info_gain_weight * fraction of candidates eliminated this turn
         +5.0 if solved
         -1.0 if last turn and not solved
     """
@@ -281,10 +331,12 @@ def task_reward(fb, solved, last_turn, guess_word=None, secret_word=None, which=
 
     r = 0.2 * greens + 0.05 * yellows - 0.1
 
-    # Add raw letter-difference score if we have the actual words
     if guess_word is not None and secret_word is not None:
-        diff_weight = DIFF_WEIGHTS.get(which, 0.2)  # default 0.2 if unknown
+        diff_weight = DIFF_WEIGHTS.get(which, 0.2)
         r += diff_weight * letter_match_score(guess_word, secret_word)
+
+    if cands_before is not None and cands_after is not None and cands_before > 0:
+        r += info_gain_weight * (1.0 - (cands_after / cands_before))
 
     if solved:
         r += 5.0

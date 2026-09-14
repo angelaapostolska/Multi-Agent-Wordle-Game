@@ -105,34 +105,48 @@ def run_episode(agents, moderator, rng, train_mode=True):
 
         a_state = build_agent_state(cands, turn, absent, known_green, yellows, N)
 
-        # Each agent proposes a word
-        proposals = [ag.sample(a_state, valid_indices=cands, rng=rng)[0]
-                     for ag in agents]
+        proposals = []
+        for ai, ag in enumerate(agents):
+            val_idx = cands if (ai == PROBABILIST or len(cands) <= 25) else None
+            guess_idx, _ = ag.sample(a_state, valid_indices=val_idx, rng=rng)
+            proposals.append(guess_idx)
 
-        # Moderator picks which agent's word to play
-        m_state        = build_mod_state(proposals, cands, turn, WORDS, PATTERN)
-        choice, _      = moderator.sample(m_state, rng=rng)
+        m_state = build_mod_state(proposals, cands, turn, WORDS, PATTERN)
+
+        if train_mode and rng.random() < 0.20:
+            choice = int(rng.integers(3))
+        else:
+            choice, _ = moderator.sample(m_state, rng=rng)
+
         final_guess    = proposals[choice]
 
         fb      = PATTERN[final_guess, secret]
         last    = (turn == MAX_TURNS - 1)
         solved  = (final_guess == secret)
 
-        # Task reward goes to the moderator
+        new_cands  = filter_candidates(cands, final_guess, fb, PATTERN)
+        next_cands = new_cands if new_cands else cands
+
         tr = task_reward(
             fb, solved, last,
             guess_word=WORDS[final_guess],
             secret_word=WORDS[secret],
             which=choice,
+            cands_before=len(cands),
+            cands_after=len(next_cands),
         )
+
+        if len(cands) > 20:
+            elim_powers = [1.0 - expected_remaining_frac(p, cands, PATTERN) for p in proposals]
+            best_agent  = int(np.argmax(elim_powers))
+            tr += 0.6 if choice == best_agent else -0.2
+
         mod_mem.append((m_state, choice, tr))
 
-        # Individual rewards go to each agent
         for ai in range(3):
             ar = agent_reward(ai, proposals[ai], cands, secret, WORDS, PATTERN)
             agent_mem.append((ai, a_state, proposals[ai], ar))
 
-        # Update game state based on feedback
         for i in range(5):
             ch = WORDS[final_guess][i]
             if fb[i] == GREEN:
@@ -142,8 +156,7 @@ def run_episode(agents, moderator, rng, train_mode=True):
             else:
                 absent[ord(ch) - 97] = 1.0
 
-        new_cands = filter_candidates(cands, final_guess, fb, PATTERN)
-        cands     = new_cands if new_cands else cands
+        cands = next_cands
 
         if solved:
             break
