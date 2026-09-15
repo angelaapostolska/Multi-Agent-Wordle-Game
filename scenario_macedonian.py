@@ -7,6 +7,7 @@ distribution, and a ranked leaderboard printed at the end of training/demo.
 """
 
 import numpy as np
+import os
 import time
 import argparse
 
