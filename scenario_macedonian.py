@@ -35,7 +35,7 @@ WORDS    = WORDS_MK
 N        = len(WORDS)
 WORD_IDX = {w: i for i, w in enumerate(WORDS)}
 
-HEURISTIC_LIMIT = 25
+HEURISTIC_LIMIT = 5
 
 print(f"[Macedonian] Building pattern matrix for {N} words...")
 PATTERN = build_pattern_matrix(WORDS)
