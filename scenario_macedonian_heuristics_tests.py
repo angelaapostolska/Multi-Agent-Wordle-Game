@@ -4,14 +4,9 @@ scenario_macedonian.py — Scenario 2: Macedonian Wordle with LLM-Style Debate &
 Includes agent performance statistics: which agent proposed the most winning
 guesses, how often each agent was chosen by the moderator, timing, guess-count
 distribution, and a ranked leaderboard printed at the end of training/demo.
-
-Cross-machine comparison (recommended when comparing results across machines
-using a SHARED weights_macedonian_debate.npz file):
-    python scenario_macedonian.py --stats-only --games 300 --seed 42
 """
 
 import numpy as np
-import os
 import time
 import argparse
 
@@ -38,8 +33,7 @@ MK_ALPHA_LEN = len(MK_ALPHABET)
 WORDS    = WORDS_MK
 N        = len(WORDS)
 WORD_IDX = {w: i for i, w in enumerate(WORDS)}
-
-HEURISTIC_LIMIT = 5
+HEURISTIC_LIMIT=25
 
 print(f"[Macedonian] Building pattern matrix for {N} words...")
 PATTERN = build_pattern_matrix(WORDS)
@@ -49,9 +43,9 @@ _prior = np.array([N - i for i in range(N)], dtype=np.float64)
 PRIOR  = _prior / _prior.max()
 
 AGENT_STATE_DIM = N + MAX_TURNS + MK_ALPHA_LEN + 5 * MK_ALPHA_LEN + MK_ALPHA_LEN
-MOD_STATE_DIM   = 3 * 4 + 2
+MOD_STATE_DIM   = 3 * 7 + 2
 
-EPISODES  = 15000
+EPISODES  = 6000
 LR        = 0.003
 GAMMA     = 0.97
 BETA      = 0.99
@@ -95,7 +89,7 @@ def mk_build_mod_state(proposals, cands, turn):
         one_hot = [0.0, 0.0, 0.0]
         one_hot[agent_id] = 1.0
 
-        feats += [elim, pq, in_c, common]
+        feats += [elim, pq, in_c, common] + one_hot
 
     feats += [turn / MAX_TURNS, len(cands) / max(N, 1)]
     return np.array(feats)
@@ -267,7 +261,7 @@ class GameTimer:
 
 # ── Single game with Debate Phase ──────────────────────────────────────────────
 
-def run_episode(agent_models, moderator, rng, secret=None, train_mode=True, stats=None):
+def run_episode(agent_models, moderator, rng, secret=None, train_mode=True, stats=None, heuristic_limit=HEURISTIC_LIMIT):
     if secret is None:
         secret = int(rng.integers(N))
 
@@ -286,8 +280,8 @@ def run_episode(agent_models, moderator, rng, secret=None, train_mode=True, stat
         a_state = mk_agent_state(cands, turn, absent, known_green, yellows)
         proposals = []
         for ai, ag in enumerate(agent_models):
-            # Restrict Eliminator & RiskTaker only when candidate pool is HEURISTIC_LIMIT
-            if ai == PROBABILIST or len(cands) <= HEURISTIC_LIMIT:
+            # Restrict Eliminator & RiskTaker only when candidate pool is <= 25
+            if ai == PROBABILIST or (heuristic_limit is not None and len(cands) <= heuristic_limit):
                 valid_idx = cands
             else:
                 valid_idx = None  # Allow full vocabulary search for exploratory info gain
@@ -320,8 +314,6 @@ def run_episode(agent_models, moderator, rng, secret=None, train_mode=True, stat
             guess_word=WORDS[final_guess],
             secret_word=WORDS[secret],
             which=choice,
-            cands_before=len(cands),
-            cands_after=len(new_cands) if new_cands else len(cands),
         )
 
         # ── 2. RELATIVE INFORMATION GAIN REWARD ─────────────────────────────
@@ -365,7 +357,7 @@ def run_episode(agent_models, moderator, rng, secret=None, train_mode=True, stat
 
 # ── Training Loop ──────────────────────────────────────────────────────────────
 
-def train(episodes=EPISODES, lr=LR, seed=SEED, track_stats=True):
+def train(episodes=EPISODES, lr=LR, seed=SEED, track_stats=True, heuristic_limit=HEURISTIC_LIMIT):
     rng = np.random.default_rng(seed)
 
     agent_models = [
@@ -390,7 +382,7 @@ def train(episodes=EPISODES, lr=LR, seed=SEED, track_stats=True):
     for ep in range(episodes):
         ep_t0 = time.time()
         solved, n_guesses, agent_mem, mod_mem = run_episode(
-            agent_models, moderator, rng, train_mode=True, stats=stats
+            agent_models, moderator, rng, train_mode=True, stats=stats, heuristic_limit=heuristic_limit
         )
         ep_elapsed = time.time() - ep_t0
         timer.record(ep_elapsed, n_guesses, solved)
@@ -435,16 +427,8 @@ def train(episodes=EPISODES, lr=LR, seed=SEED, track_stats=True):
 
 # ── Interactive Demo with Debate Printing ──────────────────────────────────────
 
-def demo_game(agent_models, moderator, secret_word=None, stats=None, rng=None, verbose=True):
-    """
-    rng     : pass a seeded np.random.default_rng(...) for reproducible games
-              (same secret + same agent proposals every time). Defaults to a
-              fresh, unseeded generator — matching the original behavior.
-    verbose : set False to suppress the printed debate/board text, used by
-              play_many_demo_games() for large batches.
-    """
-    if rng is None:
-        rng = np.random.default_rng()
+def demo_game(agent_models, moderator, secret_word=None, stats=None, heuristic_limit=HEURISTIC_LIMIT):
+    rng = np.random.default_rng()
     secret = WORD_IDX.get(secret_word, int(rng.integers(N))) if secret_word else int(rng.integers(N))
 
     cands       = list(range(N))
@@ -452,23 +436,21 @@ def demo_game(agent_models, moderator, secret_word=None, stats=None, rng=None, v
     known_green = [None] * 5
     yellows     = set()
 
-    if verbose:
-        print(f"\n{'='*65}")
-        print(f"  МАКЕДОНСКИ ВОРДЛ — ДЕБАТА И КООРДИНАЦИЈА НА АГЕНТИ")
-        print(f"  Тајниот збор: {WORDS[secret].upper()}")
-        print(f"{'='*65}")
+    print(f"\n{'='*65}")
+    print(f"  МАКЕДОНСКИ ВОРДЛ — ДЕБАТА И КООРДИНАЦИЈА НА АГЕНТИ")
+    print(f"  Тајниот збор: {WORDS[secret].upper()}")
+    print(f"{'='*65}")
 
     game_t0 = time.time()
 
     for turn in range(MAX_TURNS):
-        if verbose:
-            print(f"\n--- Обид {turn+1} (Преостанати кандидати: {len(cands)}) ---")
+        print(f"\n--- Обид {turn+1} (Преостанати кандидати: {len(cands)}) ---")
 
         a_state   = mk_agent_state(cands, turn, absent, known_green, yellows)
 
         proposals = []
         for ai, ag in enumerate(agent_models):
-            if ai == PROBABILIST or len(cands) <= HEURISTIC_LIMIT:
+            if ai == PROBABILIST or (heuristic_limit is not None and len(cands) <= heuristic_limit):
                 valid_idx = cands
             else:
                 valid_idx = None
@@ -477,10 +459,9 @@ def demo_game(agent_models, moderator, secret_word=None, stats=None, rng=None, v
             proposals.append(guess_idx)
 
         # Debate round
-        if verbose:
-            for ai in range(3):
-                arg = generate_agent_argument(ai, proposals[ai], cands)
-                print(f"  [{AGENT_NAMES[ai]}] -> {arg}")
+        for ai in range(3):
+            arg = generate_agent_argument(ai, proposals[ai], cands)
+            print(f"  [{AGENT_NAMES[ai]}] -> {arg}")
 
         m_state   = mk_build_mod_state(proposals, cands, turn)
         choice, _ = moderator.sample(m_state, rng=rng)
@@ -490,8 +471,7 @@ def demo_game(agent_models, moderator, secret_word=None, stats=None, rng=None, v
         fb_str  = fb_to_str(fb)
         solved  = (final == secret)
 
-        if verbose:
-            print(f" МОДЕРАТОРОТ го избра агентот **{AGENT_NAMES[choice]}** со зборот **{WORDS[final].upper()}** | Резултат: {fb_str}")
+        print(f" МОДЕРАТОРОТ го избра агентот **{AGENT_NAMES[choice]}** со зборот **{WORDS[final].upper()}** | Резултат: {fb_str}")
 
         if stats is not None:
             stats.record_turn(proposals, secret, choice, final, turn, solved)
@@ -511,47 +491,34 @@ def demo_game(agent_models, moderator, secret_word=None, stats=None, rng=None, v
 
         if solved:
             elapsed = time.time() - game_t0
-            if verbose:
-                print(f"\n  ✓ Успех! Зборот е погоден за {turn+1} обид/и! ({elapsed*1000:.1f} ms)")
-                print(f"  Winning guess proposed & played by: {AGENT_NAMES[choice]}")
+            print(f"\n  ✓ Успех! Зборот е погоден за {turn+1} обид/и! ({elapsed*1000:.1f} ms)")
+            print(f"  Winning guess proposed & played by: {AGENT_NAMES[choice]}")
             return True
 
     elapsed = time.time() - game_t0
-    if verbose:
-        print(f"\n  ✗ Неуспех. Зборот беше {WORDS[secret]} ({elapsed*1000:.1f} ms)")
+    print(f"\n  ✗ Неуспех. Зборот беше {WORDS[secret]} ({elapsed*1000:.1f} ms)")
     return False
 
 
-def play_many_demo_games(agent_models, moderator, n_games, secret_word=None,
-                          seed=None, verbose=True):
+def play_many_demo_games(agent_models, moderator, n_games, secret_word=None, heuristic_limit=HEURISTIC_LIMIT):
     """
     Play n_games demo games back-to-back, collecting AgentStats + GameTimer
     across all of them, then print a combined ranked summary at the end.
-
-    seed    : if given, game i uses np.random.default_rng(seed + i) — this
-              makes the whole batch fully deterministic, so the SAME seed on
-              a different machine with the SAME weights_macedonian_debate.npz
-              reproduces the exact same sequence of secret words and action
-              samples. This is the recommended way to compare results across
-              machines. If omitted, falls back to a fresh unseeded RNG per
-              game (old default behavior, not reproducible/comparable).
-    verbose : set False to suppress per-game "WIN/LOSS" lines, useful for
-              very large n_games.
     """
     stats = AgentStats(AGENT_NAMES)
     timer = GameTimer()
 
     for g in range(n_games):
-        rng = np.random.default_rng(seed + g) if seed is not None else np.random.default_rng()
+        rng = np.random.default_rng()
         secret = WORD_IDX.get(secret_word, int(rng.integers(N))) if secret_word else int(rng.integers(N))
         t0 = time.time()
-        solved, n_guesses, _, _ = run_episode(agent_models, moderator, rng, secret=secret,
-                                               train_mode=False, stats=stats)
+        solved, n_guesses, _, _ = run_episode(
+            agent_models, moderator, rng, stats=stats, heuristic_limit=heuristic_limit
+        )
         elapsed = time.time() - t0
         timer.record(elapsed, n_guesses, solved)
-        if verbose:
-            print(f"  Game {g+1}/{n_games}: {'WIN' if solved else 'LOSS'} "
-                  f"in {n_guesses} guess(es), {elapsed*1000:.1f} ms")
+        print(f"  Game {g+1}/{n_games}: {'WIN' if solved else 'LOSS'} "
+              f"in {n_guesses} guess(es), {elapsed*1000:.1f} ms")
 
     stats.print_summary(total_episodes=n_games, elapsed=sum(timer.episode_times))
     timer.print_summary()
@@ -591,58 +558,64 @@ def load_weights(filename="weights_macedonian_debate.npz", lr=LR):
 
 
 # ── Entry point ────────────────────────────────────────────────────────────────
-
+#
+# if __name__ == "__main__":
+#     parser = argparse.ArgumentParser()
+#     parser.add_argument("--word",  type=str, default=None)
+#     parser.add_argument("--games", type=int, default=1)
+#     parser.add_argument("--stats-only", action="store_true",
+#                          help="Skip printed debate text; just play --games games "
+#                               "and print the ranked agent leaderboard + timing stats.")
+#     args = parser.parse_args()
+#
+#     agent_models, moderator = load_weights()
+#     if agent_models is None:
+#         agent_models, moderator, _, _ = train()
+#         save_weights(agent_models, moderator)
+#
+#     if args.stats_only:
+#         print(f"\n[Macedonian] Playing {args.games} games for stats only...")
+#         play_many_demo_games(agent_models, moderator, args.games, args.word)
+#     else:
+#         print(f"\n[Macedonian] Demonstrating multi-agent debate and negotiation...")
+#         game_stats = AgentStats(AGENT_NAMES)
+#         for _ in range(args.games):
+#             demo_game(agent_models, moderator, args.word, stats=game_stats)
+#         if args.games > 1:
+#             game_stats.print_summary(total_episodes=args.games)
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--word",  type=str, default=None)
-    parser.add_argument("--games", type=int, default=300,
-                         help="Number of demo games (default bumped up so the "
-                              "AgentStats summary is statistically stable enough "
-                              "to compare across machines/runs; use a small number "
-                              "like 1-5 with --unseeded if you just want to watch "
-                              "printed debate text for a few random games)")
-    parser.add_argument("--stats-only", action="store_true",
-                         help="Skip printed debate text; just play --games games "
-                              "and print the ranked agent leaderboard + timing stats.")
-    parser.add_argument("--seed", type=int, default=42,
-                         help="Base RNG seed for demo games. Game i uses seed "
-                              "(--seed + i), so the SAME seed on different "
-                              "machines with the SAME weights_macedonian_debate.npz "
-                              "reproduces the exact same sequence of secret words "
-                              "and action samples — the recommended way to compare "
-                              "runs across machines.")
-    parser.add_argument("--unseeded", action="store_true",
-                         help="Opt out of seeding and use a fresh, unseeded RNG "
-                              "per game instead (old default behavior) — different "
-                              "secret words every run, not comparable across "
-                              "machines or repeats.")
-    args = parser.parse_args()
+    configs = {
+        "Config A (Strict N <= 25)": 25,
+        "Config B (Unrestricted)": None,
+        "Config C (Hybrid N <= 5)": 5
+    }
 
-    agent_models, moderator = load_weights()
-    if agent_models is None:
-        agent_models, moderator, _, _ = train()
-        save_weights(agent_models, moderator)
+    results = []
 
-    run_seed = None if args.unseeded else args.seed
+    print("\n" + "=" * 75)
+    print(" RUNNING MACEDONIAN SCENARIO HEURISTIC EXPERIMENTS")
+    print("=" * 75)
 
-    if args.stats_only:
-        tag = "UNSEEDED" if run_seed is None else f"SEEDED (base seed={run_seed})"
-        print(f"\n[Macedonian] Playing {args.games} {tag} games for stats only...")
-        play_many_demo_games(agent_models, moderator, args.games, args.word,
-                              seed=run_seed, verbose=(args.games <= 20))
-    else:
-        tag = "unseeded" if run_seed is None else f"seeded, base seed={run_seed}"
-        print(f"\n[Macedonian] Demonstrating multi-agent debate and negotiation "
-              f"({tag})...")
-        game_stats = AgentStats(AGENT_NAMES)
-        # Only print full per-turn debate text when the batch is small — a
-        # large --games run with full text would flood the terminal, so
-        # verbosity auto-drops for big batches (override with --games <=20
-        # if you want to watch every game printed).
-        verbose = args.games <= 20
-        for i in range(args.games):
-            rng = np.random.default_rng(run_seed + i) if run_seed is not None else None
-            demo_game(agent_models, moderator, args.word, stats=game_stats,
-                      rng=rng, verbose=verbose)
-        if args.games > 1:
-            game_stats.print_summary(total_episodes=args.games)
+    for config_name, limit in configs.items():
+        # Train fresh model for this setting
+        agent_models, moderator, stats, timer = train(episodes=EPISODES, heuristic_limit=limit)
+
+        # Pull final statistics from the trained run
+        win_rate = (sum(stats.wins) / EPISODES) * 100
+        avg_turns = np.mean([t for sublist in stats.win_turns for t in sublist]) if any(stats.win_turns) else 0.0
+
+        results.append({
+            "config": config_name,
+            "win_rate": win_rate,
+            "avg_turns": avg_turns
+        })
+
+    # Print clean aggregated table at the very end
+    print("\n" + "═" * 75)
+    print("  FINAL COMPARISON RESULTS across 6,000 Episodes")
+    print("═" * 75)
+    print(f"{'Configuration':<30} | {'Win Rate (%)':<15} | {'Avg Turns to Win':<20}")
+    print("─" * 75)
+    for res in results:
+        print(f"{res['config']:<30} | {res['win_rate']:>12.2f}% | {res['avg_turns']:>18.2f}")
+    print("═" * 75)
