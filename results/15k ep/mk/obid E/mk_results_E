@@ -1,0 +1,83 @@
+C:\Users\Eva\PycharmProjects\Multi-Agent-Wordle-Game\.venv\Scripts\python.exe C:\Users\Eva\PycharmProjects\Multi-Agent-Wordle-Game\scenario_macedonian.py
+[Macedonian] Building pattern matrix for 967 words...
+[Macedonian] Pattern matrix ready.
+
+[Macedonian] Starting training with LLM Debate: 15000 episodes
+────────────────────────────────────────────────────────────
+  ep   1000 | win%  99.2 | avg guesses (won) 3.74 | 10.2s
+  ep   2000 | win%  99.2 | avg guesses (won) 3.77 | 24.7s
+  ep   3000 | win%  99.4 | avg guesses (won) 3.74 | 40.5s
+  ep   4000 | win%  99.2 | avg guesses (won) 3.71 | 55.2s
+  ep   5000 | win%  99.8 | avg guesses (won) 3.75 | 69.5s
+  ep   6000 | win%  99.0 | avg guesses (won) 3.72 | 84.9s
+  ep   7000 | win%  98.8 | avg guesses (won) 3.66 | 100.0s
+  ep   8000 | win%  98.6 | avg guesses (won) 3.66 | 113.5s
+  ep   9000 | win%  99.6 | avg guesses (won) 3.66 | 126.6s
+  ep  10000 | win%  99.6 | avg guesses (won) 3.75 | 139.3s
+  ep  11000 | win%  99.0 | avg guesses (won) 3.65 | 157.1s
+  ep  12000 | win%  99.6 | avg guesses (won) 3.65 | 171.7s
+  ep  13000 | win%  99.2 | avg guesses (won) 3.72 | 187.5s
+  ep  14000 | win%  99.2 | avg guesses (won) 3.71 | 203.1s
+  ep  15000 | win%  97.8 | avg guesses (won) 3.75 | 218.4s
+────────────────────────────────────────────────────────────
+[Macedonian] Done. Win rate: 97.8%  Avg guesses: 3.76
+
+════════════════════════════════════════════════════════════════════════
+  AGENT PERFORMANCE SUMMARY
+════════════════════════════════════════════════════════════════════════
+Rank Agent          Wins   Win %  Chosen  Pick %   Hit %  Avg Turn   Avg Rwd
+────────────────────────────────────────────────────────────────────────
+🥇 1  Probabilist   12899   86.6%   39948   71.3%   32.3%      3.71     1.363
+🥈 2  Eliminator     1047    7.0%   11316   20.2%    9.3%      3.78     1.074
+🥉 3  RiskTaker       941    6.3%    4736    8.5%   19.9%      3.79     1.071
+────────────────────────────────────────────────────────────────────────
+  Most winning guesses:  Probabilist (12899 wins)
+  Fewest winning guesses: RiskTaker (941 wins)
+
+  Raw proposal accuracy (proposed the secret word, regardless of whether the moderator chose it):
+    Eliminator    13932 / 56000  ( 24.9%)
+    Probabilist   15024 / 56000  ( 26.8%)
+    RiskTaker     13879 / 56000  ( 24.8%)
+
+  Episodes played: 15000
+  Total time: 218.4s  (14.56 ms/episode)
+════════════════════════════════════════════════════════════════════════
+
+────────────────────────────────────────────────────────────────────────
+  TIMING & GUESS-COUNT STATS
+────────────────────────────────────────────────────────────────────────
+  Episodes:            15000
+  Total time:          70.01s
+  Avg time / episode:  4.667 ms
+  Fastest episode:     2.040 ms
+  Slowest episode:     17.699 ms
+  Win rate:            99.2%
+  Avg guesses (won):   3.72
+  Best win (fewest guesses): 1
+  Worst win (most guesses):  6
+────────────────────────────────────────────────────────────────────────
+Weights saved → weights_macedonian_debate.npz
+
+[Macedonian] Demonstrating multi-agent debate and negotiation (seeded, base seed=42)...
+
+════════════════════════════════════════════════════════════════════════
+  AGENT PERFORMANCE SUMMARY
+════════════════════════════════════════════════════════════════════════
+Rank Agent          Wins   Win %  Chosen  Pick %   Hit %  Avg Turn   Avg Rwd
+────────────────────────────────────────────────────────────────────────
+🥇 1  Probabilist     299   99.7%     787   72.4%   38.0%      3.63       nan
+🥈 2  Eliminator        1    0.3%     298   27.4%    0.3%      1.00       nan
+🥉 3  RiskTaker         0    0.0%       2    0.2%    0.0%       n/a       nan
+────────────────────────────────────────────────────────────────────────
+  Most winning guesses:  Probabilist (299 wins)
+  Fewest winning guesses: RiskTaker (0 wins)
+
+  Raw proposal accuracy (proposed the secret word, regardless of whether the moderator chose it):
+    Eliminator      258 / 1087   ( 23.7%)
+    Probabilist     300 / 1087   ( 27.6%)
+    RiskTaker       269 / 1087   ( 24.7%)
+
+  Episodes played: 300
+════════════════════════════════════════════════════════════════════════
+
+Process finished with exit code 0
