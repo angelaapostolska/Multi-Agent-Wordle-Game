@@ -11,6 +11,11 @@ To run training:
 To watch a single game after training:
     python scenario_english.py --demo
 
+To run a large, seeded, cross-machine-comparable batch of demo games
+(recommended for comparing results across machines using a SHARED
+weights_english.npz file):
+    python scenario_english.py --demo --games 300 --seed 42
+
 To watch a game with an LLM-generated debate (requires a local Ollama
 server — see the "LLM Debate" section in README.md):
     python scenario_english.py --demo --llm
@@ -709,6 +714,44 @@ def compare_llm_moderator(agents, moderator, n_games=20, base_seed=123, secret_w
     }
 
 
+# ── Cross-machine comparison batch (seeded, deterministic, large N) ────────────
+
+def run_seeded_batch(agents, moderator, n_games, base_seed, secret_word=None):
+    """
+    Run n_games demo games with a DETERMINISTIC per-game seed (base_seed + i),
+    matching the pattern already used by compare_llm_moderator(). This is the
+    recommended way to compare results across different machines using a
+    SHARED weights_english.npz file:
+
+      1. Train once, anywhere, and share the resulting weights_english.npz.
+      2. On every machine, run:
+             python scenario_english.py --demo --games 300 --seed 42
+      3. Every machine will see the EXACT same sequence of secret words and
+         the EXACT same stochastic action samples for a given weights file,
+         because both the per-game secret and every agents[i].sample(...) /
+         moderator.sample(...) draw come from that game's seeded RNG.
+
+    Any remaining differences in the printed AgentStats table across machines
+    at that point are attributable only to genuine execution-environment
+    effects (floating-point/BLAS differences compounding through the network's
+    forward pass), not to different secret words or different weights.
+
+    Returns the populated AgentStats instance and elapsed wall-clock time.
+    """
+    stats = AgentStats(AGENT_NAMES)
+    t0 = time.time()
+    wins = 0
+    for i in range(n_games):
+        rng = np.random.default_rng(base_seed + i)
+        won = demo_game(agents, moderator, secret_word,
+                         rng=rng, verbose=False, stats=stats)
+        wins += int(won)
+    elapsed = time.time() - t0
+    print(f"\nResult: {wins}/{n_games} games won  (seed base={base_seed}, {elapsed:.1f}s)")
+    stats.print_summary(total_episodes=n_games, elapsed=elapsed)
+    return stats, elapsed
+
+
 # ── Save / load weights ────────────────────────────────────────────────────────
 
 def save_weights(agents, moderator, filename="weights_english.npz"):
@@ -750,7 +793,11 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--demo",  action="store_true", help="Run a demo game only")
     parser.add_argument("--word",  type=str, default=None, help="Fix the secret word")
-    parser.add_argument("--games", type=int, default=5,   help="Number of demo games")
+    parser.add_argument("--games", type=int, default=300,
+                         help="Number of demo games (default bumped up so the "
+                              "AgentStats summary is statistically stable enough "
+                              "to compare across machines/runs; use a small number "
+                              "like 1-5 if you just want to watch printed boards)")
     parser.add_argument("--llm", action="store_true",
                          help="Generate each turn's debate arguments with a local "
                               "Ollama model instead of fixed templates. Demo-only — "
@@ -770,8 +817,21 @@ if __name__ == "__main__":
                               "secrets/proposals in both), then print one agreement-rate "
                               "/ win-rate summary. Ignores --llm/--llm-moderator. Makes "
                               "real Ollama calls, so large --games will take a while.")
-    parser.add_argument("--seed", type=int, default=123,
-                         help="Base RNG seed for --compare-llm's matched game pairs")
+    parser.add_argument("--seed", type=int, default=42,
+                         help="Base RNG seed for demo games. Used for BOTH the plain "
+                              "--demo path and --compare-llm's matched game pairs. "
+                              "Game i uses seed (--seed + i), so the SAME seed on "
+                              "different machines with the SAME weights_english.npz "
+                              "reproduces the exact same sequence of secret words and "
+                              "action samples — the recommended way to compare runs "
+                              "across machines. Omit / leave default for reproducible "
+                              "runs; there is no more 'fresh unseeded' default anymore "
+                              "on the CLI path.")
+    parser.add_argument("--unseeded", action="store_true",
+                         help="Opt out of seeding on the plain --demo path and use a "
+                              "fresh, unseeded RNG per game instead (old default "
+                              "behavior) — different secret words every run, not "
+                              "comparable across machines or repeats.")
     args = parser.parse_args()
 
     if args.ollama_model:
@@ -787,8 +847,12 @@ if __name__ == "__main__":
     if args.compare_llm:
         compare_llm_moderator(agents, moderator, n_games=args.games,
                                base_seed=args.seed, secret_word=args.word)
-    else:
-        print(f"\n[English] Running {args.games} demo game(s)...")
+
+    elif args.unseeded:
+        # Old behavior: fresh unseeded RNG per game. Kept as an explicit
+        # opt-out for anyone who wants to just eyeball a few random boards
+        # rather than run a comparable batch.
+        print(f"\n[English] Running {args.games} UNSEEDED demo game(s)...")
         game_stats = AgentStats(AGENT_NAMES)
         wins = sum(
             demo_game(agents, moderator, args.word,
@@ -799,3 +863,28 @@ if __name__ == "__main__":
         print(f"\nResult: {wins}/{args.games} games won")
         if args.games > 1:
             game_stats.print_summary(total_episodes=args.games)
+
+    else:
+        # Default demo path: seeded, deterministic, large-N batch — safe to
+        # compare directly across machines as long as they share the same
+        # weights_english.npz. See run_seeded_batch()'s docstring.
+        print(f"\n[English] Running {args.games} SEEDED demo game(s) "
+              f"(base seed={args.seed})...")
+        if args.llm or args.llm_moderator:
+            print("  [note] --llm/--llm-moderator make real per-turn Ollama calls; "
+                  f"with --games {args.games} this will take a while.")
+            game_stats = AgentStats(AGENT_NAMES)
+            t0 = time.time()
+            wins = 0
+            for i in range(args.games):
+                rng = np.random.default_rng(args.seed + i)
+                won = demo_game(agents, moderator, args.word,
+                                 use_llm=args.llm, llm_moderator=args.llm_moderator,
+                                 rng=rng, verbose=False, stats=game_stats)
+                wins += int(won)
+            elapsed = time.time() - t0
+            print(f"\nResult: {wins}/{args.games} games won  ({elapsed:.1f}s)")
+            game_stats.print_summary(total_episodes=args.games, elapsed=elapsed)
+        else:
+            run_seeded_batch(agents, moderator, n_games=args.games,
+                              base_seed=args.seed, secret_word=args.word)
