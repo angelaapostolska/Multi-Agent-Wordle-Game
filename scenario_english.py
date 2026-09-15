@@ -78,9 +78,145 @@ AGENT_PERSONA = {
 }
 
 
+class AgentStats:
+    """
+    Tracks per-agent performance across episodes — identical schema to the
+    Macedonian scenario's AgentStats, so results are directly comparable
+    across languages.
+    """
+
+    def __init__(self, names):
+        self.names = names
+        n = len(names)
+        self.proposals = [0] * n
+        self.chosen = [0] * n
+        self.wins = [0] * n
+        self.correct_proposals = [0] * n
+        self.reward_sum = [0.0] * n
+        self.reward_count = [0] * n
+        self.win_turns = [[] for _ in range(n)]
+
+    def record_turn(self, proposals, secret, choice, final_guess, turn_idx, solved):
+        for ai, g in enumerate(proposals):
+            self.proposals[ai] += 1
+            if g == secret:
+                self.correct_proposals[ai] += 1
+        self.chosen[choice] += 1
+        if solved:
+            self.wins[choice] += 1
+            self.win_turns[choice].append(turn_idx + 1)
+
+    def record_reward(self, which, r):
+        self.reward_sum[which] += r
+        self.reward_count[which] += 1
+
+    def avg_reward(self, i):
+        return self.reward_sum[i] / self.reward_count[i] if self.reward_count[i] else float("nan")
+
+    def avg_win_turn(self, i):
+        return np.mean(self.win_turns[i]) if self.win_turns[i] else float("nan")
+
+    def pick_rate(self, i):
+        total = sum(self.chosen)
+        return self.chosen[i] / total if total else 0.0
+
+    def win_share(self, i):
+        total_wins = sum(self.wins)
+        return self.wins[i] / total_wins if total_wins else 0.0
+
+    def hit_rate(self, i):
+        """Of the times this agent's guess was chosen, what fraction won?"""
+        return self.wins[i] / self.chosen[i] if self.chosen[i] else 0.0
+
+    def proposal_accuracy(self, i):
+        """Of all guesses this agent proposed, what fraction were the secret word?"""
+        return self.correct_proposals[i] / self.proposals[i] if self.proposals[i] else 0.0
+
+    def ranked_by_wins(self):
+        return sorted(range(len(self.names)), key=lambda i: self.wins[i], reverse=True)
+
+    def print_summary(self, total_episodes=None, elapsed=None):
+        print("\n" + "═" * 72)
+        print("  AGENT PERFORMANCE SUMMARY")
+        print("═" * 72)
+
+        order = self.ranked_by_wins()
+        header = (f"{'Rank':<5}{'Agent':<13}{'Wins':>6}{'Win %':>8}{'Chosen':>8}"
+                  f"{'Pick %':>8}{'Hit %':>8}{'Avg Turn':>10}{'Avg Rwd':>10}")
+        print(header)
+        print("─" * 72)
+        for rank, i in enumerate(order, start=1):
+            name = self.names[i]
+            wins = self.wins[i]
+            win_pct = self.win_share(i) * 100
+            chosen = self.chosen[i]
+            pick_pct = self.pick_rate(i) * 100
+            hit_pct = self.hit_rate(i) * 100
+            avg_turn = self.avg_win_turn(i)
+            avg_turn_s = f"{avg_turn:.2f}" if not np.isnan(avg_turn) else "  n/a"
+            avg_rwd = self.avg_reward(i)
+            medal = {1: "🥇", 2: "🥈", 3: "🥉"}.get(rank, "  ")
+            print(f"{medal} {rank:<3}{name:<13}{wins:>6}{win_pct:>7.1f}%{chosen:>8}"
+                  f"{pick_pct:>7.1f}%{hit_pct:>7.1f}%{avg_turn_s:>10}{avg_rwd:>10.3f}")
+
+        print("─" * 72)
+        best_i = order[0]
+        worst_i = order[-1]
+        print(f"  Most winning guesses:  {self.names[best_i]} ({self.wins[best_i]} wins)")
+        print(f"  Fewest winning guesses: {self.names[worst_i]} ({self.wins[worst_i]} wins)")
+
+        print("\n  Raw proposal accuracy (proposed the secret word, regardless of "
+              "whether the moderator chose it):")
+        for i in range(len(self.names)):
+            print(f"    {self.names[i]:<13} {self.correct_proposals[i]:>5} / {self.proposals[i]:<6} "
+                  f"({self.proposal_accuracy(i) * 100:5.1f}%)")
+
+        if total_episodes is not None:
+            print(f"\n  Episodes played: {total_episodes}")
+        if elapsed is not None:
+            print(f"  Total time: {elapsed:.1f}s  ({elapsed / max(total_episodes, 1) * 1000:.2f} ms/episode)")
+        print("═" * 72)
+
+
+class GameTimer:
+    """Times individual episodes and reports distribution stats. Same schema
+    as the Macedonian scenario's GameTimer."""
+
+    def __init__(self):
+        self.episode_times = []
+        self.guess_counts = []
+        self.win_flags = []
+
+    def record(self, elapsed, n_guesses, solved):
+        self.episode_times.append(elapsed)
+        self.guess_counts.append(n_guesses)
+        self.win_flags.append(1 if solved else 0)
+
+    def print_summary(self):
+        if not self.episode_times:
+            return
+        times = np.array(self.episode_times)
+        wins = np.array(self.win_flags)
+        won_guesses = np.array([g for g, w in zip(self.guess_counts, self.win_flags) if w])
+
+        print("\n" + "─" * 72)
+        print("  TIMING & GUESS-COUNT STATS")
+        print("─" * 72)
+        print(f"  Episodes:            {len(times)}")
+        print(f"  Total time:          {times.sum():.2f}s")
+        print(f"  Avg time / episode:  {times.mean() * 1000:.3f} ms")
+        print(f"  Fastest episode:     {times.min() * 1000:.3f} ms")
+        print(f"  Slowest episode:     {times.max() * 1000:.3f} ms")
+        print(f"  Win rate:            {wins.mean() * 100:.1f}%")
+        if len(won_guesses):
+            print(f"  Avg guesses (won):   {won_guesses.mean():.2f}")
+            print(f"  Best win (fewest guesses): {won_guesses.min()}")
+            print(f"  Worst win (most guesses):  {won_guesses.max()}")
+        print("─" * 72)
+
 # ── Single game (one episode) ─────────────────────────────────────────────────
 
-def run_episode(agents, moderator, rng, train_mode=True):
+def run_episode(agents, moderator, rng, train_mode=True, stats=None):
     """
     Play one full Wordle game.
 
@@ -107,7 +243,7 @@ def run_episode(agents, moderator, rng, train_mode=True):
 
         proposals = []
         for ai, ag in enumerate(agents):
-            val_idx = cands if (ai == PROBABILIST or len(cands) <= 25) else None
+            val_idx = cands if (ai == PROBABILIST or len(cands) <= 5) else None
             guess_idx, _ = ag.sample(a_state, valid_indices=val_idx, rng=rng)
             proposals.append(guess_idx)
 
@@ -146,6 +282,11 @@ def run_episode(agents, moderator, rng, train_mode=True):
         for ai in range(3):
             ar = agent_reward(ai, proposals[ai], cands, secret, WORDS, PATTERN)
             agent_mem.append((ai, a_state, proposals[ai], ar))
+            if stats is not None:
+                stats.record_reward(ai, ar)
+
+        if stats is not None:
+            stats.record_turn(proposals, secret, choice, final_guess, turn, solved)
 
         for i in range(5):
             ch = WORDS[final_guess][i]
@@ -166,7 +307,7 @@ def run_episode(agents, moderator, rng, train_mode=True):
 
 # ── Training loop ──────────────────────────────────────────────────────────────
 
-def train(episodes=EPISODES, lr=LR, seed=SEED):
+def train(episodes=EPISODES, lr=LR, seed=SEED, track_stats=True):
     """Train all agents using REINFORCE policy gradient."""
     rng = np.random.default_rng(seed)
 
@@ -183,15 +324,20 @@ def train(episodes=EPISODES, lr=LR, seed=SEED):
     base_mod   = 0.0
 
     wins, guess_log = [], []
+    stats = AgentStats(AGENT_NAMES) if track_stats else None
+    timer = GameTimer()
     t0 = time.time()
 
     print(f"\n[English] Starting training: {episodes} episodes, lr={lr}")
     print("─" * 60)
 
     for ep in range(episodes):
+        ep_t0 = time.time()
         solved, n_guesses, agent_mem, mod_mem = run_episode(
-            agents, moderator, rng, train_mode=True
+            agents, moderator, rng, train_mode=True, stats=stats
         )
+        ep_elapsed = time.time() - ep_t0
+        timer.record(ep_elapsed, n_guesses, solved)
 
         wins.append(1 if solved else 0)
         guess_log.append(n_guesses if solved else MAX_TURNS)
@@ -227,7 +373,11 @@ def train(episodes=EPISODES, lr=LR, seed=SEED):
     print(f"[English] Training done. Win rate: {final_wr*100:.1f}%  "
           f"Avg guesses: {avg_g:.2f}")
 
-    return agents, moderator
+    if stats is not None:
+        stats.print_summary(total_episodes=episodes, elapsed=time.time() - t0)
+    timer.print_summary()
+
+    return agents, moderator, stats, timer
 
 
 # ── LLM debate (Ollama) — used only by demo_game(), never by train() ───────────
@@ -357,7 +507,7 @@ def llm_moderator_vote(proposals, arguments, cands, turn, warn=True):
 # ── Demo: watch one game ───────────────────────────────────────────────────────
 
 def demo_game(agents, moderator, secret_word=None, use_llm=False, llm_moderator=False,
-              rng=None, verbose=True, override_log=None):
+              rng=None, verbose=True, override_log=None, stats=None):
     """
     Play one game and print the board so you can see what happened.
 
@@ -449,6 +599,9 @@ def demo_game(agents, moderator, secret_word=None, use_llm=False, llm_moderator=
         fb      = PATTERN[final, secret]
         fb_str  = fb_to_str(fb)
         solved  = (final == secret)
+
+        if stats is not None:
+            stats.record_turn(proposals, secret, choice, final, turn, solved)
 
         if verbose:
             print(f"  {AGENT_NAMES[choice]:<12} {WORDS[final].upper():<8} {fb_str:<8} {len(cands)}")
@@ -622,7 +775,7 @@ if __name__ == "__main__":
 
     agents, moderator = load_weights()
     if agents is None:
-        agents, moderator = train()
+        agents, moderator, _, _ = train()
         save_weights(agents, moderator)
 
     if args.compare_llm:
@@ -630,9 +783,13 @@ if __name__ == "__main__":
                                base_seed=args.seed, secret_word=args.word)
     else:
         print(f"\n[English] Running {args.games} demo game(s)...")
+        game_stats = AgentStats(AGENT_NAMES)
         wins = sum(
             demo_game(agents, moderator, args.word,
-                      use_llm=args.llm, llm_moderator=args.llm_moderator)
+                      use_llm=args.llm, llm_moderator=args.llm_moderator,
+                      stats=game_stats)
             for _ in range(args.games)
         )
         print(f"\nResult: {wins}/{args.games} games won")
+        if args.games > 1:
+            game_stats.print_summary(total_episodes=args.games)

@@ -1,0 +1,80 @@
+C:\Users\Eva\PycharmProjects\Multi-Agent-Wordle-Game\.venv\Scripts\python.exe C:\Users\Eva\PycharmProjects\Multi-Agent-Wordle-Game\scenario_macedonian.py 
+[Macedonian] Building pattern matrix for 967 words...
+[Macedonian] Pattern matrix ready.
+
+[Macedonian] Starting training with LLM Debate: 6000 episodes
+────────────────────────────────────────────────────────────
+  ep   1000 | win%  99.2 | avg guesses (won) 3.74 | 9.7s
+  ep   2000 | win%  99.2 | avg guesses (won) 3.77 | 19.4s
+  ep   3000 | win%  99.4 | avg guesses (won) 3.74 | 32.1s
+  ep   4000 | win%  99.2 | avg guesses (won) 3.71 | 42.1s
+  ep   5000 | win%  99.8 | avg guesses (won) 3.75 | 51.7s
+  ep   6000 | win%  99.0 | avg guesses (won) 3.72 | 61.4s
+────────────────────────────────────────────────────────────
+[Macedonian] Done. Win rate: 99.0%  Avg guesses: 3.71
+
+════════════════════════════════════════════════════════════════════════
+  AGENT PERFORMANCE SUMMARY
+════════════════════════════════════════════════════════════════════════
+Rank Agent          Wins   Win %  Chosen  Pick %   Hit %  Avg Turn   Avg Rwd
+────────────────────────────────────────────────────────────────────────
+🥇 1  Probabilist    5078   85.3%   16991   75.6%   29.9%      3.72     1.355
+🥈 2  Eliminator      476    8.0%    3306   14.7%   14.4%      3.81     1.069
+🥉 3  RiskTaker       400    6.7%    2177    9.7%   18.4%      3.75     1.064
+────────────────────────────────────────────────────────────────────────
+  Most winning guesses:  Probabilist (5078 wins)
+  Fewest winning guesses: RiskTaker (400 wins)
+
+  Raw proposal accuracy (proposed the secret word, regardless of whether the moderator chose it):
+    Eliminator     5513 / 22474  ( 24.5%)
+    Probabilist    5998 / 22474  ( 26.7%)
+    RiskTaker      5437 / 22474  ( 24.2%)
+
+  Episodes played: 6000
+  Total time: 61.4s  (10.23 ms/episode)
+════════════════════════════════════════════════════════════════════════
+
+────────────────────────────────────────────────────────────────────────
+  TIMING & GUESS-COUNT STATS
+────────────────────────────────────────────────────────────────────────
+  Episodes:            6000
+  Total time:          18.89s
+  Avg time / episode:  3.149 ms
+  Fastest episode:     1.899 ms
+  Slowest episode:     11.065 ms
+  Win rate:            99.2%
+  Avg guesses (won):   3.73
+  Best win (fewest guesses): 1
+  Worst win (most guesses):  6
+────────────────────────────────────────────────────────────────────────
+Weights saved → weights_macedonian_debate.npz
+
+[Macedonian] Demonstrating multi-agent debate and negotiation...
+
+=================================================================
+  МАКЕДОНСКИ ВОРДЛ — ДЕБАТА И КООРДИНАЦИЈА НА АГЕНТИ
+  Тајниот збор: ЈУНАК
+=================================================================
+
+--- Обид 1 (Преостанати кандидати: 967) ---
+  [Eliminator] -> Предлагам 'суета'. Елиминатор: овој збор отстранува околу 94% од кандидатите.
+  [Probabilist] -> Предлагам 'блуза'. Веројатност: индекс на честота е 89%, во игра: Да.
+  [RiskTaker] -> Предлагам 'пекол'. Ризикер: коефициент на партиционирање е 0.94.
+ МОДЕРАТОРОТ го избра агентот **Eliminator** со зборот **СУЕТА** | Резултат: .G..Y
+
+--- Обид 2 (Преостанати кандидати: 13) ---
+  [Eliminator] -> Предлагам 'уцена'. Елиминатор: овој збор отстранува околу 35% од кандидатите.
+  [Probabilist] -> Предлагам 'гулаш'. Веројатност: индекс на честота е 76%, во игра: Да.
+  [RiskTaker] -> Предлагам 'фарма'. Ризикер: коефициент на партиционирање е 0.46.
+ МОДЕРАТОРОТ го избра агентот **Probabilist** со зборот **ГУЛАШ** | Резултат: .G.G.
+
+--- Обид 3 (Преостанати кандидати: 7) ---
+  [Eliminator] -> Предлагам 'трска'. Елиминатор: овој збор отстранува околу 65% од кандидатите.
+  [Probabilist] -> Предлагам 'јунак'. Веројатност: индекс на честота е 61%, во игра: Да.
+  [RiskTaker] -> Предлагам 'волна'. Ризикер: коефициент на партиционирање е 0.61.
+ МОДЕРАТОРОТ го избра агентот **Probabilist** со зборот **ЈУНАК** | Резултат: GGGGG
+
+  ✓ Успех! Зборот е погоден за 3 обид/и! (2.1 ms)
+  Winning guess proposed & played by: Probabilist
+
+Process finished with exit code 0

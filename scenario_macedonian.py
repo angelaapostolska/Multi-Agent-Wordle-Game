@@ -44,9 +44,9 @@ _prior = np.array([N - i for i in range(N)], dtype=np.float64)
 PRIOR  = _prior / _prior.max()
 
 AGENT_STATE_DIM = N + MAX_TURNS + MK_ALPHA_LEN + 5 * MK_ALPHA_LEN + MK_ALPHA_LEN
-MOD_STATE_DIM   = 3 * 7 + 2
+MOD_STATE_DIM   = 3 * 4 + 2
 
-EPISODES  = 6000
+EPISODES  = 15000
 LR        = 0.003
 GAMMA     = 0.97
 BETA      = 0.99
@@ -90,7 +90,7 @@ def mk_build_mod_state(proposals, cands, turn):
         one_hot = [0.0, 0.0, 0.0]
         one_hot[agent_id] = 1.0
 
-        feats += [elim, pq, in_c, common] + one_hot
+        feats += [elim, pq, in_c, common]
 
     feats += [turn / MAX_TURNS, len(cands) / max(N, 1)]
     return np.array(feats)
@@ -315,6 +315,8 @@ def run_episode(agent_models, moderator, rng, secret=None, train_mode=True, stat
             guess_word=WORDS[final_guess],
             secret_word=WORDS[secret],
             which=choice,
+            cands_before=len(cands),
+            cands_after=len(new_cands) if new_cands else len(cands),
         )
 
         # ── 2. RELATIVE INFORMATION GAIN REWARD ─────────────────────────────
