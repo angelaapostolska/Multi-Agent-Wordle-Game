@@ -1,0 +1,140 @@
+C:\Users\Eva\PycharmProjects\Multi-Agent-Wordle-Game\.venv\Scripts\python.exe C:\Users\Eva\PycharmProjects\Multi-Agent-Wordle-Game\scenario_english.py 
+[English] Building pattern matrix for 968 words...
+[English] Pattern matrix ready.
+
+[English] Starting training: 6000 episodes, lr=0.003
+────────────────────────────────────────────────────────────
+  ep   1000 | win%  99.4 | avg guesses (won) 3.69 | 9.5s
+  ep   2000 | win%  99.4 | avg guesses (won) 3.72 | 19.4s
+  ep   3000 | win%  99.8 | avg guesses (won) 3.71 | 29.1s
+  ep   4000 | win%  98.6 | avg guesses (won) 3.73 | 39.1s
+  ep   5000 | win%  99.2 | avg guesses (won) 3.73 | 48.8s
+  ep   6000 | win%  98.2 | avg guesses (won) 3.72 | 58.4s
+────────────────────────────────────────────────────────────
+[English] Training done. Win rate: 98.2%  Avg guesses: 3.72
+
+════════════════════════════════════════════════════════════════════════
+  AGENT PERFORMANCE SUMMARY
+════════════════════════════════════════════════════════════════════════
+Rank Agent          Wins   Win %  Chosen  Pick %   Hit %  Avg Turn   Avg Rwd
+────────────────────────────────────────────────────────────────────────
+🥇 1  Eliminator     4796   80.6%   11558   51.6%   41.5%      3.76     1.091
+🥈 2  Probabilist     718   12.1%    7790   34.8%    9.2%      3.36     1.349
+🥉 3  RiskTaker       433    7.3%    3050   13.6%   14.2%      3.75     1.093
+────────────────────────────────────────────────────────────────────────
+  Most winning guesses:  Eliminator (4796 wins)
+  Fewest winning guesses: RiskTaker (433 wins)
+
+  Raw proposal accuracy (proposed the secret word, regardless of whether the moderator chose it):
+    Eliminator     5662 / 22398  ( 25.3%)
+    Probabilist    6093 / 22398  ( 27.2%)
+    RiskTaker      5683 / 22398  ( 25.4%)
+
+  Episodes played: 6000
+  Total time: 58.4s  (9.73 ms/episode)
+════════════════════════════════════════════════════════════════════════
+
+────────────────────────────────────────────────────────────────────────
+  TIMING & GUESS-COUNT STATS
+────────────────────────────────────────────────────────────────────────
+  Episodes:            6000
+  Total time:          19.67s
+  Avg time / episode:  3.279 ms
+  Fastest episode:     1.865 ms
+  Slowest episode:     6.896 ms
+  Win rate:            99.1%
+  Avg guesses (won):   3.71
+  Best win (fewest guesses): 1
+  Worst win (most guesses):  6
+────────────────────────────────────────────────────────────────────────
+Weights saved → weights_english.npz
+
+[English] Running 5 demo game(s)...
+
+=============================================
+  ENGLISH WORDLE DEMO
+  Secret word: MONEY
+=============================================
+  AGENT        GUESS    RESULT   CANDS
+  ──────────── ──────── ──────── ──────
+  Eliminator   TOWNS    .G.Y.    968
+  Eliminator   DOZEN    .G.GY    8
+  Eliminator   NOVEL    YG.G.    3
+  Eliminator   MONEY    GGGGG    2
+
+  ✓ Solved in 4 guesses!
+
+=============================================
+  ENGLISH WORDLE DEMO
+  Secret word: BLIND
+=============================================
+  AGENT        GUESS    RESULT   CANDS
+  ──────────── ──────── ──────── ──────
+  RiskTaker    HOLES    ..Y..    968
+  Eliminator   RURAL    ....Y    42
+  Eliminator   LIMIT    YY...    4
+  Eliminator   BLIND    GGGGG    2
+
+  ✓ Solved in 4 guesses!
+
+=============================================
+  ENGLISH WORDLE DEMO
+  Secret word: VALID
+=============================================
+  AGENT        GUESS    RESULT   CANDS
+  ──────────── ──────── ──────── ──────
+  Eliminator   TOWNS    .....    968
+  Eliminator   YIELD    .Y.YG    145
+  Eliminator   VALID    GGGGG    1
+
+  ✓ Solved in 3 guesses!
+
+=============================================
+  ENGLISH WORDLE DEMO
+  Secret word: LIVED
+=============================================
+  AGENT        GUESS    RESULT   CANDS
+  ──────────── ──────── ──────── ──────
+  Eliminator   TOWNS    .....    968
+  Eliminator   CLARK    .Y...    145
+  Eliminator   FILED    .GYGG    11
+  Eliminator   LIVED    GGGGG    1
+
+  ✓ Solved in 4 guesses!
+
+=============================================
+  ENGLISH WORDLE DEMO
+  Secret word: CREAM
+=============================================
+  AGENT        GUESS    RESULT   CANDS
+  ──────────── ──────── ──────── ──────
+  Eliminator   TOWNS    .....    968
+  Eliminator   GUIDE    ....Y    145
+  Eliminator   BREAK    .GGG.    24
+  Eliminator   CREAM    GGGGG    1
+
+  ✓ Solved in 4 guesses!
+
+Result: 5/5 games won
+
+════════════════════════════════════════════════════════════════════════
+  AGENT PERFORMANCE SUMMARY
+════════════════════════════════════════════════════════════════════════
+Rank Agent          Wins   Win %  Chosen  Pick %   Hit %  Avg Turn   Avg Rwd
+────────────────────────────────────────────────────────────────────────
+🥇 1  Eliminator        5  100.0%      18   94.7%   27.8%      3.80       nan
+🥈 2  Probabilist       0    0.0%       0    0.0%    0.0%       n/a       nan
+🥉 3  RiskTaker         0    0.0%       1    5.3%    0.0%       n/a       nan
+────────────────────────────────────────────────────────────────────────
+  Most winning guesses:  Eliminator (5 wins)
+  Fewest winning guesses: RiskTaker (0 wins)
+
+  Raw proposal accuracy (proposed the secret word, regardless of whether the moderator chose it):
+    Eliminator        5 / 19     ( 26.3%)
+    Probabilist       7 / 19     ( 36.8%)
+    RiskTaker         4 / 19     ( 21.1%)
+
+  Episodes played: 5
+════════════════════════════════════════════════════════════════════════
+
+Process finished with exit code 0
