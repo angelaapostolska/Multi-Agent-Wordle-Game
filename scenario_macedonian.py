@@ -7,6 +7,7 @@ distribution, and a ranked leaderboard printed at the end of training/demo.
 """
 
 import numpy as np
+import os
 import time
 import argparse
 
@@ -34,7 +35,7 @@ WORDS    = WORDS_MK
 N        = len(WORDS)
 WORD_IDX = {w: i for i, w in enumerate(WORDS)}
 
-HEURISTIC_LIMIT = 5
+HEURISTIC_LIMIT = 25
 
 print(f"[Macedonian] Building pattern matrix for {N} words...")
 PATTERN = build_pattern_matrix(WORDS)
