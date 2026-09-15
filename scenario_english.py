@@ -214,6 +214,7 @@ class GameTimer:
             print(f"  Worst win (most guesses):  {won_guesses.max()}")
         print("─" * 72)
 
+
 # ── Single game (one episode) ─────────────────────────────────────────────────
 
 def run_episode(agents, moderator, rng, train_mode=True, stats=None):
@@ -528,6 +529,7 @@ def demo_game(agents, moderator, secret_word=None, use_llm=False, llm_moderator=
     override_log  : optional list; when llm_moderator is on, one dict per
                     turn ({"trained_choice", "llm_choice"}) is appended to it
                     so callers can compute agreement/override stats afterward.
+    stats         : optional AgentStats instance to record turns into.
     """
     if rng is None:
         rng = np.random.default_rng()
@@ -556,9 +558,13 @@ def demo_game(agents, moderator, secret_word=None, use_llm=False, llm_moderator=
         print(f"  {'─'*12} {'─'*8} {'─'*8} {'─'*6}")
 
     for turn in range(MAX_TURNS):
-        a_state   = build_agent_state(cands, turn, absent, known_green, yellows, N)
-        proposals = [ag.sample(a_state, valid_indices=cands, rng=rng)[0]
-                     for ag in agents]
+        a_state = build_agent_state(cands, turn, absent, known_green, yellows, N)
+
+        proposals = []
+        for ai, ag in enumerate(agents):
+            val_idx = cands if (ai == PROBABILIST or len(cands) <= 5) else None
+            guess_idx, _ = ag.sample(a_state, valid_indices=val_idx, rng=rng)
+            proposals.append(guess_idx)
 
         # ── Debate round ──
         arguments = []
