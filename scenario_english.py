@@ -246,7 +246,7 @@ def run_episode(agents, moderator, rng, train_mode=True, stats=None):
 
         proposals = []
         for ai, ag in enumerate(agents):
-            val_idx = cands if (ai == PROBABILIST or len(cands) <= 25) else None
+            val_idx = cands if (ai == PROBABILIST or len(cands) <= 5) else None
             guess_idx, _ = ag.sample(a_state, valid_indices=val_idx, rng=rng)
             proposals.append(guess_idx)
 
@@ -564,7 +564,7 @@ def demo_game(agents, moderator, secret_word=None, use_llm=False, llm_moderator=
 
         proposals = []
         for ai, ag in enumerate(agents):
-            val_idx = cands if (ai == PROBABILIST or len(cands) <= 25) else None
+            val_idx = cands if (ai == PROBABILIST or len(cands) <= 5) else None
             guess_idx, _ = ag.sample(a_state, valid_indices=val_idx, rng=rng)
             proposals.append(guess_idx)
 
