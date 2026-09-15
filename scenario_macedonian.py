@@ -4,6 +4,10 @@ scenario_macedonian.py — Scenario 2: Macedonian Wordle with LLM-Style Debate &
 Includes agent performance statistics: which agent proposed the most winning
 guesses, how often each agent was chosen by the moderator, timing, guess-count
 distribution, and a ranked leaderboard printed at the end of training/demo.
+
+Cross-machine comparison (recommended when comparing results across machines
+using a SHARED weights_macedonian_debate.npz file):
+    python scenario_macedonian.py --stats-only --games 300 --seed 42
 """
 
 import numpy as np
@@ -431,8 +435,16 @@ def train(episodes=EPISODES, lr=LR, seed=SEED, track_stats=True):
 
 # ── Interactive Demo with Debate Printing ──────────────────────────────────────
 
-def demo_game(agent_models, moderator, secret_word=None, stats=None):
-    rng = np.random.default_rng()
+def demo_game(agent_models, moderator, secret_word=None, stats=None, rng=None, verbose=True):
+    """
+    rng     : pass a seeded np.random.default_rng(...) for reproducible games
+              (same secret + same agent proposals every time). Defaults to a
+              fresh, unseeded generator — matching the original behavior.
+    verbose : set False to suppress the printed debate/board text, used by
+              play_many_demo_games() for large batches.
+    """
+    if rng is None:
+        rng = np.random.default_rng()
     secret = WORD_IDX.get(secret_word, int(rng.integers(N))) if secret_word else int(rng.integers(N))
 
     cands       = list(range(N))
@@ -440,15 +452,17 @@ def demo_game(agent_models, moderator, secret_word=None, stats=None):
     known_green = [None] * 5
     yellows     = set()
 
-    print(f"\n{'='*65}")
-    print(f"  МАКЕДОНСКИ ВОРДЛ — ДЕБАТА И КООРДИНАЦИЈА НА АГЕНТИ")
-    print(f"  Тајниот збор: {WORDS[secret].upper()}")
-    print(f"{'='*65}")
+    if verbose:
+        print(f"\n{'='*65}")
+        print(f"  МАКЕДОНСКИ ВОРДЛ — ДЕБАТА И КООРДИНАЦИЈА НА АГЕНТИ")
+        print(f"  Тајниот збор: {WORDS[secret].upper()}")
+        print(f"{'='*65}")
 
     game_t0 = time.time()
 
     for turn in range(MAX_TURNS):
-        print(f"\n--- Обид {turn+1} (Преостанати кандидати: {len(cands)}) ---")
+        if verbose:
+            print(f"\n--- Обид {turn+1} (Преостанати кандидати: {len(cands)}) ---")
 
         a_state   = mk_agent_state(cands, turn, absent, known_green, yellows)
 
@@ -463,9 +477,10 @@ def demo_game(agent_models, moderator, secret_word=None, stats=None):
             proposals.append(guess_idx)
 
         # Debate round
-        for ai in range(3):
-            arg = generate_agent_argument(ai, proposals[ai], cands)
-            print(f"  [{AGENT_NAMES[ai]}] -> {arg}")
+        if verbose:
+            for ai in range(3):
+                arg = generate_agent_argument(ai, proposals[ai], cands)
+                print(f"  [{AGENT_NAMES[ai]}] -> {arg}")
 
         m_state   = mk_build_mod_state(proposals, cands, turn)
         choice, _ = moderator.sample(m_state, rng=rng)
@@ -475,7 +490,8 @@ def demo_game(agent_models, moderator, secret_word=None, stats=None):
         fb_str  = fb_to_str(fb)
         solved  = (final == secret)
 
-        print(f" МОДЕРАТОРОТ го избра агентот **{AGENT_NAMES[choice]}** со зборот **{WORDS[final].upper()}** | Резултат: {fb_str}")
+        if verbose:
+            print(f" МОДЕРАТОРОТ го избра агентот **{AGENT_NAMES[choice]}** со зборот **{WORDS[final].upper()}** | Резултат: {fb_str}")
 
         if stats is not None:
             stats.record_turn(proposals, secret, choice, final, turn, solved)
@@ -495,32 +511,47 @@ def demo_game(agent_models, moderator, secret_word=None, stats=None):
 
         if solved:
             elapsed = time.time() - game_t0
-            print(f"\n  ✓ Успех! Зборот е погоден за {turn+1} обид/и! ({elapsed*1000:.1f} ms)")
-            print(f"  Winning guess proposed & played by: {AGENT_NAMES[choice]}")
+            if verbose:
+                print(f"\n  ✓ Успех! Зборот е погоден за {turn+1} обид/и! ({elapsed*1000:.1f} ms)")
+                print(f"  Winning guess proposed & played by: {AGENT_NAMES[choice]}")
             return True
 
     elapsed = time.time() - game_t0
-    print(f"\n  ✗ Неуспех. Зборот беше {WORDS[secret]} ({elapsed*1000:.1f} ms)")
+    if verbose:
+        print(f"\n  ✗ Неуспех. Зборот беше {WORDS[secret]} ({elapsed*1000:.1f} ms)")
     return False
 
 
-def play_many_demo_games(agent_models, moderator, n_games, secret_word=None):
+def play_many_demo_games(agent_models, moderator, n_games, secret_word=None,
+                          seed=None, verbose=True):
     """
     Play n_games demo games back-to-back, collecting AgentStats + GameTimer
     across all of them, then print a combined ranked summary at the end.
+
+    seed    : if given, game i uses np.random.default_rng(seed + i) — this
+              makes the whole batch fully deterministic, so the SAME seed on
+              a different machine with the SAME weights_macedonian_debate.npz
+              reproduces the exact same sequence of secret words and action
+              samples. This is the recommended way to compare results across
+              machines. If omitted, falls back to a fresh unseeded RNG per
+              game (old default behavior, not reproducible/comparable).
+    verbose : set False to suppress per-game "WIN/LOSS" lines, useful for
+              very large n_games.
     """
     stats = AgentStats(AGENT_NAMES)
     timer = GameTimer()
 
     for g in range(n_games):
-        rng = np.random.default_rng()
+        rng = np.random.default_rng(seed + g) if seed is not None else np.random.default_rng()
         secret = WORD_IDX.get(secret_word, int(rng.integers(N))) if secret_word else int(rng.integers(N))
         t0 = time.time()
-        solved, n_guesses, _, _ = run_episode(agent_models, moderator, rng, stats=stats)
+        solved, n_guesses, _, _ = run_episode(agent_models, moderator, rng, secret=secret,
+                                               train_mode=False, stats=stats)
         elapsed = time.time() - t0
         timer.record(elapsed, n_guesses, solved)
-        print(f"  Game {g+1}/{n_games}: {'WIN' if solved else 'LOSS'} "
-              f"in {n_guesses} guess(es), {elapsed*1000:.1f} ms")
+        if verbose:
+            print(f"  Game {g+1}/{n_games}: {'WIN' if solved else 'LOSS'} "
+                  f"in {n_guesses} guess(es), {elapsed*1000:.1f} ms")
 
     stats.print_summary(total_episodes=n_games, elapsed=sum(timer.episode_times))
     timer.print_summary()
@@ -564,10 +595,27 @@ def load_weights(filename="weights_macedonian_debate.npz", lr=LR):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--word",  type=str, default=None)
-    parser.add_argument("--games", type=int, default=1)
+    parser.add_argument("--games", type=int, default=300,
+                         help="Number of demo games (default bumped up so the "
+                              "AgentStats summary is statistically stable enough "
+                              "to compare across machines/runs; use a small number "
+                              "like 1-5 with --unseeded if you just want to watch "
+                              "printed debate text for a few random games)")
     parser.add_argument("--stats-only", action="store_true",
                          help="Skip printed debate text; just play --games games "
                               "and print the ranked agent leaderboard + timing stats.")
+    parser.add_argument("--seed", type=int, default=42,
+                         help="Base RNG seed for demo games. Game i uses seed "
+                              "(--seed + i), so the SAME seed on different "
+                              "machines with the SAME weights_macedonian_debate.npz "
+                              "reproduces the exact same sequence of secret words "
+                              "and action samples — the recommended way to compare "
+                              "runs across machines.")
+    parser.add_argument("--unseeded", action="store_true",
+                         help="Opt out of seeding and use a fresh, unseeded RNG "
+                              "per game instead (old default behavior) — different "
+                              "secret words every run, not comparable across "
+                              "machines or repeats.")
     args = parser.parse_args()
 
     agent_models, moderator = load_weights()
@@ -575,13 +623,26 @@ if __name__ == "__main__":
         agent_models, moderator, _, _ = train()
         save_weights(agent_models, moderator)
 
+    run_seed = None if args.unseeded else args.seed
+
     if args.stats_only:
-        print(f"\n[Macedonian] Playing {args.games} games for stats only...")
-        play_many_demo_games(agent_models, moderator, args.games, args.word)
+        tag = "UNSEEDED" if run_seed is None else f"SEEDED (base seed={run_seed})"
+        print(f"\n[Macedonian] Playing {args.games} {tag} games for stats only...")
+        play_many_demo_games(agent_models, moderator, args.games, args.word,
+                              seed=run_seed, verbose=(args.games <= 20))
     else:
-        print(f"\n[Macedonian] Demonstrating multi-agent debate and negotiation...")
+        tag = "unseeded" if run_seed is None else f"seeded, base seed={run_seed}"
+        print(f"\n[Macedonian] Demonstrating multi-agent debate and negotiation "
+              f"({tag})...")
         game_stats = AgentStats(AGENT_NAMES)
-        for _ in range(args.games):
-            demo_game(agent_models, moderator, args.word, stats=game_stats)
+        # Only print full per-turn debate text when the batch is small — a
+        # large --games run with full text would flood the terminal, so
+        # verbosity auto-drops for big batches (override with --games <=20
+        # if you want to watch every game printed).
+        verbose = args.games <= 20
+        for i in range(args.games):
+            rng = np.random.default_rng(run_seed + i) if run_seed is not None else None
+            demo_game(agent_models, moderator, args.word, stats=game_stats,
+                      rng=rng, verbose=verbose)
         if args.games > 1:
             game_stats.print_summary(total_episodes=args.games)
