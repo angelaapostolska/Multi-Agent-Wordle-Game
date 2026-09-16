@@ -1,0 +1,26 @@
+Weights loaded ← weights_multiword.npz
+
+[MultiWord] Running 300 demo game(s) (seeded, base seed=42)...
+
+Result: 299/300 games won
+
+════════════════════════════════════════════════════════════════════════
+  AGENT PERFORMANCE SUMMARY
+════════════════════════════════════════════════════════════════════════
+Rank Agent          Wins   Win %  Chosen  Pick %   Hit %  Avg Turn   Avg Rwd
+────────────────────────────────────────────────────────────────────────
+🥇 1  Probabilist     599  100.0%    2587   93.8%   23.2%      4.59       nan
+🥈 2  Eliminator        0    0.0%     108    3.9%    0.0%       n/a       nan
+🥉 3  RiskTaker         0    0.0%      62    2.2%    0.0%       n/a       nan
+────────────────────────────────────────────────────────────────────────
+  Most winning guesses:  Probabilist (599 wins)
+  Fewest winning guesses: RiskTaker (0 wins)
+
+  Raw proposal accuracy (proposed a secret word, regardless of whether the moderator chose it):
+    Eliminator      553 / 2757   ( 20.1%)
+    Probabilist     605 / 2757   ( 21.9%)
+    RiskTaker       526 / 2757   ( 19.1%)
+
+  Episodes played: 300
+════════════════════════════════════════════════════════════════════════
+Weights saved → results\weights_multiword_20260916_112620.npz

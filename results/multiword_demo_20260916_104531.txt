@@ -1,0 +1,153 @@
+
+[MultiWord] Starting training: 15000 episodes, lr=0.003
+────────────────────────────────────────────────────────────
+  ep   1000 | win% 100.0 | avg guesses (won) 5.36 | 25.2s
+  ep   2000 | win%  99.6 | avg guesses (won) 5.32 | 49.5s
+  ep   3000 | win%  99.4 | avg guesses (won) 5.35 | 72.7s
+  ep   4000 | win%  99.6 | avg guesses (won) 5.31 | 96.4s
+  ep   5000 | win%  99.6 | avg guesses (won) 5.42 | 119.6s
+  ep   6000 | win%  99.8 | avg guesses (won) 5.28 | 141.2s
+  ep   7000 | win%  99.6 | avg guesses (won) 5.24 | 163.4s
+  ep   8000 | win%  99.8 | avg guesses (won) 5.36 | 185.6s
+  ep   9000 | win% 100.0 | avg guesses (won) 5.36 | 207.3s
+  ep  10000 | win% 100.0 | avg guesses (won) 5.30 | 229.1s
+  ep  11000 | win%  99.8 | avg guesses (won) 5.37 | 250.7s
+  ep  12000 | win%  99.8 | avg guesses (won) 5.21 | 272.1s
+  ep  13000 | win%  99.4 | avg guesses (won) 5.27 | 294.1s
+  ep  14000 | win%  99.6 | avg guesses (won) 5.21 | 315.5s
+  ep  15000 | win%  99.6 | avg guesses (won) 5.37 | 337.6s
+────────────────────────────────────────────────────────────
+[MultiWord] Training done. Win rate: 99.6%  Avg guesses: 5.37
+
+════════════════════════════════════════════════════════════════════════
+  AGENT PERFORMANCE SUMMARY
+════════════════════════════════════════════════════════════════════════
+Rank Agent          Wins   Win %  Chosen  Pick %   Hit %  Avg Turn   Avg Rwd
+────────────────────────────────────────────────────────────────────────
+🥇 1  Probabilist   26252   87.6%   91572   64.5%   28.7%      4.71     0.954
+🥈 2  Eliminator     1866    6.2%   27804   19.6%    6.7%      4.82     0.655
+🥉 3  RiskTaker      1838    6.1%   22604   15.9%    8.1%      4.85     0.675
+────────────────────────────────────────────────────────────────────────
+  Most winning guesses:  Probabilist (26252 wins)
+  Fewest winning guesses: RiskTaker (1838 wins)
+
+  Raw proposal accuracy (proposed a secret word, regardless of whether the moderator chose it):
+    Eliminator    27466 / 141980 ( 19.3%)
+    Probabilist   30839 / 141980 ( 21.7%)
+    RiskTaker     27472 / 141980 ( 19.3%)
+
+  Episodes played: 15000
+  Total time: 337.6s  (22.51 ms/episode)
+════════════════════════════════════════════════════════════════════════
+
+────────────────────────────────────────────────────────────────────────
+  TIMING & GUESS-COUNT STATS
+────────────────────────────────────────────────────────────────────────
+  Episodes:            15000
+  Total time:          80.13s
+  Avg time / episode:  5.342 ms
+  Fastest episode:     2.917 ms
+  Slowest episode:     71.998 ms
+  Win rate:            99.7%
+  Avg guesses (won):   5.31
+  Best win (fewest guesses): 2
+  Worst win (most guesses):  8
+────────────────────────────────────────────────────────────────────────
+Weights saved → weights_multiword.npz
+
+[MultiWord] Running 5 demo game(s)...
+
+=======================================================
+  MULTI-WORD WORDLE DEMO (2 target words)
+  Secrets: TRADE, SNEAK
+=======================================================
+  AGENT        GUESS    BOARDS FEEDBACK        CANDS
+  ──────────── ──────── ────────────────────── ──────────
+  Probabilist  STORY    .Y.Y. | G....          40/62
+  Eliminator   TRANS    GGG.. | ..YYY          6/2
+  Probabilist  TRACE    GGG.G | ..Y.Y          1/2
+  Probabilist  SNEAK    ..YY. | GGGGG          1/1
+  Probabilist  TRADE    GGGGG | SOLVED         1/1
+
+  ✓ All words solved in 5 guesses!
+
+=======================================================
+  MULTI-WORD WORDLE DEMO (2 target words)
+  Secrets: CHINA, LOGIC
+=======================================================
+  AGENT        GUESS    BOARDS FEEDBACK        CANDS
+  ──────────── ──────── ────────────────────── ──────────
+  Probabilist  STORY    ..... | ..Y..          110/40
+  Probabilist  LEGAL    ...Y. | G.G..          9/1
+  Probabilist  INDIA    YY..G | ...G.          1/1
+  Probabilist  CHINA    GGGGG | Y.Y..          1/1
+  Probabilist  LOGIC    SOLVED | GGGGG         1/1
+
+  ✓ All words solved in 5 guesses!
+
+=======================================================
+  MULTI-WORD WORDLE DEMO (2 target words)
+  Secrets: BRUCE, STARS
+=======================================================
+  AGENT        GUESS    BOARDS FEEDBACK        CANDS
+  ──────────── ──────── ────────────────────── ──────────
+  Probabilist  STORY    ...Y. | GG.G.          77/5
+  Probabilist  RANGE    Y...G | YY...          7/3
+  Probabilist  PRIME    .G..G | .Y...          1/3
+  Probabilist  STARK    ...Y. | GGGG.          1/2
+  Probabilist  BRUCE    GGGGG | .Y...          1/2
+  Probabilist  STARS    SOLVED | GGGGG         1/1
+
+  ✓ All words solved in 6 guesses!
+
+=======================================================
+  MULTI-WORD WORDLE DEMO (2 target words)
+  Secrets: NERVE, LIVED
+=======================================================
+  AGENT        GUESS    BOARDS FEEDBACK        CANDS
+  ──────────── ──────── ────────────────────── ──────────
+  Probabilist  STORY    ...Y. | .....          77/110
+  Eliminator   TRUMP    .Y... | .....          28/63
+  Probabilist  LARGE    ..G.G | G...Y          1/3
+  Probabilist  LIVED    ..YY. | GGGGG          1/1
+  Probabilist  NERVE    GGGGG | SOLVED         1/1
+
+  ✓ All words solved in 5 guesses!
+
+=======================================================
+  MULTI-WORD WORDLE DEMO (2 target words)
+  Secrets: JONES, SHORE
+=======================================================
+  AGENT        GUESS    BOARDS FEEDBACK        CANDS
+  ──────────── ──────── ────────────────────── ──────────
+  Probabilist  STORY    Y.Y.. | G.GG.          22/6
+  Probabilist  LOVES    .G.GG | .Y.YY          7/4
+  Probabilist  HOMES    .G.GG | YY.YY          4/1
+  Probabilist  BONES    .GGGG | .Y.YY          1/1
+  Probabilist  JONES    GGGGG | .Y.YY          1/1
+  Probabilist  SHORE    SOLVED | GGGGG         1/1
+
+  ✓ All words solved in 6 guesses!
+
+Result: 5/5 games won
+
+════════════════════════════════════════════════════════════════════════
+  AGENT PERFORMANCE SUMMARY
+════════════════════════════════════════════════════════════════════════
+Rank Agent          Wins   Win %  Chosen  Pick %   Hit %  Avg Turn   Avg Rwd
+────────────────────────────────────────────────────────────────────────
+🥇 1  Probabilist      10  100.0%      45   91.8%   22.2%      4.90       nan
+🥈 2  Eliminator        0    0.0%       4    8.2%    0.0%       n/a       nan
+🥉 3  RiskTaker         0    0.0%       0    0.0%    0.0%       n/a       nan
+────────────────────────────────────────────────────────────────────────
+  Most winning guesses:  Probabilist (10 wins)
+  Fewest winning guesses: RiskTaker (0 wins)
+
+  Raw proposal accuracy (proposed a secret word, regardless of whether the moderator chose it):
+    Eliminator        8 / 49     ( 16.3%)
+    Probabilist      10 / 49     ( 20.4%)
+    RiskTaker         8 / 49     ( 16.3%)
+
+  Episodes played: 5
+════════════════════════════════════════════════════════════════════════
+Weights saved → results\weights_multiword_20260916_104531.npz
