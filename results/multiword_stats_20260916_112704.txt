@@ -1,0 +1,39 @@
+Weights loaded ← weights_multiword.npz
+
+[MultiWord] Playing 300 SEEDED (base seed=42) games for stats only...
+
+════════════════════════════════════════════════════════════════════════
+  AGENT PERFORMANCE SUMMARY
+════════════════════════════════════════════════════════════════════════
+Rank Agent          Wins   Win %  Chosen  Pick %   Hit %  Avg Turn   Avg Rwd
+────────────────────────────────────────────────────────────────────────
+🥇 1  Probabilist     599  100.0%    2587   93.8%   23.2%      4.59     0.947
+🥈 2  Eliminator        0    0.0%     108    3.9%    0.0%       n/a     0.732
+🥉 3  RiskTaker         0    0.0%      62    2.2%    0.0%       n/a     0.737
+────────────────────────────────────────────────────────────────────────
+  Most winning guesses:  Probabilist (599 wins)
+  Fewest winning guesses: RiskTaker (0 wins)
+
+  Raw proposal accuracy (proposed a secret word, regardless of whether the moderator chose it):
+    Eliminator      553 / 2757   ( 20.1%)
+    Probabilist     605 / 2757   ( 21.9%)
+    RiskTaker       526 / 2757   ( 19.1%)
+
+  Episodes played: 300
+  Total time: 1.6s  (5.31 ms/episode)
+════════════════════════════════════════════════════════════════════════
+
+────────────────────────────────────────────────────────────────────────
+  TIMING & GUESS-COUNT STATS
+────────────────────────────────────────────────────────────────────────
+  Episodes:            300
+  Total time:          1.59s
+  Avg time / episode:  5.308 ms
+  Fastest episode:     2.999 ms
+  Slowest episode:     18.987 ms
+  Win rate:            99.7%
+  Avg guesses (won):   5.18
+  Best win (fewest guesses): 3
+  Worst win (most guesses):  8
+────────────────────────────────────────────────────────────────────────
+Weights saved → results\weights_multiword_20260916_112704.npz
