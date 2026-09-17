@@ -22,8 +22,14 @@ from wordle_env_base import (
     build_pattern_matrix, filter_candidates,
     task_reward, agent_reward,
     fb_to_str, Policy,
-    expected_remaining_frac, partition_quality
+    expected_remaining_frac, partition_quality,
+    AGENT_PERSONA, ollama_generate, format_debate_context, llm_moderator_vote,
 )
+
+# ── Ollama config (LLM debate — demo/eval only, never used in train()) ─────────
+OLLAMA_HOST    = os.environ.get("OLLAMA_HOST", "http://localhost:11434")
+OLLAMA_MODEL   = os.environ.get("OLLAMA_MODEL", "llama3.2")
+OLLAMA_TIMEOUT = 20
 
 # ── Macedonian alphabet (31 letters) ──────────────────────────────────────────
 MK_ALPHABET = [
@@ -119,6 +125,49 @@ def generate_agent_argument(agent_id, guess_idx, cands):
     else:  # RISKTAKER
         pq = round(partition_quality(guess_idx, cands, PATTERN), 2)
         return f"Предлагам '{word}'. Ризикер: коефициент на партиционирање е {pq}."
+
+
+def generate_agent_argument_llm(agent_id, guess_idx, cands, prior_arguments, warn=True):
+    """
+    Ask the local Ollama model to argue, in character and in Macedonian
+    (Cyrillic), for this agent's already-chosen word. The word itself is
+    still decided entirely by the trained policy network — the LLM only
+    puts the case into words, and does so in the scenario's own language
+    rather than English, unlike scenario_english.py's version.
+
+    This is also the deliberate test of whether a small general-purpose
+    model like llama3.2 has enough Macedonian competence to produce
+    coherent, on-topic Cyrillic text about a Macedonian word, or whether
+    it hallucinates/answers in English instead — see README.md.
+    """
+    word  = WORDS[guess_idx]
+    stats = {
+        "elimination_%":        int(100 * (1.0 - expected_remaining_frac(guess_idx, cands, PATTERN))),
+        "partition_quality":    round(partition_quality(guess_idx, cands, PATTERN), 2),
+        "still_a_candidate":    guess_idx in cands,
+        "frequency_rank_%":     int(PRIOR[guess_idx] * 100),
+        "candidates_remaining": len(cands),
+    }
+
+    context = format_debate_context(AGENT_NAMES, prior_arguments)
+
+    prompt = (
+        f"You are playing a Macedonian-language Wordle-style word game as "
+        f"{AGENT_PERSONA[agent_id]}. Your strategy already picked the Macedonian "
+        f"word '{word.upper()}' as this turn's guess. Stats for this word: {stats}. "
+        f"{context}"
+        f"In 1-2 short sentences, WRITTEN IN MACEDONIAN (Cyrillic script), argue in "
+        f"character for why '{word.upper()}' is a good guess right now"
+        + (", briefly reacting to what the other agents said" if prior_arguments else "")
+        + ". Do not propose a different word — only argue for this one. "
+        + "Reply only in Macedonian, not English."
+    )
+
+    text = ollama_generate(prompt, model=OLLAMA_MODEL, host=OLLAMA_HOST,
+                            timeout=OLLAMA_TIMEOUT, warn=warn)
+    if text is None:
+        return generate_agent_argument(agent_id, guess_idx, cands)
+    return text.replace("\n", " ").strip()
 
 
 # ── Stats tracking ──────────────────────────────────────────────────────────────
@@ -435,13 +484,22 @@ def train(episodes=EPISODES, lr=LR, seed=SEED, track_stats=True):
 
 # ── Interactive Demo with Debate Printing ──────────────────────────────────────
 
-def demo_game(agent_models, moderator, secret_word=None, stats=None, rng=None, verbose=True):
+def demo_game(agent_models, moderator, secret_word=None, stats=None, rng=None, verbose=True,
+              use_llm=False, llm_moderator=False, override_log=None):
     """
-    rng     : pass a seeded np.random.default_rng(...) for reproducible games
-              (same secret + same agent proposals every time). Defaults to a
-              fresh, unseeded generator — matching the original behavior.
-    verbose : set False to suppress the printed debate/board text, used by
-              play_many_demo_games() for large batches.
+    rng           : pass a seeded np.random.default_rng(...) for reproducible
+                    games (same secret + same agent proposals every time).
+                    Defaults to a fresh, unseeded generator.
+    verbose       : set False to suppress the printed debate/board text, used
+                    by play_many_demo_games() for large batches.
+    use_llm       : generate each agent's debate argument in Macedonian with a
+                    local Ollama model instead of the fixed template (falls
+                    back to the template if Ollama isn't reachable).
+    llm_moderator : also ask the Ollama model to vote on the three proposals;
+                    play its pick instead of the trained moderator's when
+                    they disagree (implies use_llm).
+    override_log  : optional list; when llm_moderator is on, one dict per
+                    turn ({"trained_choice", "llm_choice"}) is appended.
     """
     if rng is None:
         rng = np.random.default_rng()
@@ -452,10 +510,15 @@ def demo_game(agent_models, moderator, secret_word=None, stats=None, rng=None, v
     known_green = [None] * 5
     yellows     = set()
 
+    use_llm = use_llm or llm_moderator
+
     if verbose:
         print(f"\n{'='*65}")
         print(f"  МАКЕДОНСКИ ВОРДЛ — ДЕБАТА И КООРДИНАЦИЈА НА АГЕНТИ")
         print(f"  Тајниот збор: {WORDS[secret].upper()}")
+        if use_llm:
+            tag = f"Ollama ({OLLAMA_MODEL})" + (" + moderator override" if llm_moderator else "")
+            print(f"  LLM debate: {tag}")
         print(f"{'='*65}")
 
     game_t0 = time.time()
@@ -477,13 +540,43 @@ def demo_game(agent_models, moderator, secret_word=None, stats=None, rng=None, v
             proposals.append(guess_idx)
 
         # Debate round
-        if verbose:
+        arguments = []
+        if use_llm:
             for ai in range(3):
-                arg = generate_agent_argument(ai, proposals[ai], cands)
-                print(f"  [{AGENT_NAMES[ai]}] -> {arg}")
+                arg = generate_agent_argument_llm(
+                    ai, proposals[ai], cands, prior_arguments=list(enumerate(arguments)),
+                    warn=verbose,
+                )
+                arguments.append(arg)
+                if verbose:
+                    print(f"  [{AGENT_NAMES[ai]}] -> {arg}")
+        else:
+            arguments = [generate_agent_argument(ai, proposals[ai], cands) for ai in range(3)]
+            if verbose:
+                for ai in range(3):
+                    print(f"  [{AGENT_NAMES[ai]}] -> {arguments[ai]}")
 
-        m_state   = mk_build_mod_state(proposals, cands, turn)
-        choice, _ = moderator.sample(m_state, rng=rng)
+        m_state        = mk_build_mod_state(proposals, cands, turn)
+        trained_choice, _ = moderator.sample(m_state, rng=rng)
+        choice = trained_choice
+
+        if llm_moderator:
+            proposal_words = [WORDS[g].upper() for g in proposals]
+            situation = f"{len(cands)} candidate words left"
+            llm_choice = llm_moderator_vote(proposal_words, arguments, AGENT_NAMES, situation,
+                                             turn, model=OLLAMA_MODEL, host=OLLAMA_HOST,
+                                             timeout=OLLAMA_TIMEOUT, warn=verbose)
+            if override_log is not None:
+                override_log.append({"trained_choice": trained_choice, "llm_choice": llm_choice})
+            if llm_choice is not None and llm_choice != trained_choice:
+                if verbose:
+                    print(f"    [LLM moderator] would play {AGENT_NAMES[llm_choice]}'s "
+                          f"'{WORDS[proposals[llm_choice]].upper()}' instead of the trained "
+                          f"moderator's {AGENT_NAMES[trained_choice]} pick — overriding.")
+                choice = llm_choice
+            elif llm_choice is not None and verbose:
+                print(f"    [LLM moderator] agrees with the trained pick: {AGENT_NAMES[choice]}.")
+
         final     = proposals[choice]
 
         fb      = PATTERN[final, secret]
@@ -520,6 +613,68 @@ def demo_game(agent_models, moderator, secret_word=None, stats=None, rng=None, v
     if verbose:
         print(f"\n  ✗ Неуспех. Зборот беше {WORDS[secret]} ({elapsed*1000:.1f} ms)")
     return False
+
+
+def compare_llm_moderator(agent_models, moderator, n_games=20, base_seed=123, secret_word=None):
+    """
+    Run n_games with the LLM moderator active, then the same n_games with
+    only the trained moderator — matched RNG seed per game index across
+    both runs, so game i sees the exact same secret word and agent
+    proposals in both conditions. Mirrors scenario_english.py's version.
+    """
+    print(f"\n[Macedonian] Comparing LLM moderator vs trained moderator over {n_games} games each...")
+    print("(this makes real Ollama calls for the LLM-moderator half — expect it to take a while)")
+
+    t0 = time.time()
+    override_log = []
+    llm_wins = 0
+    for i in range(n_games):
+        rng = np.random.default_rng(base_seed + i)
+        won = demo_game(agent_models, moderator, secret_word,
+                         use_llm=True, llm_moderator=True,
+                         rng=rng, verbose=False, override_log=override_log)
+        llm_wins += int(won)
+        print(f"  [LLM-moderator {i+1:>3}/{n_games}] {'won ' if won else 'lost'} "
+              f"| {time.time()-t0:6.1f}s elapsed")
+
+    print(f"  LLM-moderator half done in {time.time()-t0:.1f}s. "
+          f"Running the {n_games}-game baseline (no Ollama calls, should be quick)...")
+
+    t1 = time.time()
+    baseline_wins = 0
+    for i in range(n_games):
+        rng = np.random.default_rng(base_seed + i)
+        won = demo_game(agent_models, moderator, secret_word,
+                         use_llm=False, llm_moderator=False,
+                         rng=rng, verbose=False)
+        baseline_wins += int(won)
+    print(f"  Baseline half done in {time.time()-t1:.1f}s.")
+
+    voted    = [e for e in override_log if e["llm_choice"] is not None]
+    no_vote  = len(override_log) - len(voted)
+    agreed   = sum(1 for e in voted if e["llm_choice"] == e["trained_choice"])
+    overrode = len(voted) - agreed
+
+    print("─" * 60)
+    print(f"Turns played: {len(override_log)}  |  LLM cast a usable vote on {len(voted)} of them "
+          f"(Ollama unreachable/unparsed on {no_vote})")
+    if voted:
+        print(f"  Agreed with trained moderator:  {agreed:4d} ({100*agreed/len(voted):.1f}%)")
+        print(f"  Overrode trained moderator:     {overrode:4d} ({100*overrode/len(voted):.1f}%)")
+    print(f"Win rate WITH LLM moderator:      {100*llm_wins/n_games:5.1f}%  ({llm_wins}/{n_games})")
+    print(f"Win rate baseline (trained only): {100*baseline_wins/n_games:5.1f}%  ({baseline_wins}/{n_games})")
+    print("─" * 60)
+
+    return {
+        "n_games":           n_games,
+        "turns_played":      len(override_log),
+        "turns_with_vote":   len(voted),
+        "agreed":            agreed,
+        "overrode":          overrode,
+        "no_vote":           no_vote,
+        "llm_win_rate":      llm_wins / n_games,
+        "baseline_win_rate": baseline_wins / n_games,
+    }
 
 
 def play_many_demo_games(agent_models, moderator, n_games, secret_word=None,
@@ -616,7 +771,29 @@ if __name__ == "__main__":
                               "per game instead (old default behavior) — different "
                               "secret words every run, not comparable across "
                               "machines or repeats.")
+    parser.add_argument("--llm", action="store_true",
+                         help="Generate each turn's debate arguments in Macedonian "
+                              "with a local Ollama model instead of fixed templates. "
+                              "Demo-only — never used during training.")
+    parser.add_argument("--llm-moderator", action="store_true",
+                         help="Also let the Ollama model vote on the three proposals "
+                              "and override the trained moderator's pick when they "
+                              "disagree (implies --llm). Demo-only.")
+    parser.add_argument("--ollama-model", type=str, default=None,
+                         help=f"Ollama model name (default: {OLLAMA_MODEL}, or $OLLAMA_MODEL)")
+    parser.add_argument("--ollama-host", type=str, default=None,
+                         help=f"Ollama server URL (default: {OLLAMA_HOST}, or $OLLAMA_HOST)")
+    parser.add_argument("--compare-llm", action="store_true",
+                         help="Instead of the normal demo, run --games games with the "
+                              "LLM moderator active and the same number with only the "
+                              "trained moderator (matched RNG seeds), then print one "
+                              "agreement-rate / win-rate summary.")
     args = parser.parse_args()
+
+    if args.ollama_model:
+        OLLAMA_MODEL = args.ollama_model
+    if args.ollama_host:
+        OLLAMA_HOST = args.ollama_host
 
     agent_models, moderator = load_weights()
     if agent_models is None:
@@ -625,7 +802,10 @@ if __name__ == "__main__":
 
     run_seed = None if args.unseeded else args.seed
 
-    if args.stats_only:
+    if args.compare_llm:
+        compare_llm_moderator(agent_models, moderator, n_games=args.games,
+                               base_seed=args.seed, secret_word=args.word)
+    elif args.stats_only:
         tag = "UNSEEDED" if run_seed is None else f"SEEDED (base seed={run_seed})"
         print(f"\n[Macedonian] Playing {args.games} {tag} games for stats only...")
         play_many_demo_games(agent_models, moderator, args.games, args.word,
@@ -643,6 +823,7 @@ if __name__ == "__main__":
         for i in range(args.games):
             rng = np.random.default_rng(run_seed + i) if run_seed is not None else None
             demo_game(agent_models, moderator, args.word, stats=game_stats,
-                      rng=rng, verbose=verbose)
+                      rng=rng, verbose=verbose,
+                      use_llm=args.llm, llm_moderator=args.llm_moderator)
         if args.games > 1:
             game_stats.print_summary(total_episodes=args.games)
