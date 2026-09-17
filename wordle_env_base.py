@@ -19,6 +19,11 @@ Reward system explanation:
                   has a different way of judging quality.
 """
 
+import json
+import os
+import re
+import urllib.request
+
 import numpy as np
 from words_mk_pythonlist import WORDS_MK
 
@@ -560,3 +565,83 @@ def build_mod_state(proposals, cands, turn, words, pattern_matrix):
     # Add turn progress and how many candidates remain (normalised 0-1)
     feats += [turn / MAX_TURNS, len(cands) / max(len(words), 1)]
     return np.array(feats)
+
+
+# ── Shared LLM debate infrastructure (Ollama) ──────────────────────────────────
+#
+# Used only by each scenario's demo_game()/compare_llm_moderator(), never by
+# run_episode() or train() — turning --llm on never adds a call to training.
+
+OLLAMA_HOST    = os.environ.get("OLLAMA_HOST", "http://localhost:11434")
+OLLAMA_MODEL   = os.environ.get("OLLAMA_MODEL", "llama3.2")
+OLLAMA_TIMEOUT = 20
+
+AGENT_PERSONA = {
+    ELIMINATOR:  "the Eliminator, who cares most about ruling out wrong words fast",
+    PROBABILIST: "the Probabilist, who cares most about guessing common, likely real words",
+    RISKTAKER:   "the RiskTaker, who cares most about splitting the remaining candidates "
+                 "as evenly as possible to gather information",
+}
+
+
+def ollama_generate(prompt, model=None, host=None, timeout=None, warn=True):
+    """
+    Send a prompt to a local Ollama server and return the model's reply text,
+    or None on any failure (server not running, model not pulled, timeout...).
+    Callers fall back to deterministic template text when this returns None.
+    """
+    payload = {"model": model or OLLAMA_MODEL, "prompt": prompt, "stream": False}
+    try:
+        req = urllib.request.Request(
+            f"{host or OLLAMA_HOST}/api/generate",
+            data=json.dumps(payload).encode("utf-8"),
+            headers={"Content-Type": "application/json"},
+        )
+        with urllib.request.urlopen(req, timeout=timeout or OLLAMA_TIMEOUT) as resp:
+            body = json.loads(resp.read().decode("utf-8"))
+        text = body.get("response", "").strip()
+        return text or None
+    except Exception as e:
+        if warn:
+            print(f"    [Ollama unavailable, using template text — {e}]")
+        return None
+
+
+def format_debate_context(agent_names, prior_arguments):
+    """prior_arguments: list of (agent_id, text) tuples, in speaking order."""
+    if not prior_arguments:
+        return ""
+    return "So far in this debate:\n" + "\n".join(
+        f"- {agent_names[i]}: {text}" for i, text in prior_arguments
+    ) + "\n\n"
+
+
+def llm_moderator_vote(proposal_words, arguments, agent_names, situation, turn,
+                        model=None, host=None, timeout=None, warn=True):
+    """
+    Ask the local Ollama model to pick which of the 3 proposed words the
+    team should actually play, given each agent's word and argument.
+
+    proposal_words : list of 3 already-formatted guess words (any language)
+    situation      : short phrase describing the game state, e.g.
+                     "7 candidate words left" or "2 active target words"
+
+    Returns an index into proposal_words, or None if Ollama is unreachable
+    or its reply can't be parsed — callers should keep the trained
+    moderator's pick in that case.
+    """
+    lines = [
+        f"{i}: {agent_names[i]} proposes '{word}' — {arguments[i]}"
+        for i, word in enumerate(proposal_words)
+    ]
+    prompt = (
+        f"It's turn {turn + 1} of a Wordle-style game with {situation}. "
+        f"Three teammates each propose a guess:\n" + "\n".join(lines) +
+        "\n\nWhich proposal should the team actually play? "
+        "Reply with ONLY the number 0, 1, or 2 — nothing else."
+    )
+    text = ollama_generate(prompt, model=model, host=host, timeout=timeout, warn=warn)
+    if text is None:
+        return None
+    match = re.search(r"[0-2]", text)
+    return int(match.group()) if match else None
