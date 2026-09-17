@@ -1,0 +1,156 @@
+LLM integration result — Macedonian (sandbox verification run)
+
+Command: python scenario_macedonian.py --llm --llm-moderator --games 3 --unseeded
+Weights used: weights_macedonian_debate.npz (produced by this scenario's normal RL training,
+which is completely unaffected by --llm/--llm-moderator — those flags are
+demo-only).
+
+IMPORTANT: this transcript was captured in a sandboxed environment with no
+local Ollama server reachable, so every "[Ollama unavailable, using
+template text — ...]" line is the code's designed fallback path, not a
+bug — it proves the --llm/--llm-moderator/--compare-llm wiring runs
+end-to-end without crashing. It does NOT contain real LLM-generated debate
+text or a real LLM moderator vote (see the compare-llm result file: 0
+usable votes were cast, by construction, since Ollama could not be
+reached).
+
+To capture the REAL result — actual model-generated arguments and a
+non-zero LLM vote/override rate — run the same command on a machine with
+Ollama installed and a model pulled (see README.md's "LLM Integration
+Across All Scenarios" section), then replace the content below the line
+of dashes with that output.
+
+────────────────────────────────────────────────────────────────────────
+
+[Macedonian] Building pattern matrix for 967 words...
+[Macedonian] Pattern matrix ready.
+Weights loaded ← weights_macedonian_debate.npz
+
+[Macedonian] Demonstrating multi-agent debate and negotiation (unseeded)...
+
+=================================================================
+  МАКЕДОНСКИ ВОРДЛ — ДЕБАТА И КООРДИНАЦИЈА НА АГЕНТИ
+  Тајниот збор: ЖИВОТ
+  LLM debate: Ollama (llama3.2) + moderator override
+=================================================================
+
+--- Обид 1 (Преостанати кандидати: 967) ---
+    [Ollama unavailable, using template text — <urlopen error [Errno 111] Connection refused>]
+  [Eliminator] -> Предлагам 'суета'. Елиминатор: овој збор отстранува околу 94% од кандидатите.
+    [Ollama unavailable, using template text — <urlopen error [Errno 111] Connection refused>]
+  [Probabilist] -> Предлагам 'блуза'. Веројатност: индекс на честота е 89%, во игра: Да.
+    [Ollama unavailable, using template text — <urlopen error [Errno 111] Connection refused>]
+  [RiskTaker] -> Предлагам 'пекол'. Ризикер: коефициент на партиционирање е 0.94.
+    [Ollama unavailable, using template text — <urlopen error [Errno 111] Connection refused>]
+ МОДЕРАТОРОТ го избра агентот **Eliminator** со зборот **СУЕТА** | Резултат: ...Y.
+
+--- Обид 2 (Преостанати кандидати: 12) ---
+    [Ollama unavailable, using template text — <urlopen error [Errno 111] Connection refused>]
+  [Eliminator] -> Предлагам 'вазал'. Елиминатор: овој збор отстранува околу 54% од кандидатите.
+    [Ollama unavailable, using template text — <urlopen error [Errno 111] Connection refused>]
+  [Probabilist] -> Предлагам 'отпор'. Веројатност: индекс на честота е 37%, во игра: Да.
+    [Ollama unavailable, using template text — <urlopen error [Errno 111] Connection refused>]
+  [RiskTaker] -> Предлагам 'дарба'. Ризикер: коефициент на партиционирање е 0.6.
+    [Ollama unavailable, using template text — <urlopen error [Errno 111] Connection refused>]
+ МОДЕРАТОРОТ го избра агентот **Probabilist** со зборот **ОТПОР** | Резултат: .Y.G.
+
+--- Обид 3 (Преостанати кандидати: 2) ---
+    [Ollama unavailable, using template text — <urlopen error [Errno 111] Connection refused>]
+  [Eliminator] -> Предлагам 'живот'. Елиминатор: овој збор отстранува околу 50% од кандидатите.
+    [Ollama unavailable, using template text — <urlopen error [Errno 111] Connection refused>]
+  [Probabilist] -> Предлагам 'живот'. Веројатност: индекс на честота е 69%, во игра: Да.
+    [Ollama unavailable, using template text — <urlopen error [Errno 111] Connection refused>]
+  [RiskTaker] -> Предлагам 'кикот'. Ризикер: коефициент на партиционирање е 0.5.
+    [Ollama unavailable, using template text — <urlopen error [Errno 111] Connection refused>]
+ МОДЕРАТОРОТ го избра агентот **Probabilist** со зборот **ЖИВОТ** | Резултат: GGGGG
+
+  ✓ Успех! Зборот е погоден за 3 обид/и! (7.0 ms)
+  Winning guess proposed & played by: Probabilist
+
+=================================================================
+  МАКЕДОНСКИ ВОРДЛ — ДЕБАТА И КООРДИНАЦИЈА НА АГЕНТИ
+  Тајниот збор: ПАСОШ
+  LLM debate: Ollama (llama3.2) + moderator override
+=================================================================
+
+--- Обид 1 (Преостанати кандидати: 967) ---
+    [Ollama unavailable, using template text — <urlopen error [Errno 111] Connection refused>]
+  [Eliminator] -> Предлагам 'суета'. Елиминатор: овој збор отстранува околу 94% од кандидатите.
+    [Ollama unavailable, using template text — <urlopen error [Errno 111] Connection refused>]
+  [Probabilist] -> Предлагам 'блуза'. Веројатност: индекс на честота е 89%, во игра: Да.
+    [Ollama unavailable, using template text — <urlopen error [Errno 111] Connection refused>]
+  [RiskTaker] -> Предлагам 'пекол'. Ризикер: коефициент на партиционирање е 0.94.
+    [Ollama unavailable, using template text — <urlopen error [Errno 111] Connection refused>]
+ МОДЕРАТОРОТ го избра агентот **Eliminator** со зборот **СУЕТА** | Резултат: Y...Y
+
+--- Обид 2 (Преостанати кандидати: 19) ---
+    [Ollama unavailable, using template text — <urlopen error [Errno 111] Connection refused>]
+  [Eliminator] -> Предлагам 'вепар'. Елиминатор: овој збор отстранува околу 83% од кандидатите.
+    [Ollama unavailable, using template text — <urlopen error [Errno 111] Connection refused>]
+  [Probabilist] -> Предлагам 'оглас'. Веројатност: индекс на честота е 40%, во игра: Да.
+    [Ollama unavailable, using template text — <urlopen error [Errno 111] Connection refused>]
+  [RiskTaker] -> Предлагам 'ќелав'. Ризикер: коефициент на партиционирање е 0.73.
+    [Ollama unavailable, using template text — <urlopen error [Errno 111] Connection refused>]
+ МОДЕРАТОРОТ го избра агентот **Probabilist** со зборот **ОГЛАС** | Резултат: Y..YY
+
+--- Обид 3 (Преостанати кандидати: 2) ---
+    [Ollama unavailable, using template text — <urlopen error [Errno 111] Connection refused>]
+  [Eliminator] -> Предлагам 'пасош'. Елиминатор: овој збор отстранува околу 50% од кандидатите.
+    [Ollama unavailable, using template text — <urlopen error [Errno 111] Connection refused>]
+  [Probabilist] -> Предлагам 'пасош'. Веројатност: индекс на честота е 36%, во игра: Да.
+    [Ollama unavailable, using template text — <urlopen error [Errno 111] Connection refused>]
+  [RiskTaker] -> Предлагам 'пасош'. Ризикер: коефициент на партиционирање е 0.5.
+    [Ollama unavailable, using template text — <urlopen error [Errno 111] Connection refused>]
+ МОДЕРАТОРОТ го избра агентот **Probabilist** со зборот **ПАСОШ** | Резултат: GGGGG
+
+  ✓ Успех! Зборот е погоден за 3 обид/и! (4.6 ms)
+  Winning guess proposed & played by: Probabilist
+
+=================================================================
+  МАКЕДОНСКИ ВОРДЛ — ДЕБАТА И КООРДИНАЦИЈА НА АГЕНТИ
+  Тајниот збор: ГУСКА
+  LLM debate: Ollama (llama3.2) + moderator override
+=================================================================
+
+--- Обид 1 (Преостанати кандидати: 967) ---
+    [Ollama unavailable, using template text — <urlopen error [Errno 111] Connection refused>]
+  [Eliminator] -> Предлагам 'суета'. Елиминатор: овој збор отстранува околу 94% од кандидатите.
+    [Ollama unavailable, using template text — <urlopen error [Errno 111] Connection refused>]
+  [Probabilist] -> Предлагам 'блуза'. Веројатност: индекс на честота е 89%, во игра: Да.
+    [Ollama unavailable, using template text — <urlopen error [Errno 111] Connection refused>]
+  [RiskTaker] -> Предлагам 'пекол'. Ризикер: коефициент на партиционирање е 0.94.
+    [Ollama unavailable, using template text — <urlopen error [Errno 111] Connection refused>]
+ МОДЕРАТОРОТ го избра агентот **Eliminator** со зборот **СУЕТА** | Резултат: YG..G
+
+--- Обид 2 (Преостанати кандидати: 1) ---
+    [Ollama unavailable, using template text — <urlopen error [Errno 111] Connection refused>]
+  [Eliminator] -> Предлагам 'гуска'. Елиминатор: овој збор отстранува околу 0% од кандидатите.
+    [Ollama unavailable, using template text — <urlopen error [Errno 111] Connection refused>]
+  [Probabilist] -> Предлагам 'гуска'. Веројатност: индекс на честота е 76%, во игра: Да.
+    [Ollama unavailable, using template text — <urlopen error [Errno 111] Connection refused>]
+  [RiskTaker] -> Предлагам 'гуска'. Ризикер: коефициент на партиционирање е 0.0.
+    [Ollama unavailable, using template text — <urlopen error [Errno 111] Connection refused>]
+ МОДЕРАТОРОТ го избра агентот **Probabilist** со зборот **ГУСКА** | Резултат: GGGGG
+
+  ✓ Успех! Зборот е погоден за 2 обид/и! (3.6 ms)
+  Winning guess proposed & played by: Probabilist
+
+════════════════════════════════════════════════════════════════════════
+  AGENT PERFORMANCE SUMMARY
+════════════════════════════════════════════════════════════════════════
+Rank Agent          Wins   Win %  Chosen  Pick %   Hit %  Avg Turn   Avg Rwd
+────────────────────────────────────────────────────────────────────────
+🥇 1  Probabilist       3  100.0%       5   62.5%   60.0%      2.67       nan
+🥈 2  Eliminator        0    0.0%       3   37.5%    0.0%       n/a       nan
+🥉 3  RiskTaker         0    0.0%       0    0.0%    0.0%       n/a       nan
+────────────────────────────────────────────────────────────────────────
+  Most winning guesses:  Probabilist (3 wins)
+  Fewest winning guesses: RiskTaker (0 wins)
+
+  Raw proposal accuracy (proposed the secret word, regardless of whether the moderator chose it):
+    Eliminator        3 / 8      ( 37.5%)
+    Probabilist       3 / 8      ( 37.5%)
+    RiskTaker         2 / 8      ( 25.0%)
+
+  Episodes played: 3
+════════════════════════════════════════════════════════════════════════

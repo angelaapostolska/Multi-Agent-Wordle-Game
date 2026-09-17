@@ -195,6 +195,86 @@ numpy
 
 No other dependencies needed — the neural networks are implemented from scratch using only numpy.
 
+## LLM Integration Across All Scenarios
+
+All three scenarios (English, Macedonian, Multi-word) now support the same
+`--llm` / `--llm-moderator` / `--compare-llm` feature set. The shared
+plumbing — the Ollama HTTP call, the agent personas, and the
+moderator-vote prompt — lives once in `wordle_env_base.py`
+(`ollama_generate()`, `AGENT_PERSONA`, `format_debate_context()`,
+`llm_moderator_vote()`) and each scenario file only supplies its own
+argument-generation logic on top of it.
+
+As with the original English-only version: the LLM is only ever called
+from `demo_game()`/`compare_llm_moderator()`, never from `run_episode()`
+or `train()` — turning `--llm` on adds zero cost to training, regardless
+of scenario or episode count.
+
+### English
+
+Unchanged from the original design (see the section above): the LLM
+argues in English for each agent's already-chosen word, and can
+optionally cast the vote that decides which proposal actually gets
+played.
+
+### Macedonian
+
+Same `--llm`/`--llm-moderator` mechanics, but `generate_agent_argument_llm()`
+explicitly asks the model to argue **in Macedonian (Cyrillic)**, not
+English — a deliberate test of whether a small general-purpose model like
+`llama3.2` has enough Macedonian competence to produce coherent, on-topic
+Cyrillic text about a Macedonian word, rather than falling back to
+English or hallucinating. The moderator-vote prompt itself stays in
+English, since it only needs to return a digit (0/1/2) — this keeps the
+lower-stakes parsing step language-independent while the actual debate
+content is the real cross-language test.
+
+```bash
+python scenario_macedonian.py --llm --llm-moderator --games 5 --unseeded
+python scenario_macedonian.py --compare-llm --games 20
+```
+
+**Open question this is meant to surface, not answer in the code:** if
+`llama3.2` turns out to have poor Macedonian competence (English replies,
+generic filler, hallucinated words), that's a real finding — it would
+mean a low-resource language needs a larger or explicitly multilingual
+model to get a meaningful debate layer, which is worth flagging as a
+limitation/future-work item rather than working around silently.
+
+### Multi-word
+
+Multi-word plays one shared guess per turn against 2+ simultaneously
+active target words (the trained agents only ever produce one guess —
+there's no per-target action space), so the moderator vote stays a single
+3-way choice just like the other two scenarios. What's different is the
+**content** of the debate: `generate_agent_argument()` and
+`generate_agent_argument_llm()` compute elimination-power, partition
+quality, and candidacy **per active target** rather than merging every
+active target's candidates into one flattened set. That per-target
+breakdown is what actually makes multi-word interesting to study here —
+a guess can help one target far more than another, and the LLM's
+argument/vote can reflect that tradeoff (e.g. "eliminates 90% of target
+1's candidates but only 20% of target 2's") instead of it being averaged
+away before the model ever sees it.
+
+```bash
+python scenario_multiword.py --llm --llm-moderator --games 5 --unseeded
+python scenario_multiword.py --compare-llm --games 20
+```
+
+### Results
+
+`results/llm/` contains one demo transcript and one `--compare-llm`
+summary per scenario. **These were captured in a sandboxed environment
+with no local Ollama server reachable**, so every line reads
+`[Ollama unavailable, using template text — ...]` and the compare-llm
+runs show 0 usable LLM votes — this confirms the `--llm`/`--llm-moderator`
+wiring runs end-to-end and falls back safely, but it is **not** real
+model-generated debate text or a real override rate. Re-running the same
+commands on a machine with Ollama installed (see the setup steps above)
+is needed to get the actual model behavior, especially for the
+Macedonian-competence question above.
+
 ## Notes for Students
 
 - The `Policy` class in `wordle_env_base.py` is a 2-layer neural network written purely in numpy. You can see exactly how forward pass, softmax, and backpropagation work.
