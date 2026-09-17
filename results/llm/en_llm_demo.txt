@@ -1,0 +1,171 @@
+LLM integration result — English (sandbox verification run)
+
+Command: python scenario_english.py --demo --llm --llm-moderator --games 3 --unseeded
+Weights used: weights_english.npz (produced by this scenario's normal RL training,
+which is completely unaffected by --llm/--llm-moderator — those flags are
+demo-only).
+
+IMPORTANT: this transcript was captured in a sandboxed environment with no
+local Ollama server reachable, so every "[Ollama unavailable, using
+template text — ...]" line is the code's designed fallback path, not a
+bug — it proves the --llm/--llm-moderator/--compare-llm wiring runs
+end-to-end without crashing. It does NOT contain real LLM-generated debate
+text or a real LLM moderator vote (see the compare-llm result file: 0
+usable votes were cast, by construction, since Ollama could not be
+reached).
+
+To capture the REAL result — actual model-generated arguments and a
+non-zero LLM vote/override rate — run the same command on a machine with
+Ollama installed and a model pulled (see README.md's "LLM Integration
+Across All Scenarios" section), then replace the content below the line
+of dashes with that output.
+
+────────────────────────────────────────────────────────────────────────
+
+[English] Building pattern matrix for 968 words...
+[English] Pattern matrix ready.
+Weights loaded ← weights_english.npz
+
+[English] Running 3 UNSEEDED demo game(s)...
+
+=============================================
+  ENGLISH WORDLE DEMO
+  Secret word: BASIS
+  LLM debate: Ollama (llama3.2) + moderator override
+=============================================
+  AGENT        GUESS    RESULT   CANDS
+  ──────────── ──────── ──────── ──────
+
+  --- Turn 1 debate (968 candidates left) ---
+    [Ollama unavailable, using template text — <urlopen error [Errno 111] Connection refused>]
+    [Eliminator] TOWNS: I propose 'towns'. It should eliminate about 94% of the remaining candidates.
+    [Ollama unavailable, using template text — <urlopen error [Errno 111] Connection refused>]
+    [Probabilist] HUMAN: I propose 'human'. Frequency rank: 89%, still a valid candidate: yes.
+    [Ollama unavailable, using template text — <urlopen error [Errno 111] Connection refused>]
+    [RiskTaker] HOLES: I propose 'holes'. Partition quality (Gini) score: 0.97.
+    [Ollama unavailable, using template text — <urlopen error [Errno 111] Connection refused>]
+  RiskTaker    HOLES    ....G    968
+
+  --- Turn 2 debate (34 candidates left) ---
+    [Ollama unavailable, using template text — <urlopen error [Errno 111] Connection refused>]
+    [Eliminator] IDIOT: I propose 'idiot'. It should eliminate about 80% of the remaining candidates.
+    [Ollama unavailable, using template text — <urlopen error [Errno 111] Connection refused>]
+    [Probabilist] SUCKS: I propose 'sucks'. Frequency rank: 5%, still a valid candidate: yes.
+    [Ollama unavailable, using template text — <urlopen error [Errno 111] Connection refused>]
+    [RiskTaker] JESUS: I propose 'jesus'. Partition quality (Gini) score: 0.55.
+    [Ollama unavailable, using template text — <urlopen error [Errno 111] Connection refused>]
+  Probabilist  SUCKS    Y...G    34
+
+  --- Turn 3 debate (2 candidates left) ---
+    [Ollama unavailable, using template text — <urlopen error [Errno 111] Connection refused>]
+    [Eliminator] GRASS: I propose 'grass'. It should eliminate about 50% of the remaining candidates.
+    [Ollama unavailable, using template text — <urlopen error [Errno 111] Connection refused>]
+    [Probabilist] GRASS: I propose 'grass'. Frequency rank: 6%, still a valid candidate: yes.
+    [Ollama unavailable, using template text — <urlopen error [Errno 111] Connection refused>]
+    [RiskTaker] BASIS: I propose 'basis'. Partition quality (Gini) score: 0.5.
+    [Ollama unavailable, using template text — <urlopen error [Errno 111] Connection refused>]
+  Eliminator   GRASS    ..YYG    2
+
+  --- Turn 4 debate (1 candidates left) ---
+    [Ollama unavailable, using template text — <urlopen error [Errno 111] Connection refused>]
+    [Eliminator] BASIS: I propose 'basis'. It should eliminate about 0% of the remaining candidates.
+    [Ollama unavailable, using template text — <urlopen error [Errno 111] Connection refused>]
+    [Probabilist] BASIS: I propose 'basis'. Frequency rank: 28%, still a valid candidate: yes.
+    [Ollama unavailable, using template text — <urlopen error [Errno 111] Connection refused>]
+    [RiskTaker] BASIS: I propose 'basis'. Partition quality (Gini) score: 0.0.
+    [Ollama unavailable, using template text — <urlopen error [Errno 111] Connection refused>]
+  Eliminator   BASIS    GGGGG    1
+
+  ✓ Solved in 4 guesses!
+
+=============================================
+  ENGLISH WORDLE DEMO
+  Secret word: BOOKS
+  LLM debate: Ollama (llama3.2) + moderator override
+=============================================
+  AGENT        GUESS    RESULT   CANDS
+  ──────────── ──────── ──────── ──────
+
+  --- Turn 1 debate (968 candidates left) ---
+    [Ollama unavailable, using template text — <urlopen error [Errno 111] Connection refused>]
+    [Eliminator] TOWNS: I propose 'towns'. It should eliminate about 94% of the remaining candidates.
+    [Ollama unavailable, using template text — <urlopen error [Errno 111] Connection refused>]
+    [Probabilist] HUMAN: I propose 'human'. Frequency rank: 89%, still a valid candidate: yes.
+    [Ollama unavailable, using template text — <urlopen error [Errno 111] Connection refused>]
+    [RiskTaker] HOLES: I propose 'holes'. Partition quality (Gini) score: 0.97.
+    [Ollama unavailable, using template text — <urlopen error [Errno 111] Connection refused>]
+  RiskTaker    HOLES    .G..G    968
+
+  --- Turn 2 debate (20 candidates left) ---
+    [Ollama unavailable, using template text — <urlopen error [Errno 111] Connection refused>]
+    [Eliminator] STATE: I propose 'state'. It should eliminate about 53% of the remaining candidates.
+    [Ollama unavailable, using template text — <urlopen error [Errno 111] Connection refused>]
+    [Probabilist] BOOTS: I propose 'boots'. Frequency rank: 1%, still a valid candidate: yes.
+    [Ollama unavailable, using template text — <urlopen error [Errno 111] Connection refused>]
+    [RiskTaker] SHOPS: I propose 'shops'. Partition quality (Gini) score: 0.63.
+    [Ollama unavailable, using template text — <urlopen error [Errno 111] Connection refused>]
+  Probabilist  BOOTS    GGG.G    20
+
+  --- Turn 3 debate (1 candidates left) ---
+    [Ollama unavailable, using template text — <urlopen error [Errno 111] Connection refused>]
+    [Eliminator] BOOKS: I propose 'books'. It should eliminate about 0% of the remaining candidates.
+    [Ollama unavailable, using template text — <urlopen error [Errno 111] Connection refused>]
+    [Probabilist] BOOKS: I propose 'books'. Frequency rank: 39%, still a valid candidate: yes.
+    [Ollama unavailable, using template text — <urlopen error [Errno 111] Connection refused>]
+    [RiskTaker] BOOKS: I propose 'books'. Partition quality (Gini) score: 0.0.
+    [Ollama unavailable, using template text — <urlopen error [Errno 111] Connection refused>]
+  Eliminator   BOOKS    GGGGG    1
+
+  ✓ Solved in 3 guesses!
+
+=============================================
+  ENGLISH WORDLE DEMO
+  Secret word: FOLKS
+  LLM debate: Ollama (llama3.2) + moderator override
+=============================================
+  AGENT        GUESS    RESULT   CANDS
+  ──────────── ──────── ──────── ──────
+
+  --- Turn 1 debate (968 candidates left) ---
+    [Ollama unavailable, using template text — <urlopen error [Errno 111] Connection refused>]
+    [Eliminator] TOWNS: I propose 'towns'. It should eliminate about 94% of the remaining candidates.
+    [Ollama unavailable, using template text — <urlopen error [Errno 111] Connection refused>]
+    [Probabilist] HUMAN: I propose 'human'. Frequency rank: 89%, still a valid candidate: yes.
+    [Ollama unavailable, using template text — <urlopen error [Errno 111] Connection refused>]
+    [RiskTaker] HOLES: I propose 'holes'. Partition quality (Gini) score: 0.97.
+    [Ollama unavailable, using template text — <urlopen error [Errno 111] Connection refused>]
+  RiskTaker    HOLES    .GG.G    968
+
+  --- Turn 2 debate (1 candidates left) ---
+    [Ollama unavailable, using template text — <urlopen error [Errno 111] Connection refused>]
+    [Eliminator] FOLKS: I propose 'folks'. It should eliminate about 0% of the remaining candidates.
+    [Ollama unavailable, using template text — <urlopen error [Errno 111] Connection refused>]
+    [Probabilist] FOLKS: I propose 'folks'. Frequency rank: 18%, still a valid candidate: yes.
+    [Ollama unavailable, using template text — <urlopen error [Errno 111] Connection refused>]
+    [RiskTaker] FOLKS: I propose 'folks'. Partition quality (Gini) score: 0.0.
+    [Ollama unavailable, using template text — <urlopen error [Errno 111] Connection refused>]
+  Eliminator   FOLKS    GGGGG    1
+
+  ✓ Solved in 2 guesses!
+
+Result: 3/3 games won
+
+════════════════════════════════════════════════════════════════════════
+  AGENT PERFORMANCE SUMMARY
+════════════════════════════════════════════════════════════════════════
+Rank Agent          Wins   Win %  Chosen  Pick %   Hit %  Avg Turn   Avg Rwd
+────────────────────────────────────────────────────────────────────────
+🥇 1  Eliminator        3  100.0%       4   44.4%   75.0%      3.00       nan
+🥈 2  Probabilist       0    0.0%       2   22.2%    0.0%       n/a       nan
+🥉 3  RiskTaker         0    0.0%       3   33.3%    0.0%       n/a       nan
+────────────────────────────────────────────────────────────────────────
+  Most winning guesses:  Eliminator (3 wins)
+  Fewest winning guesses: RiskTaker (0 wins)
+
+  Raw proposal accuracy (proposed the secret word, regardless of whether the moderator chose it):
+    Eliminator        3 / 9      ( 33.3%)
+    Probabilist       3 / 9      ( 33.3%)
+    RiskTaker         4 / 9      ( 44.4%)
+
+  Episodes played: 3
+════════════════════════════════════════════════════════════════════════
