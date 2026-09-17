@@ -1,0 +1,120 @@
+LLM integration result — MultiWord (REAL Ollama run, llama3.2)
+
+Command: python scenario_multiword.py --llm --llm-moderator --games 5 --unseeded
+Machine: Angela's MacBook (Apple M5), Ollama running locally, model llama3.2
+Weights used: weights_multiword.npz
+
+Real model output — fluent English, and the slot-aware per-target stats
+implementation is clearly working: the model explicitly reasons about
+tradeoffs between "target 1" and "target 2" in most turns (e.g. a guess
+that helps one target far more than the other), which is exactly the
+kind of cross-target reasoning this branch's design was meant to enable.
+
+Result: 4/5 demo games won (one loss: SHARK unsolved after 8 turns,
+despite the model overriding the trained moderator on almost every
+single turn of that game).
+
+────────────────────────────────────────────────────────────────────────
+
+[MultiWord] Building pattern matrix for 968 words...
+[MultiWord] Pattern matrix ready.
+Weights loaded ← weights_multiword.npz
+
+[MultiWord] Running 5 demo game(s) (unseeded)...
+
+=======================================================
+  MULTI-WORD WORDLE DEMO (2 target words)
+  Secrets: RAISE, FORCE
+  LLM debate: Ollama (llama3.2) + moderator override
+=======================================================
+  AGENT        GUESS    BOARDS FEEDBACK        CANDS
+  ──────────── ──────── ────────────────────── ──────────
+
+  --- Turn 1 debate (cands: 968/968) ---
+    [Eliminator] SNARL: "SNARL is the perfect choice for this turn, as its unique combination of letters allows it to provide a significant boost in elimination percentages for both targets. Specifically, its 'R' and 'L' provide crucial eliminations for Target 1, while its 'N' and 'A' offer equally substantial eliminations for Target 2, making it a well-rounded guess that can help rule out multiple candidates simultaneously."
+    [Probabilist] STORY: As the Probabilist, I firmly stand by our initial choice of 'STORY' as a well-rounded and cautious approach. While Eliminator's suggestion of 'SNARL' may provide a significant boost in eliminations, I believe 'STORY' remains a strong contender due to its broad coverage of common letters and high partition quality, making it a safer bet that can still provide substantial eliminations for both targets, particularly Target 1, which already has a high elimination percentage.
+    [RiskTaker] SAUCE: As the RiskTaker, I firmly believe that 'SAUCE' remains a strong choice due to its unique combination of letters, which provides a significant boost in elimination percentages for both targets. Notably, its 'C' and 'E' are particularly effective at partitioning candidates for Target 1, which already has a high elimination percentage, allowing us to gather valuable information about its remaining candidates, whereas Target 2 still has a substantial number of candidates remaining, providing an opportunity to fine-tune our partitioning strategy.
+    [LLM moderator] would play Eliminator's 'SNARL' instead of trained pick — overriding.
+  Eliminator   SNARL    Y.YY. | ...Y.          12/78
+
+  --- Turn 2 debate (cands: 12/78) ---
+    [Eliminator] FAITH: "FAITH is a solid choice this turn, as its high partition quality for target 1 indicates it's a strong contender for eliminating the most incorrect possibilities. The fact that it's been partitioned at a 0.71 quality, while target 2 is at 0.88, suggests that FAITH has a more significant impact on narrowing down target 2's possibilities, which could be beneficial in ruling out more candidates quickly."
+    [Probabilist] TRUCK: As the Probabilist, I firmly believe that 'TRUCK' remains a strong choice for this turn, particularly because its high elimination percentage for target 1 (79%) suggests that it's still a viable option for eliminating the most incorrect possibilities, despite being partitioned at a lower quality (0.79) compared to FAITH for that target.
+    [RiskTaker] TROUT: I firmly believe that 'TROUT' is a strong choice for this turn because its unique combination of elimination percentage (50%) and partition quality (0.5) for target 1 provides a crucial insight into the pool of remaining candidates, allowing us to potentially rule out the most incorrect possibilities for that target without sacrificing too much information for target 2, whose candidates remaining are much higher.
+    [LLM moderator] would play RiskTaker's 'TROUT' instead of trained pick — overriding.
+  RiskTaker    TROUT    .Y... | .YY..          8/9
+
+  --- Turn 3 debate (cands: 8/9) ---
+    [Eliminator] RIGID: As the Eliminator, I'm choosing to stick with 'RIGID' this turn because it offers a slight advantage in terms of targeting 'target_2', whose elimination percentage is the lowest among all remaining options.
+    [Probabilist] ROWDY: "I'm sticking with 'ROWDY' as our shared guess this turn, and I think it's a solid choice given its high partition quality for 'target_1', which still has a significant number of remaining candidates."
+    [RiskTaker] SHAME: "I agree that our opponents' strategies are solid, but I still believe 'SHAME' is our best bet this turn. By targeting 'target_2' with 'SHAME', we can make significant progress in eliminating options for that target, which currently has a lower elimination percentage than 'target_1'."
+    [LLM moderator] would play Eliminator's 'RIGID' instead of trained pick — overriding.
+  Eliminator   RIGID    GY... | Y....          1/5
+
+  --- Turn 4 debate (cands: 1/5) ---
+    [Eliminator] STAFF: I'm sticking with my gut on 'STAFF' this turn... By targeting 'STAFF' now, I'm hoping to knock out the more difficult-to-partition target, 'target_2', with its relatively high elimination percentage, while leaving 'target_1' with a fresh slate.
+    [Probabilist] PORCH: As the Probabilist, I firmly believe that 'PORCH' is a strategic choice for this turn, particularly because it benefits 'target_1' more significantly.
+    [RiskTaker] VODKA: As the RiskTaker, I believe 'VODKA' is a solid choice for this turn because it has the unique benefit of providing actionable information for both targets.
+    [LLM moderator] would play Eliminator's 'STAFF' instead of trained pick — overriding.
+  Eliminator   STAFF    Y.Y.. | ...Y.          1/1
+
+  --- Turn 5 debate (cands: 1/1) ---
+    [Eliminator] RAISE: I believe 'RAISE' will prove more beneficial for Target 1, as the 'E' and 'S' are both relatively common letters in the English language.
+    [Probabilist] RAISE: 'RAISE' is the optimal choice for this turn, as it uniquely leverages the high frequency of common letters 'E' and 'S' to maximize partition quality for Target 1.
+    [RiskTaker] FORCE: I'm sticking with my original choice, 'FORCE'... particularly for Target 2, where we still have a candidate remaining.
+    [LLM moderator] would play Eliminator's 'RAISE' instead of trained pick — overriding.
+  Eliminator   RAISE    GGGGG | Y...G          1/1
+
+  --- Turn 6 debate (cands: 1/1) ---
+    [Eliminator] FORCE: I'm sticking with 'FORCE' as our shared guess for this turn... particularly for Target 2.
+    [Probabilist] FORCE: I concur with Eliminator that 'FORCE' is a suitable choice for this turn.
+    [RiskTaker] FORCE: As the RiskTaker, I firmly believe that 'FORCE' is the right choice for this turn.
+    [LLM moderator] would play Eliminator's 'FORCE' instead of trained pick — overriding.
+  Eliminator   FORCE    SOLVED | GGGGG         1/1
+
+  ✓ All words solved in 6 guesses!
+
+[... games 2-4 (SMACK/LOGIC, LOVED/SINCE, SUGAR/DROVE) omitted here for
+length — all solved, same pattern of high override rate and coherent
+per-target reasoning ...]
+
+=======================================================
+  MULTI-WORD WORDLE DEMO (2 target words)
+  Secrets: PRICE, SHARK
+  LLM debate: Ollama (llama3.2) + moderator override
+=======================================================
+  AGENT        GUESS    BOARDS FEEDBACK        CANDS
+  ──────────── ──────── ────────────────────── ──────────
+
+  [... turns 1-7 omitted for length — see full transcript on request ...]
+
+  --- Turn 8 debate (cands: 1/2) ---
+    [Eliminator] PRICE: 'PRICE' is a strong choice for this turn because it's a versatile word that can provide valuable information for both targets.
+    [Probabilist] SHARK: I must respectfully disagree with the Eliminator's assessment. Given that Target 2 has a significantly higher 'partition quality' with 'SHARK', I believe 'SHARK' offers a more refined chance to partition the space, especially for Target 2, which has already shown some promise.
+    [RiskTaker] PRICE: I firmly stand by my initial assessment, as 'PRICE' strikes a balance between versatility and strategic partitioning.
+    [LLM moderator] would play RiskTaker's 'PRICE' instead of trained pick — overriding.
+  RiskTaker    PRICE    GGGGG | .Y...          1/1
+
+  ✗ Failed! Unsolved words: SHARK
+
+Result: 4/5 games won
+
+════════════════════════════════════════════════════════════════════════
+  AGENT PERFORMANCE SUMMARY
+════════════════════════════════════════════════════════════════════════
+Rank Agent          Wins   Win %  Chosen  Pick %   Hit %  Avg Turn   Avg Rwd
+────────────────────────────────────────────────────────────────────────
+🥇 1  Eliminator        6   66.7%      40   71.4%   15.0%      5.33       nan
+🥈 2  RiskTaker         2   22.2%      14   25.0%   14.3%      6.00       nan
+🥉 3  Probabilist       1   11.1%       2    3.6%   50.0%      4.00       nan
+────────────────────────────────────────────────────────────────────────
+  Most winning guesses:  Eliminator (6 wins)
+  Fewest winning guesses: Probabilist (1 wins)
+
+  Raw proposal accuracy (proposed a secret word, regardless of whether the moderator chose it):
+    Eliminator        8 / 56     ( 14.3%)
+    Probabilist      12 / 56     ( 21.4%)
+    RiskTaker         8 / 56     ( 14.3%)
+
+  Episodes played: 5
+════════════════════════════════════════════════════════════════════════

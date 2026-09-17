@@ -1,0 +1,99 @@
+LLM integration result — Macedonian (REAL Ollama run, llama3.2)
+
+Command: python scenario_macedonian.py --llm --llm-moderator --games 5 --unseeded
+Machine: Angela's MacBook (Apple M5), Ollama running locally, model llama3.2
+Weights used: weights_macedonian_debate.npz
+
+This is genuine model output (not the fallback template) — Ollama was
+reachable and llama3.2 generated every debate line below.
+
+FINDING: the model attempts to argue in Macedonian and references the
+real stats it's given (elimination %, partition quality, frequency rank),
+but its Macedonian is not fluent — sentences mix invented/garbled words
+with stray Latin-script fragments and English loanwords ("stats",
+"eliminator", "Strategija"), and grammar frequently breaks down in longer
+sentences. This is consistent with llama3.2 not having Macedonian among
+its officially supported/tuned languages.
+
+────────────────────────────────────────────────────────────────────────
+
+[Macedonian] Building pattern matrix for 967 words...
+[Macedonian] Pattern matrix ready.
+Weights loaded ← weights_macedonian_debate.npz
+
+[Macedonian] Demonstrating multi-agent debate and negotiation (unseeded)...
+
+=================================================================
+  МАКЕДОНСКИ ВОРДЛ — ДЕБАТА И КООРДИНАЦИЈА НА АГЕНТИ
+  Тајниот збор: ТЕТКА
+  LLM debate: Ollama (llama3.2) + moderator override
+=================================================================
+
+--- Обид 1 (Преостанати кандидати: 967) ---
+  [Eliminator] -> 'mоја стратегија за оваа рунда е фокусирана на брзи елиминација неверних избори, а 'СУЕТА' е најбрзи и најкvalificирано избор за ова седмица, бидење што оваа српска реторика има одličна квалитет на делење и ефикасна на избори.
+  [Probabilist] -> "Моја тактика за оваа рунда е фокусирана на избори кои имаме највисоката квалитет и најмаја шанс за победа, а 'БЛУЗА' е тактички избор кој подржава оваа тактика. Нишан на 'СУЕТА' би била уљевена избора, а 'БЛУЗА' е најчврсто изабрани за ова седмица, што и подржава највисока квалитет на оваа рунда."
+  [RiskTaker] -> "Пеќамо, што елиминацијата со 'СУЕТА' и 'БЛУЗА' се одразила на оваа рунда, 'ПЕКОЛ' е драстvenо изаберана во овоа седмица. Намерно ние го подрживаме овао зашто 'ПЕКОЛ' означува ефикасна деситација, што е во ладно сраниште со нашата седмиčka тактика на брза елиминација неверnih избори."
+    [LLM moderator] agrees with the trained pick: Eliminator.
+ МОДЕРАТОРОТ го избра агентот **Eliminator** со зборот **СУЕТА** | Резултат: ..YYG
+
+--- Обид 2 (Преостанати кандидати: 7) ---
+  [Eliminator] -> Моја тактика е да се фокусира на извлекување грешни знаци кратко, а 'РУБИН' е најободен избор за оваа тура. Следејќи stats, визуализираат дека оваа шansa има највисoka точност на урчување на грешна латерална сечкина, што значи шansa да се извлече грешна знаци со највеќе точност.
+  [Probabilist] -> "Моја претпоставка е да МЕТЛА е добра избор за оваа тура, бидејќи шansa за извлекување на грешна латерална сечкина е највисока со оваа дебата. Следејќи шансот на извлекување на грешна знаци, МЕТЛА е најдобра избор за ова содержение."
+  [RiskTaker] -> "Ја сумRiskTaker, и што ги гледам stats за 'КАПКА', ме потврдува во изборот за оваа тура. Силата на 'КАПКА' за извлекување на грешна латерална сечкина е највисока, што означува шansa да се извлече грешна знаци со највеќе точност. Следејќи шансата на извлекување на грешна знаци, 'КАПКА' е најдобра избор за ова содержение."
+    [LLM moderator] would play Eliminator's 'РУБИН' instead of the trained moderator's Probabilist pick — overriding.
+ МОДЕРАТОРОТ го избра агентот **Eliminator** со зборот **РУБИН** | Резултат: .....
+
+--- Обид 3 (Преостанати кандидати: 6) ---
+  [Eliminator] -> Пациенто, 'ЛОЗЈЕ' е добра гадна за сегашната фаза, бидејќи што е уште по мошна за избришanje.
+  [Probabilist] -> 'ЕТАПА' е добра гадна за сегашната фаза, бидејќи што е најмножесто и најмолим со ниво на фrekвенција во дадената фаза, што jo го потврдува тоа што остана во кандидатурите.
+  [RiskTaker] -> 'ВОЈНА' е добра избранија за сегашната фаза, бидејќи што е во посредство на највеќе кандидати и што можеме да го испита најдобро. 'Пациенто' можем да го класификамо како во фаза на избришanje, што што е правично, бидејќи што е уште најмошен и што можеме да го избришаме од кандидатурите. 'ЕТАПА' е добра кандидата, но што е уште по мошна за испит, бидејќи што 'ВОЈНА' го има највисоката фреквенција и што можеме да го корениш во кандидатурите.
+    [LLM moderator] would play Eliminator's 'ЛОЗЈЕ' instead of the trained moderator's Probabilist pick — overriding.
+ МОДЕРАТОРОТ го избра агентот **Eliminator** со зборот **ЛОЗЈЕ** | Резултат: ....Y
+
+--- Обид 4 (Преостанати кандидати: 4) ---
+  [Eliminator] -> "Името Четка е највисока кандидатура за есента, сèма што бема да изгледа на нивата на неедемо. Ако не се извадиме од играта и се изјиваме, што не е уште верно, тогаш ние сèма не можем да се манипулираме со една дема за останати кандидати."
+  [Probabilist] -> "Ако Четка е највисока кандидатура, што се случува, потешката е за нас да се манипулираме со една дема за останати кандидати. Следоватно, 'ЖЕТВА' е најверојатна избор, што ни олеснува да се заштитим од извлекување, аатемптирано на една дема за останати кандидати."
+  [RiskTaker] -> "Иако е вистина тешко да се манипулираме со една дема за останати кандидати, ако ТЕТКА е највисока кандидатура, тогаш оваа дема е најверојатна да биде са нама. Имате право на подразделеното веројатно, но не знаем шта е веројатно. Тетка е најмноживав сценарио и ние не можеме да се дозволим да се лажем."
+    [LLM moderator] agrees with the trained pick: Probabilist.
+ МОДЕРАТОРОТ го избра агентот **Probabilist** со зборот **ЖЕТВА** | Резултат: .GG.G
+
+--- Обид 5 (Преостанати кандидати: 2) ---
+  [Eliminator] -> 'ЧЕТКА' е добра шанса за сега, затоа што joш е нова и не е позната на ништа, што означува дека не се избриза.
+  [Probabilist] -> "Аз сакам да се изјasnem за 'ЧЕТКА' како најдобра одбора, што се уjímам со тоа што е нова и лажерена, со што се намали сифратењето и избризањето. Имател шанс, што е со 50% еlimination%, што е доста вероодлично."
+  [RiskTaker] -> "ЧЕТКА е шansa со 50% шанс за елиминacija, што е доста вероодлично, како што се езиреша наProbabilist, и со тоа, што го подржува RiskTaker-jevата сенитичка расположба на кандидатите."
+    [LLM moderator] would play Eliminator's 'ЧЕТКА' instead of the trained moderator's Probabilist pick — overriding.
+ МОДЕРАТОРОТ го избра агентот **Eliminator** со зборот **ЧЕТКА** | Резултат: .GGGG
+
+--- Обид 6 (Преостанати кандидати: 1) ---
+  [Eliminator] -> Моја анализа за садеје во "ТЕТКА" показаа дека оваа сифра е со најмаја веројатноста да е дел од реално релевантно срѓаје во играте.
+  [Probabilist] -> "Моја стратегија е најквантитативно веројатна, бидејќи што 'ТЕТКА' е едно од најчести и најреални срѓаји во Macedonian."
+  [RiskTaker] -> "Моја Strategija за 'ТЕТКА' е најквантитативно веројатна, бидејќи што е најчести и најреални срѓаји во 'македонска' лингвистичка база."
+    [LLM moderator] would play Eliminator's 'ТЕТКА' instead of the trained moderator's Probabilist pick — overriding.
+ МОДЕРАТОРОТ го избра агентот **Eliminator** со зборот **ТЕТКА** | Резултат: GGGGG
+
+  ✓ Успех! Зборот е погоден за 6 обид/и! (51781.1 ms)
+  Winning guess proposed & played by: Eliminator
+
+[... 3 more games played (ВИЗБА, ДУЌАН, АЖДЕЈ, ЛЕЃЕН) — full per-turn text
+omitted here for length; all shared the same pattern: broken but on-topic
+Macedonian, frequent overrides, all games won ...]
+
+════════════════════════════════════════════════════════════════════════
+  AGENT PERFORMANCE SUMMARY
+════════════════════════════════════════════════════════════════════════
+Rank Agent          Wins   Win %  Chosen  Pick %   Hit %  Avg Turn   Avg Rwd
+────────────────────────────────────────────────────────────────────────
+🥇 1  Eliminator        4   80.0%      14   60.9%   28.6%      4.75       nan
+🥈 2  Probabilist       1   20.0%       8   34.8%   12.5%      4.00       nan
+🥉 3  RiskTaker         0    0.0%       1    4.3%    0.0%       n/a       nan
+────────────────────────────────────────────────────────────────────────
+  Most winning guesses:  Eliminator (4 wins)
+  Fewest winning guesses: RiskTaker (0 wins)
+
+  Raw proposal accuracy (proposed the secret word, regardless of whether the moderator chose it):
+    Eliminator        5 / 23     ( 21.7%)
+    Probabilist       5 / 23     ( 21.7%)
+    RiskTaker         6 / 23     ( 26.1%)
+
+  Episodes played: 5
+════════════════════════════════════════════════════════════════════════

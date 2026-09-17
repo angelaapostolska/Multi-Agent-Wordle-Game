@@ -1,0 +1,53 @@
+LLM integration result — MultiWord (REAL Ollama run, llama3.2)
+
+Command: python scenario_multiword.py --compare-llm --games 20
+Machine: Angela's MacBook (Apple M5), Ollama running locally, model llama3.2
+Weights used: weights_multiword.npz
+
+Highest override rate of all three scenarios (93.2%), yet win rate is
+identical to the trained-only baseline (100% both). This is the cleanest
+support for the "task complexity alone doesn't hurt LLM-mediated
+arbitration" half of the thesis — multiword is harder (2 simultaneous
+targets, longer games) than English, and the LLM overrides even more
+often than in English, but that disagreement still costs nothing here,
+in contrast to Macedonian where a much lower override rate (75.9%) still
+cost 2 losses. The difference isn't how much the LLM overrides — it's
+whether the LLM is actually competent at the language/reasoning involved.
+
+────────────────────────────────────────────────────────────────────────
+
+[MultiWord] Building pattern matrix for 968 words...
+[MultiWord] Pattern matrix ready.
+Weights loaded ← weights_multiword.npz
+
+[MultiWord] Comparing LLM moderator vs trained moderator over 20 games each...
+(this makes real Ollama calls for the LLM-moderator half — expect it to take a while)
+  [LLM-moderator   1/20] won  |   60.8s elapsed
+  [LLM-moderator   2/20] won  |  117.7s elapsed
+  [LLM-moderator   3/20] won  |  159.3s elapsed
+  [LLM-moderator   4/20] won  |  210.8s elapsed
+  [LLM-moderator   5/20] won  |  256.9s elapsed
+  [LLM-moderator   6/20] won  |  306.9s elapsed
+  [LLM-moderator   7/20] won  |  345.1s elapsed
+  [LLM-moderator   8/20] won  |  428.2s elapsed
+  [LLM-moderator   9/20] won  |  519.8s elapsed
+  [LLM-moderator  10/20] won  |  549.5s elapsed
+  [LLM-moderator  11/20] won  |  597.7s elapsed
+  [LLM-moderator  12/20] won  |  653.8s elapsed
+  [LLM-moderator  13/20] won  |  721.5s elapsed
+  [LLM-moderator  14/20] won  |  778.6s elapsed
+  [LLM-moderator  15/20] won  |  854.1s elapsed
+  [LLM-moderator  16/20] won  |  920.9s elapsed
+  [LLM-moderator  17/20] won  |  969.4s elapsed
+  [LLM-moderator  18/20] won  | 1025.9s elapsed
+  [LLM-moderator  19/20] won  | 1083.1s elapsed
+  [LLM-moderator  20/20] won  | 1146.5s elapsed
+  LLM-moderator half done in 1146.5s. Running the 20-game baseline (no Ollama calls, should be quick)...
+  Baseline half done in 0.2s.
+────────────────────────────────────────────────────────────
+Turns played: 103  |  LLM cast a usable vote on 103 of them (Ollama unreachable/unparsed on 0)
+  Agreed with trained moderator:     7 (6.8%)
+  Overrode trained moderator:       96 (93.2%)
+Win rate WITH LLM moderator:      100.0%  (20/20)
+Win rate baseline (trained only): 100.0%  (20/20)
+────────────────────────────────────────────────────────────
