@@ -265,15 +265,32 @@ python scenario_multiword.py --compare-llm --games 20
 ### Results
 
 `results/llm/` contains one demo transcript and one `--compare-llm`
-summary per scenario. **These were captured in a sandboxed environment
-with no local Ollama server reachable**, so every line reads
-`[Ollama unavailable, using template text — ...]` and the compare-llm
-runs show 0 usable LLM votes — this confirms the `--llm`/`--llm-moderator`
-wiring runs end-to-end and falls back safely, but it is **not** real
-model-generated debate text or a real override rate. Re-running the same
-commands on a machine with Ollama installed (see the setup steps above)
-is needed to get the actual model behavior, especially for the
-Macedonian-competence question above.
+summary for Macedonian and for multi-word, all captured from a real,
+locally running Ollama server (`llama3.2`) — not fallback text. English's
+real-Ollama results are already documented in the "What we tested, and
+what we found" section above.
+
+**Headline findings across all three scenarios** (LLM override rate vs.
+whether that override actually cost games, `--compare-llm --games 20`
+except English which used `--games 20` at 50-per-half):
+
+| Scenario   | Override rate | Win rate WITH LLM | Win rate baseline |
+|------------|---------------|--------------------|--------------------|
+| English    | ~89%          | 100% (20/20)        | 100% (20/20)       |
+| Macedonian | 75.9%         | 90% (18/20)         | 100% (20/20)       |
+| Multi-word | 93.2%         | 100% (20/20)        | 100% (20/20)       |
+
+The LLM overrides the trained moderator most of the time in all three
+scenarios — that part doesn't depend on task or language. What differs is
+whether overriding costs anything: it doesn't in English or multi-word
+(even though multi-word's override rate is the *highest* of the three,
+i.e. harder task ≠ worse outcome), but it does in Macedonian, where the
+model's own debate text is visibly less fluent (mixed Latin-script
+fragments, invented words, broken grammar — see `mk_llm_demo.txt`).
+Notably, the override rate in Macedonian didn't drop to compensate for
+that lower reliability — the model kept overriding confidently even
+though it was worse at the underlying task, which is arguably the more
+interesting finding than the raw win-rate drop itself.
 
 ## Notes for Students
 

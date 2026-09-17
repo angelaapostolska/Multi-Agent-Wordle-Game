@@ -1,0 +1,51 @@
+LLM integration result — Macedonian (REAL Ollama run, llama3.2)
+
+Command: python scenario_macedonian.py --compare-llm --games 20
+Machine: Angela's MacBook (Apple M5), Ollama running locally, model llama3.2
+Weights used: weights_macedonian_debate.npz
+
+This is the first real (non-fallback) --compare-llm measurement for
+Macedonian. Key finding: for the first time across all three scenarios,
+LLM moderator override actually COST games — 2 losses out of 20 that the
+trained-only baseline would have won. This lines up with the visibly
+broken Macedonian grammar in mk_llm_demo.txt: the model is producing
+Macedonian-shaped text without being reliably correct about it, and here
+that unreliability shows up as worse decisions, not just worse sentences.
+
+────────────────────────────────────────────────────────────────────────
+
+[Macedonian] Building pattern matrix for 967 words...
+[Macedonian] Pattern matrix ready.
+Weights loaded ← weights_macedonian_debate.npz
+
+[Macedonian] Comparing LLM moderator vs trained moderator over 20 games each...
+(this makes real Ollama calls for the LLM-moderator half — expect it to take a while)
+  [LLM-moderator   1/20] lost |   70.4s elapsed
+  [LLM-moderator   2/20] won  |  112.7s elapsed
+  [LLM-moderator   3/20] won  |  162.3s elapsed
+  [LLM-moderator   4/20] won  |  212.9s elapsed
+  [LLM-moderator   5/20] won  |  261.9s elapsed
+  [LLM-moderator   6/20] won  |  315.4s elapsed
+  [LLM-moderator   7/20] won  |  392.7s elapsed
+  [LLM-moderator   8/20] won  |  434.3s elapsed
+  [LLM-moderator   9/20] won  |  460.2s elapsed
+  [LLM-moderator  10/20] lost |  537.7s elapsed
+  [LLM-moderator  11/20] won  |  592.4s elapsed
+  [LLM-moderator  12/20] won  |  630.0s elapsed
+  [LLM-moderator  13/20] won  |  698.9s elapsed
+  [LLM-moderator  14/20] won  |  788.0s elapsed
+  [LLM-moderator  15/20] won  |  829.0s elapsed
+  [LLM-moderator  16/20] won  |  852.4s elapsed
+  [LLM-moderator  17/20] won  |  908.0s elapsed
+  [LLM-moderator  18/20] won  |  952.0s elapsed
+  [LLM-moderator  19/20] won  | 1022.9s elapsed
+  [LLM-moderator  20/20] won  | 1099.4s elapsed
+  LLM-moderator half done in 1099.4s. Running the 20-game baseline (no Ollama calls, should be quick)...
+  Baseline half done in 0.1s.
+────────────────────────────────────────────────────────────
+Turns played: 83  |  LLM cast a usable vote on 83 of them (Ollama unreachable/unparsed on 0)
+  Agreed with trained moderator:    20 (24.1%)
+  Overrode trained moderator:       63 (75.9%)
+Win rate WITH LLM moderator:       90.0%  (18/20)
+Win rate baseline (trained only): 100.0%  (20/20)
+────────────────────────────────────────────────────────────
