@@ -18,13 +18,10 @@ To watch a game with an LLM-generated debate (requires local Ollama):
 
 import os
 import sys
-import json
-import re
 import time
 import shutil
 import datetime
 import argparse
-import urllib.request
 import numpy as np
 
 # Force UTF-8 stdout/stderr. This script prints box-drawing characters,
@@ -41,7 +38,8 @@ from wordle_env_base import (
     WORDS_EN, AGENT_NAMES, ELIMINATOR, PROBABILIST, RISKTAKER,
     GREEN, YELLOW, GREY, build_pattern_matrix, filter_candidates,
     task_reward, agent_reward, expected_remaining_frac, partition_quality,
-    fb_to_str, Policy
+    fb_to_str, Policy,
+    AGENT_PERSONA, ollama_generate, format_debate_context, llm_moderator_vote,
 )
 
 # ── Setup & Dimensions ────────────────────────────────────────────────────────
@@ -74,133 +72,79 @@ LOG_EVERY = 1000
 WINDOW    = 500
 SEED      = 42
 
-# ── Ollama config & Agent Personas ─────────────────────────────────────────────
+# ── Ollama config ───────────────────────────────────────────────────────────────
 OLLAMA_HOST    = os.environ.get("OLLAMA_HOST", "http://localhost:11434")
 OLLAMA_MODEL   = os.environ.get("OLLAMA_MODEL", "llama3.2")
 OLLAMA_TIMEOUT = 20  # seconds
 
-AGENT_PERSONA = {
-    ELIMINATOR:  "the Eliminator, who cares most about ruling out wrong words fast",
-    PROBABILIST: "the Probabilist, who cares most about guessing common, likely real words",
-    RISKTAKER:   "the RiskTaker, who cares most about splitting the remaining candidates "
-                 "as evenly as possible to gather information",
-}
-
 
 # ── LLM Helpers ───────────────────────────────────────────────────────────────
+#
+# Slot-aware: with num_words >= 2 targets active at once, a single shared
+# guess can help one target far more than another. Rather than flattening
+# every active target's candidates into one merged set (which would hide
+# that tradeoff), these functions compute and expose per-target stats, so
+# the debate/vote can reflect a guess that's strong for target 1 but weak
+# for target 2.
 
-def _ollama_generate(prompt, warn=True):
-    """Send a prompt to a local Ollama server and return the model's reply text."""
-    payload = {"model": OLLAMA_MODEL, "prompt": prompt, "stream": False}
-    try:
-        req = urllib.request.Request(
-            f"{OLLAMA_HOST}/api/generate",
-            data=json.dumps(payload).encode("utf-8"),
-            headers={"Content-Type": "application/json"},
-        )
-        with urllib.request.urlopen(req, timeout=OLLAMA_TIMEOUT) as resp:
-            body = json.loads(resp.read().decode("utf-8"))
-        text = body.get("response", "").strip()
-        return text or None
-    except Exception as e:
-        if warn:
-            print(f"    [Ollama unavailable, using template text — {e}]")
-        return None
-
-
-def generate_agent_argument(agent_id, guess_idx, cands_list):
-    """Deterministic argument text fallback."""
-    if isinstance(cands_list, list) and cands_list and isinstance(cands_list[0], list):
-        active = set()
-        for cl in cands_list:
-            active.update(cl)
-        cands = list(active) if active else list(range(N))
-    else:
-        cands = cands_list
-
+def generate_agent_argument(agent_id, guess_idx, cands_list, active_slots):
+    """Deterministic argument text fallback — one figure per active target."""
     word = WORDS[guess_idx]
 
     if agent_id == ELIMINATOR:
-        frac     = expected_remaining_frac(guess_idx, cands, PATTERN)
-        elim_pct = int(100 * (1.0 - frac))
-        return f"I propose '{word}'. It should eliminate about {elim_pct}% of the remaining candidates."
+        per_target = ", ".join(
+            f"target {i+1}: {int(100 * (1.0 - expected_remaining_frac(guess_idx, cands_list[i], PATTERN)))}%"
+            for i in active_slots
+        )
+        return f"I propose '{word}'. Elimination power per active target — {per_target}."
 
     elif agent_id == PROBABILIST:
         commonness = int(PRIOR[guess_idx] * 100)
-        in_play    = "yes" if guess_idx in cands else "no"
-        return f"I propose '{word}'. Frequency rank: {commonness}%, still a valid candidate: {in_play}."
+        candidate_for = [i + 1 for i in active_slots if guess_idx in cands_list[i]]
+        return (f"I propose '{word}'. Frequency rank: {commonness}%, still a candidate "
+                f"for target(s): {candidate_for if candidate_for else 'none'}.")
 
     else:  # RISKTAKER
-        pq = round(partition_quality(guess_idx, cands, PATTERN), 2)
-        return f"I propose '{word}'. Partition quality (Gini) score: {pq}."
+        per_target = ", ".join(
+            f"target {i+1}: {round(partition_quality(guess_idx, cands_list[i], PATTERN), 2)}"
+            for i in active_slots
+        )
+        return f"I propose '{word}'. Partition quality (Gini) per active target — {per_target}."
 
 
-def generate_agent_argument_llm(agent_id, guess_idx, cands_list, prior_arguments, warn=True):
-    """Generate in-character debate arguments via local Ollama LLM."""
-    if isinstance(cands_list, list) and cands_list and isinstance(cands_list[0], list):
-        active = set()
-        for cl in cands_list:
-            active.update(cl)
-        cands = list(active) if active else list(range(N))
-    else:
-        cands = cands_list
-
-    word  = WORDS[guess_idx]
-    stats = {
-        "elimination_%":        int(100 * (1.0 - expected_remaining_frac(guess_idx, cands, PATTERN))),
-        "partition_quality":    round(partition_quality(guess_idx, cands, PATTERN), 2),
-        "still_a_candidate":    guess_idx in cands,
-        "frequency_rank_%":     int(PRIOR[guess_idx] * 100),
-        "candidates_remaining": len(cands),
+def generate_agent_argument_llm(agent_id, guess_idx, cands_list, active_slots,
+                                 prior_arguments, warn=True):
+    """Generate in-character debate arguments via local Ollama LLM, giving the
+    model per-target stats so it can reason about cross-target tradeoffs."""
+    word = WORDS[guess_idx]
+    per_target_stats = {
+        f"target_{i+1}": {
+            "elimination_%":        int(100 * (1.0 - expected_remaining_frac(guess_idx, cands_list[i], PATTERN))),
+            "partition_quality":    round(partition_quality(guess_idx, cands_list[i], PATTERN), 2),
+            "still_a_candidate":    guess_idx in cands_list[i],
+            "candidates_remaining": len(cands_list[i]),
+        }
+        for i in active_slots
     }
 
-    context = ""
-    if prior_arguments:
-        context = "So far in this debate:\n" + "\n".join(
-            f"- {AGENT_NAMES[i]}: {text}" for i, text in prior_arguments
-        ) + "\n\n"
+    context = format_debate_context(AGENT_NAMES, prior_arguments)
 
     prompt = (
-        f"You are playing Wordle as {AGENT_PERSONA[agent_id]}. "
-        f"Your strategy already picked the word '{word.upper()}' as this turn's guess. "
-        f"Stats for this word: {stats}. {context}"
+        f"You are playing a multi-target Wordle-style game as {AGENT_PERSONA[agent_id]}, "
+        f"where {len(active_slots)} target word(s) must be guessed simultaneously with one "
+        f"shared guess per turn. Your strategy already picked the word '{word.upper()}' as "
+        f"this turn's guess. Per-target stats for this word: {per_target_stats}. {context}"
         f"In 1-2 short sentences, argue in character for why '{word.upper()}' is a good "
-        f"guess right now"
+        f"guess right now, noting if it helps one target much more than another"
         + (", briefly reacting to what the other agents said" if prior_arguments else "")
         + ". Do not propose a different word — only argue for this one."
     )
 
-    text = _ollama_generate(prompt, warn=warn)
+    text = ollama_generate(prompt, model=OLLAMA_MODEL, host=OLLAMA_HOST,
+                            timeout=OLLAMA_TIMEOUT, warn=warn)
     if text is None:
-        return generate_agent_argument(agent_id, guess_idx, cands)
+        return generate_agent_argument(agent_id, guess_idx, cands_list, active_slots)
     return text.replace("\n", " ").strip()
-
-
-def llm_moderator_vote(proposals, arguments, cands_list, turn, warn=True):
-    """Let Ollama LLM vote on which agent proposal to play."""
-    if isinstance(cands_list, list) and cands_list and isinstance(cands_list[0], list):
-        active = set()
-        for cl in cands_list:
-            active.update(cl)
-        cands = list(active) if active else list(range(N))
-    else:
-        cands = cands_list
-
-    lines = [
-        f"{i}: {AGENT_NAMES[i]} proposes '{WORDS[g].upper()}' — {arguments[i]}"
-        for i, g in enumerate(proposals)
-    ]
-    prompt = (
-        f"It's turn {turn + 1} of a Wordle game with {len(cands)} candidate words left. "
-        f"Three teammates each propose a guess:\n" + "\n".join(lines) +
-        "\n\nWhich proposal should the team actually play? "
-        "Reply with ONLY the number 0, 1, or 2 — nothing else."
-    )
-    text = _ollama_generate(prompt, warn=warn)
-    if text is None:
-        return None
-    match = re.search(r"[0-2]", text)
-    return int(match.group()) if match else None
 
 
 class AgentStats:
@@ -686,21 +630,27 @@ def demo_game(
                 print(f"\n  --- Turn {turn+1} debate (cands: {cand_counts}) ---")
             for ai in range(3):
                 arg = generate_agent_argument_llm(
-                    ai, proposals[ai], cands_list, prior_arguments=list(enumerate(arguments)),
-                    warn=verbose
+                    ai, proposals[ai], cands_list, active_before,
+                    prior_arguments=list(enumerate(arguments)), warn=verbose
                 )
                 arguments.append(arg)
                 if verbose:
                     print(f"    [{AGENT_NAMES[ai]}] {WORDS[proposals[ai]].upper()}: {arg}")
         else:
-            arguments = [generate_agent_argument(ai, proposals[ai], cands_list) for ai in range(3)]
+            arguments = [generate_agent_argument(ai, proposals[ai], cands_list, active_before)
+                         for ai in range(3)]
 
         m_state = multiword_mod_state(proposals, cands_list, turn, num_words, max_turns)
         trained_choice, _ = moderator.sample(m_state, rng=rng)
         choice = trained_choice
 
         if llm_moderator:
-            llm_choice = llm_moderator_vote(proposals, arguments, cands_list, turn, warn=verbose)
+            proposal_words = [WORDS[g].upper() for g in proposals]
+            situation = (f"{len(active_before)} active target word(s), candidates remaining "
+                         f"per target: {'/'.join(str(len(cands_list[i])) for i in active_before)}")
+            llm_choice = llm_moderator_vote(proposal_words, arguments, AGENT_NAMES, situation,
+                                             turn, model=OLLAMA_MODEL, host=OLLAMA_HOST,
+                                             timeout=OLLAMA_TIMEOUT, warn=verbose)
             if override_log is not None:
                 override_log.append({"trained_choice": trained_choice, "llm_choice": llm_choice})
             if llm_choice is not None and llm_choice != trained_choice:
