@@ -23,12 +23,9 @@ server — see the "LLM Debate" section in README.md):
 """
 
 import numpy as np
-import json
 import os
-import re
 import time
 import argparse
-import urllib.request
 
 from wordle_env_base import (
     WORDS_EN, MAX_TURNS, AGENT_NAMES,
@@ -39,6 +36,7 @@ from wordle_env_base import (
     task_reward, agent_reward,
     expected_remaining_frac, partition_quality,
     fb_to_str, Policy,
+    AGENT_PERSONA, ollama_generate, format_debate_context, llm_moderator_vote,
 )
 
 # ── Setup ──────────────────────────────────────────────────────────────────────
@@ -74,13 +72,6 @@ SEED      = 42
 OLLAMA_HOST    = os.environ.get("OLLAMA_HOST", "http://localhost:11434")
 OLLAMA_MODEL   = os.environ.get("OLLAMA_MODEL", "llama3.2")
 OLLAMA_TIMEOUT = 20  # seconds
-
-AGENT_PERSONA = {
-    ELIMINATOR:  "the Eliminator, who cares most about ruling out wrong words fast",
-    PROBABILIST: "the Probabilist, who cares most about guessing common, likely real words",
-    RISKTAKER:   "the RiskTaker, who cares most about splitting the remaining candidates "
-                 "as evenly as possible to gather information",
-}
 
 
 class AgentStats:
@@ -394,34 +385,6 @@ def train(episodes=EPISODES, lr=LR, seed=SEED, track_stats=True):
 # 15,000-episode training loop — the trained agents/moderator are completely
 # unaffected either way.
 
-def _ollama_generate(prompt, warn=True):
-    """
-    Send a prompt to a local Ollama server and return the model's reply text,
-    or None on any failure (server not running, model not pulled, timeout...).
-    Callers fall back to the deterministic template text when this returns None,
-    so a missing/slow Ollama install never crashes the demo.
-
-    warn : print the failure reason (set False by compare_llm_moderator's
-    quiet games so a flaky Ollama server doesn't spam dozens of identical
-    lines across many games).
-    """
-    payload = {"model": OLLAMA_MODEL, "prompt": prompt, "stream": False}
-    try:
-        req = urllib.request.Request(
-            f"{OLLAMA_HOST}/api/generate",
-            data=json.dumps(payload).encode("utf-8"),
-            headers={"Content-Type": "application/json"},
-        )
-        with urllib.request.urlopen(req, timeout=OLLAMA_TIMEOUT) as resp:
-            body = json.loads(resp.read().decode("utf-8"))
-        text = body.get("response", "").strip()
-        return text or None
-    except Exception as e:
-        if warn:
-            print(f"    [Ollama unavailable, using template text — {e}]")
-        return None
-
-
 def generate_agent_argument(agent_id, guess_idx, cands):
     """Fixed, deterministic argument text — no LLM involved. Used as the
     fallback when --llm is on but Ollama can't be reached, and as the
@@ -462,11 +425,7 @@ def generate_agent_argument_llm(agent_id, guess_idx, cands, prior_arguments, war
         "candidates_remaining": len(cands),
     }
 
-    context = ""
-    if prior_arguments:
-        context = "So far in this debate:\n" + "\n".join(
-            f"- {AGENT_NAMES[i]}: {text}" for i, text in prior_arguments
-        ) + "\n\n"
+    context = format_debate_context(AGENT_NAMES, prior_arguments)
 
     prompt = (
         f"You are playing Wordle as {AGENT_PERSONA[agent_id]}. "
@@ -478,36 +437,11 @@ def generate_agent_argument_llm(agent_id, guess_idx, cands, prior_arguments, war
         + ". Do not propose a different word — only argue for this one."
     )
 
-    text = _ollama_generate(prompt, warn=warn)
+    text = ollama_generate(prompt, model=OLLAMA_MODEL, host=OLLAMA_HOST,
+                            timeout=OLLAMA_TIMEOUT, warn=warn)
     if text is None:
         return generate_agent_argument(agent_id, guess_idx, cands)
     return text.replace("\n", " ").strip()
-
-
-def llm_moderator_vote(proposals, arguments, cands, turn, warn=True):
-    """
-    Ask the local Ollama model to pick which of the 3 proposed words the
-    team should actually play, given each agent's word and argument.
-
-    Returns an index into `proposals`, or None if Ollama is unreachable or
-    its reply can't be parsed — callers should keep the trained moderator's
-    pick in that case.
-    """
-    lines = [
-        f"{i}: {AGENT_NAMES[i]} proposes '{WORDS[g].upper()}' — {arguments[i]}"
-        for i, g in enumerate(proposals)
-    ]
-    prompt = (
-        f"It's turn {turn + 1} of a Wordle game with {len(cands)} candidate words left. "
-        f"Three teammates each propose a guess:\n" + "\n".join(lines) +
-        "\n\nWhich proposal should the team actually play? "
-        "Reply with ONLY the number 0, 1, or 2 — nothing else."
-    )
-    text = _ollama_generate(prompt, warn=warn)
-    if text is None:
-        return None
-    match = re.search(r"[0-2]", text)
-    return int(match.group()) if match else None
 
 
 # ── Demo: watch one game ───────────────────────────────────────────────────────
@@ -593,7 +527,11 @@ def demo_game(agents, moderator, secret_word=None, use_llm=False, llm_moderator=
         choice = trained_choice
 
         if llm_moderator:
-            llm_choice = llm_moderator_vote(proposals, arguments, cands, turn, warn=verbose)
+            proposal_words = [WORDS[g].upper() for g in proposals]
+            situation = f"{len(cands)} candidate words left"
+            llm_choice = llm_moderator_vote(proposal_words, arguments, AGENT_NAMES, situation,
+                                             turn, model=OLLAMA_MODEL, host=OLLAMA_HOST,
+                                             timeout=OLLAMA_TIMEOUT, warn=verbose)
             if override_log is not None:
                 override_log.append({"trained_choice": trained_choice, "llm_choice": llm_choice})
             if llm_choice is not None and llm_choice != trained_choice:
