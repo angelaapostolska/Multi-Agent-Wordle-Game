@@ -70,8 +70,8 @@ SEED      = 42
 # ── Ollama config (LLM debate — demo/eval only, never used in train()) ─────────
 # Override with env vars, or --ollama-model / --ollama-host on the CLI.
 OLLAMA_HOST    = os.environ.get("OLLAMA_HOST", "http://localhost:11434")
-OLLAMA_MODEL   = os.environ.get("OLLAMA_MODEL", "qwen3:4b")
-OLLAMA_TIMEOUT = 20  # seconds
+OLLAMA_MODEL   = os.environ.get("OLLAMA_MODEL", "gemma3:4b")
+OLLAMA_TIMEOUT = None  # seconds
 
 
 class AgentStats:
@@ -799,8 +799,7 @@ if __name__ == "__main__":
             for _ in range(args.games)
         )
         print(f"\nResult: {wins}/{args.games} games won")
-        if args.games > 1:
-            game_stats.print_summary(total_episodes=args.games)
+        game_stats.print_summary(total_episodes=args.games)
 
     else:
         # Default demo path: seeded, deterministic, large-N batch — safe to
@@ -814,11 +813,12 @@ if __name__ == "__main__":
             game_stats = AgentStats(AGENT_NAMES)
             t0 = time.time()
             wins = 0
+            verbose = args.games <= 20
             for i in range(args.games):
                 rng = np.random.default_rng(args.seed + i)
                 won = demo_game(agents, moderator, args.word,
                                  use_llm=args.llm, llm_moderator=args.llm_moderator,
-                                 rng=rng, verbose=False, stats=game_stats)
+                                 rng=rng, verbose=verbose, stats=game_stats)
                 wins += int(won)
             elapsed = time.time() - t0
             print(f"\nResult: {wins}/{args.games} games won  ({elapsed:.1f}s)")
