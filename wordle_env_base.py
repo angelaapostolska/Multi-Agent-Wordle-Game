@@ -573,8 +573,8 @@ def build_mod_state(proposals, cands, turn, words, pattern_matrix):
 # run_episode() or train() — turning --llm on never adds a call to training.
 
 OLLAMA_HOST    = os.environ.get("OLLAMA_HOST", "http://localhost:11434")
-OLLAMA_MODEL   = os.environ.get("OLLAMA_MODEL", "qwen3:4b")
-OLLAMA_TIMEOUT = 45
+OLLAMA_MODEL   = os.environ.get("OLLAMA_MODEL", "gemma3:4b")
+OLLAMA_TIMEOUT = None
 
 AGENT_PERSONA = {
     ELIMINATOR:  "the Eliminator, who cares most about ruling out wrong words fast",
