@@ -573,8 +573,8 @@ def build_mod_state(proposals, cands, turn, words, pattern_matrix):
 # run_episode() or train() — turning --llm on never adds a call to training.
 
 OLLAMA_HOST    = os.environ.get("OLLAMA_HOST", "http://localhost:11434")
-OLLAMA_MODEL   = os.environ.get("OLLAMA_MODEL", "llama3.2")
-OLLAMA_TIMEOUT = 20
+OLLAMA_MODEL   = os.environ.get("OLLAMA_MODEL", "qwen3:4b")
+OLLAMA_TIMEOUT = 45
 
 AGENT_PERSONA = {
     ELIMINATOR:  "the Eliminator, who cares most about ruling out wrong words fast",
@@ -635,6 +635,8 @@ def llm_moderator_vote(proposal_words, arguments, agent_names, situation, turn,
         for i, word in enumerate(proposal_words)
     ]
     prompt = (
+        f"/no_think\n"
+        f"CRITICAL: Do NOT use <think> tags. Do NOT reason step-by-step. Reply IMMEDIATELY with the answer.\n\n"
         f"It's turn {turn + 1} of a Wordle-style game with {situation}. "
         f"Three teammates each propose a guess:\n" + "\n".join(lines) +
         "\n\nWhich proposal should the team actually play? "
