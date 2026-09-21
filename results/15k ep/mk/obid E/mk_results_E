@@ -4,21 +4,21 @@ C:\Users\Eva\PycharmProjects\Multi-Agent-Wordle-Game\.venv\Scripts\python.exe C:
 
 [Macedonian] Starting training with LLM Debate: 15000 episodes
 ────────────────────────────────────────────────────────────
-  ep   1000 | win%  99.2 | avg guesses (won) 3.74 | 10.2s
-  ep   2000 | win%  99.2 | avg guesses (won) 3.77 | 24.7s
-  ep   3000 | win%  99.4 | avg guesses (won) 3.74 | 40.5s
-  ep   4000 | win%  99.2 | avg guesses (won) 3.71 | 55.2s
-  ep   5000 | win%  99.8 | avg guesses (won) 3.75 | 69.5s
-  ep   6000 | win%  99.0 | avg guesses (won) 3.72 | 84.9s
-  ep   7000 | win%  98.8 | avg guesses (won) 3.66 | 100.0s
-  ep   8000 | win%  98.6 | avg guesses (won) 3.66 | 113.5s
-  ep   9000 | win%  99.6 | avg guesses (won) 3.66 | 126.6s
-  ep  10000 | win%  99.6 | avg guesses (won) 3.75 | 139.3s
-  ep  11000 | win%  99.0 | avg guesses (won) 3.65 | 157.1s
-  ep  12000 | win%  99.6 | avg guesses (won) 3.65 | 171.7s
-  ep  13000 | win%  99.2 | avg guesses (won) 3.72 | 187.5s
-  ep  14000 | win%  99.2 | avg guesses (won) 3.71 | 203.1s
-  ep  15000 | win%  97.8 | avg guesses (won) 3.75 | 218.4s
+  ep   1000 | win%  99.2 | avg guesses (won) 3.74 | 10.3s
+  ep   2000 | win%  99.2 | avg guesses (won) 3.77 | 20.7s
+  ep   3000 | win%  99.4 | avg guesses (won) 3.74 | 30.8s
+  ep   4000 | win%  99.2 | avg guesses (won) 3.71 | 43.6s
+  ep   5000 | win%  99.8 | avg guesses (won) 3.75 | 61.0s
+  ep   6000 | win%  99.0 | avg guesses (won) 3.72 | 77.9s
+  ep   7000 | win%  98.8 | avg guesses (won) 3.66 | 93.2s
+  ep   8000 | win%  98.6 | avg guesses (won) 3.66 | 107.5s
+  ep   9000 | win%  99.6 | avg guesses (won) 3.66 | 121.8s
+  ep  10000 | win%  99.6 | avg guesses (won) 3.75 | 135.9s
+  ep  11000 | win%  99.0 | avg guesses (won) 3.65 | 156.1s
+  ep  12000 | win%  99.6 | avg guesses (won) 3.65 | 166.9s
+  ep  13000 | win%  99.2 | avg guesses (won) 3.72 | 178.5s
+  ep  14000 | win%  99.2 | avg guesses (won) 3.71 | 188.4s
+  ep  15000 | win%  97.8 | avg guesses (won) 3.75 | 198.1s
 ────────────────────────────────────────────────────────────
 [Macedonian] Done. Win rate: 97.8%  Avg guesses: 3.76
 
@@ -40,17 +40,17 @@ Rank Agent          Wins   Win %  Chosen  Pick %   Hit %  Avg Turn   Avg Rwd
     RiskTaker     13879 / 56000  ( 24.8%)
 
   Episodes played: 15000
-  Total time: 218.4s  (14.56 ms/episode)
+  Total time: 198.1s  (13.21 ms/episode)
 ════════════════════════════════════════════════════════════════════════
 
 ────────────────────────────────────────────────────────────────────────
   TIMING & GUESS-COUNT STATS
 ────────────────────────────────────────────────────────────────────────
   Episodes:            15000
-  Total time:          70.01s
-  Avg time / episode:  4.667 ms
-  Fastest episode:     2.040 ms
-  Slowest episode:     17.699 ms
+  Total time:          60.90s
+  Avg time / episode:  4.060 ms
+  Fastest episode:     1.970 ms
+  Slowest episode:     49.121 ms
   Win rate:            99.2%
   Avg guesses (won):   3.72
   Best win (fewest guesses): 1

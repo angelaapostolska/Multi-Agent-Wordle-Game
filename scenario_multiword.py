@@ -74,7 +74,7 @@ SEED      = 42
 
 # ── Ollama config ───────────────────────────────────────────────────────────────
 OLLAMA_HOST    = os.environ.get("OLLAMA_HOST", "http://localhost:11434")
-OLLAMA_MODEL   = os.environ.get("OLLAMA_MODEL", "llama3.2")
+OLLAMA_MODEL   = os.environ.get("OLLAMA_MODEL", "qwen3:4b")
 OLLAMA_TIMEOUT = 20  # seconds
 
 
