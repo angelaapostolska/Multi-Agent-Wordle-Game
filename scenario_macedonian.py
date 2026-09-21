@@ -28,8 +28,8 @@ from wordle_env_base import (
 
 # ── Ollama config (LLM debate — demo/eval only, never used in train()) ─────────
 OLLAMA_HOST    = os.environ.get("OLLAMA_HOST", "http://localhost:11434")
-OLLAMA_MODEL   = os.environ.get("OLLAMA_MODEL", "llama3.2")
-OLLAMA_TIMEOUT = 20
+OLLAMA_MODEL   = os.environ.get("OLLAMA_MODEL", "qwen3:4b")
+OLLAMA_TIMEOUT = 45
 
 # ── Macedonian alphabet (31 letters) ──────────────────────────────────────────
 MK_ALPHABET = [
@@ -152,6 +152,10 @@ def generate_agent_argument_llm(agent_id, guess_idx, cands, prior_arguments, war
     context = format_debate_context(AGENT_NAMES, prior_arguments)
 
     prompt = (
+        f"/no_think\n"
+        f"CRITICAL: Do NOT use <think> tags. Do NOT reason step-by-step. Reply IMMEDIATELY with the answer.\n\n"
+        f"SYSTEM: You are a Macedonian speaker. DO NOT think out loud in English. DO NOT write 'Okay, the user wants me to'. "
+        f"OUTPUT ONLY 1-2 SENTENCES IN MACEDONIAN CYRILLIC \n\n"
         f"You are playing a Macedonian-language Wordle-style word game as "
         f"{AGENT_PERSONA[agent_id]}. Your strategy already picked the Macedonian "
         f"word '{word.upper()}' as this turn's guess. Stats for this word: {stats}. "

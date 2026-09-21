@@ -1,86 +1,81 @@
-C:\Users\Eva\PycharmProjects\Multi-Agent-Wordle-Game\.venv\Scripts\python.exe C:\Users\Eva\PycharmProjects\Multi-Agent-Wordle-Game\scenario_english.py
-[English] Building pattern matrix for 968 words...
-[English] Pattern matrix ready.
 
-[English] Starting training: 15000 episodes, lr=0.003
+[MultiWord] Starting training: 15000 episodes, lr=0.003
 ────────────────────────────────────────────────────────────
-  ep   1000 | win%  99.4 | avg guesses (won) 3.69 | 22.6s
-  ep   2000 | win%  99.4 | avg guesses (won) 3.72 | 38.1s
-  ep   3000 | win%  99.8 | avg guesses (won) 3.71 | 51.5s
-  ep   4000 | win%  98.6 | avg guesses (won) 3.73 | 61.6s
-  ep   5000 | win%  99.2 | avg guesses (won) 3.73 | 71.5s
-  ep   6000 | win%  98.2 | avg guesses (won) 3.72 | 81.4s
-  ep   7000 | win%  98.2 | avg guesses (won) 3.70 | 91.4s
-  ep   8000 | win%  97.6 | avg guesses (won) 3.85 | 101.5s
-  ep   9000 | win%  98.6 | avg guesses (won) 3.79 | 117.9s
-  ep  10000 | win%  98.0 | avg guesses (won) 3.78 | 133.9s
-  ep  11000 | win%  97.6 | avg guesses (won) 3.70 | 149.8s
-  ep  12000 | win%  98.6 | avg guesses (won) 3.75 | 167.4s
-  ep  13000 | win%  97.0 | avg guesses (won) 3.72 | 184.6s
-  ep  14000 | win%  98.0 | avg guesses (won) 3.70 | 206.6s
-  ep  15000 | win%  97.2 | avg guesses (won) 3.73 | 222.7s
+  ep   1000 | win% 100.0 | avg guesses (won) 5.36 | 24.4s
+  ep   2000 | win%  99.6 | avg guesses (won) 5.32 | 48.6s
+  ep   3000 | win%  99.4 | avg guesses (won) 5.35 | 80.1s
+  ep   4000 | win%  99.6 | avg guesses (won) 5.31 | 104.5s
+  ep   5000 | win%  99.6 | avg guesses (won) 5.42 | 126.7s
+  ep   6000 | win%  99.8 | avg guesses (won) 5.28 | 148.1s
+  ep   7000 | win%  99.6 | avg guesses (won) 5.24 | 168.8s
+  ep   8000 | win% 100.0 | avg guesses (won) 5.33 | 192.3s
+  ep   9000 | win%  99.8 | avg guesses (won) 5.37 | 218.0s
+  ep  10000 | win%  99.8 | avg guesses (won) 5.31 | 240.2s
+  ep  11000 | win%  99.8 | avg guesses (won) 5.39 | 260.7s
+  ep  12000 | win%  99.6 | avg guesses (won) 5.34 | 283.1s
+  ep  13000 | win% 100.0 | avg guesses (won) 5.43 | 305.5s
+  ep  14000 | win%  99.6 | avg guesses (won) 5.27 | 326.9s
+  ep  15000 | win%  99.8 | avg guesses (won) 5.25 | 347.4s
 ────────────────────────────────────────────────────────────
-[English] Training done. Win rate: 97.2%  Avg guesses: 3.73
+[MultiWord] Training done. Win rate: 99.8%  Avg guesses: 5.25
 
 ════════════════════════════════════════════════════════════════════════
   AGENT PERFORMANCE SUMMARY
 ════════════════════════════════════════════════════════════════════════
 Rank Agent          Wins   Win %  Chosen  Pick %   Hit %  Avg Turn   Avg Rwd
 ────────────────────────────────────────────────────────────────────────
-🥇 1  Eliminator    12226   82.9%   30306   53.6%   40.3%      3.78     1.088
-🥈 2  Probabilist    1548   10.5%   15129   26.7%   10.2%      3.36     1.365
-🥉 3  RiskTaker       967    6.6%   11140   19.7%    8.7%      3.75     1.091
+🥇 1  Probabilist   26249   87.6%   92133   64.7%   28.5%      4.73     0.952
+🥈 2  RiskTaker      1879    6.3%   25026   17.6%    7.5%      4.86     0.668
+🥉 3  Eliminator     1825    6.1%   25314   17.8%    7.2%      4.85     0.664
 ────────────────────────────────────────────────────────────────────────
-  Most winning guesses:  Eliminator (12226 wins)
-  Fewest winning guesses: RiskTaker (967 wins)
+  Most winning guesses:  Probabilist (26249 wins)
+  Fewest winning guesses: Eliminator (1825 wins)
 
-  Raw proposal accuracy (proposed the secret word, regardless of whether the moderator chose it):
-    Eliminator    14278 / 56575  ( 25.2%)
-    Probabilist   15483 / 56575  ( 27.4%)
-    RiskTaker     14281 / 56575  ( 25.2%)
+  Raw proposal accuracy (proposed a secret word, regardless of whether the moderator chose it):
+    Eliminator    27425 / 142473 ( 19.2%)
+    Probabilist   30792 / 142473 ( 21.6%)
+    RiskTaker     27464 / 142473 ( 19.3%)
 
   Episodes played: 15000
-  Total time: 222.7s  (14.85 ms/episode)
+  Total time: 347.4s  (23.16 ms/episode)
 ════════════════════════════════════════════════════════════════════════
 
 ────────────────────────────────────────────────────────────────────────
   TIMING & GUESS-COUNT STATS
 ────────────────────────────────────────────────────────────────────────
   Episodes:            15000
-  Total time:          74.64s
-  Avg time / episode:  4.976 ms
-  Fastest episode:     1.894 ms
-  Slowest episode:     51.063 ms
-  Win rate:            98.3%
-  Avg guesses (won):   3.73
-  Best win (fewest guesses): 1
-  Worst win (most guesses):  6
+  Total time:          75.88s
+  Avg time / episode:  5.058 ms
+  Fastest episode:     2.839 ms
+  Slowest episode:     218.622 ms
+  Win rate:            99.7%
+  Avg guesses (won):   5.33
+  Best win (fewest guesses): 2
+  Worst win (most guesses):  8
 ────────────────────────────────────────────────────────────────────────
-Weights saved → weights_english.npz
+Weights saved → weights_multiword.npz
 
-[English] Running 300 SEEDED demo game(s) (base seed=42)...
+[MultiWord] Running 300 demo game(s) (seeded, base seed=42)...
 
-Result: 293/300 games won  (seed base=42, 1.4s)
+Result: 300/300 games won
 
 ════════════════════════════════════════════════════════════════════════
   AGENT PERFORMANCE SUMMARY
 ════════════════════════════════════════════════════════════════════════
 Rank Agent          Wins   Win %  Chosen  Pick %   Hit %  Avg Turn   Avg Rwd
 ────────────────────────────────────────────────────────────────────────
-🥇 1  Eliminator      280   95.6%     632   54.9%   44.3%      3.86       nan
-🥈 2  Probabilist      13    4.4%     214   18.6%    6.1%      2.23       nan
-🥉 3  RiskTaker         0    0.0%     305   26.5%    0.0%       n/a       nan
+🥇 1  Probabilist     600  100.0%    2276   84.1%   26.4%      4.51       nan
+🥈 2  Eliminator        0    0.0%     116    4.3%    0.0%       n/a       nan
+🥉 3  RiskTaker         0    0.0%     314   11.6%    0.0%       n/a       nan
 ────────────────────────────────────────────────────────────────────────
-  Most winning guesses:  Eliminator (280 wins)
+  Most winning guesses:  Probabilist (600 wins)
   Fewest winning guesses: RiskTaker (0 wins)
 
-  Raw proposal accuracy (proposed the secret word, regardless of whether the moderator chose it):
-    Eliminator      280 / 1151   ( 24.3%)
-    Probabilist     307 / 1151   ( 26.7%)
-    RiskTaker       284 / 1151   ( 24.7%)
+  Raw proposal accuracy (proposed a secret word, regardless of whether the moderator chose it):
+    Eliminator      546 / 2706   ( 20.2%)
+    Probabilist     600 / 2706   ( 22.2%)
+    RiskTaker       522 / 2706   ( 19.3%)
 
   Episodes played: 300
-  Total time: 1.4s  (4.67 ms/episode)
 ════════════════════════════════════════════════════════════════════════
-
-Process finished with exit code 0
+Weights saved → results\weights_multiword_20260921_125201.npz

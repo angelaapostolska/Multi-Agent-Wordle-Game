@@ -3,4 +3,3 @@ __pycache__/
 
 # Regenerated on demand by scenario_english.py (training takes ~30-110s);
 # never committed for this scenario, unlike weights_macedonian_debate.npz.
-weights_english.npz
