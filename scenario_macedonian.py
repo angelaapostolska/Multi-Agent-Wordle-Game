@@ -28,8 +28,8 @@ from wordle_env_base import (
 
 # ── Ollama config (LLM debate — demo/eval only, never used in train()) ─────────
 OLLAMA_HOST    = os.environ.get("OLLAMA_HOST", "http://localhost:11434")
-OLLAMA_MODEL   = os.environ.get("OLLAMA_MODEL", "qwen3:4b")
-OLLAMA_TIMEOUT = 45
+OLLAMA_MODEL   = os.environ.get("OLLAMA_MODEL", "gemma3:4b")
+OLLAMA_TIMEOUT = None
 
 # ── Macedonian alphabet (31 letters) ──────────────────────────────────────────
 MK_ALPHABET = [

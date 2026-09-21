@@ -1,0 +1,384 @@
+python scenario_english.py --games 300 --compare-llm
+[English] Building pattern matrix for 968 words...
+[English] Pattern matrix ready.
+Weights loaded ← weights_english.npz
+
+[English] Comparing LLM moderator vs trained moderator over 300 games each...
+(this makes real Ollama calls for the LLM-moderator half — expect it to take a while)
+  [LLM-moderator   1/300] won  |   21.9s elapsed
+  [LLM-moderator   2/300] won  |   37.7s elapsed
+  [LLM-moderator   3/300] won  |   52.3s elapsed
+  [LLM-moderator   4/300] won  |   63.2s elapsed
+  [LLM-moderator   5/300] won  |   78.0s elapsed
+  [LLM-moderator   6/300] won  |   98.6s elapsed
+  [LLM-moderator   7/300] won  |  109.4s elapsed
+  [LLM-moderator   8/300] won  |  127.2s elapsed
+  [LLM-moderator   9/300] won  |  147.5s elapsed
+  [LLM-moderator  10/300] won  |  166.2s elapsed
+  [LLM-moderator  11/300] won  |  182.7s elapsed
+  [LLM-moderator  12/300] won  |  194.4s elapsed
+  [LLM-moderator  13/300] won  |  209.2s elapsed
+  [LLM-moderator  14/300] won  |  220.6s elapsed
+  [LLM-moderator  15/300] won  |  235.7s elapsed
+  [LLM-moderator  16/300] won  |  246.9s elapsed
+  [LLM-moderator  17/300] won  |  261.8s elapsed
+  [LLM-moderator  18/300] won  |  272.7s elapsed
+  [LLM-moderator  19/300] won  |  289.2s elapsed
+  [LLM-moderator  20/300] won  |  300.3s elapsed
+  [LLM-moderator  21/300] won  |  311.6s elapsed
+  [LLM-moderator  22/300] won  |  323.2s elapsed
+  [LLM-moderator  23/300] won  |  335.0s elapsed
+  [LLM-moderator  24/300] won  |  347.5s elapsed
+  [LLM-moderator  25/300] won  |  360.1s elapsed
+  [LLM-moderator  26/300] won  |  376.3s elapsed
+  [LLM-moderator  27/300] won  |  396.3s elapsed
+  [LLM-moderator  28/300] won  |  411.9s elapsed
+  [LLM-moderator  29/300] won  |  427.7s elapsed
+  [LLM-moderator  30/300] won  |  446.5s elapsed
+  [LLM-moderator  31/300] won  |  457.5s elapsed
+  [LLM-moderator  32/300] won  |  469.2s elapsed
+  [LLM-moderator  33/300] won  |  481.9s elapsed
+  [LLM-moderator  34/300] won  |  494.7s elapsed
+  [LLM-moderator  35/300] won  |  510.5s elapsed
+  [LLM-moderator  36/300] won  |  530.7s elapsed
+  [LLM-moderator  37/300] won  |  546.0s elapsed
+  [LLM-moderator  38/300] won  |  558.1s elapsed
+  [LLM-moderator  39/300] won  |  574.1s elapsed
+  [LLM-moderator  40/300] won  |  589.6s elapsed
+  [LLM-moderator  41/300] won  |  605.1s elapsed
+  [LLM-moderator  42/300] won  |  621.2s elapsed
+  [LLM-moderator  43/300] won  |  633.9s elapsed
+  [LLM-moderator  44/300] won  |  649.6s elapsed
+  [LLM-moderator  45/300] won  |  661.9s elapsed
+  [LLM-moderator  46/300] won  |  681.8s elapsed
+  [LLM-moderator  47/300] won  |  701.4s elapsed
+  [LLM-moderator  48/300] won  |  717.8s elapsed
+  [LLM-moderator  49/300] won  |  729.2s elapsed
+  [LLM-moderator  50/300] won  |  748.9s elapsed
+  [LLM-moderator  51/300] won  |  764.2s elapsed
+  [LLM-moderator  52/300] won  |  779.8s elapsed
+  [LLM-moderator  53/300] won  |  798.7s elapsed
+  [LLM-moderator  54/300] won  |  813.5s elapsed
+  [LLM-moderator  55/300] won  |  830.0s elapsed
+  [LLM-moderator  56/300] won  |  841.8s elapsed
+  [LLM-moderator  57/300] won  |  861.0s elapsed
+  [LLM-moderator  58/300] won  |  877.8s elapsed
+  [LLM-moderator  59/300] won  |  890.5s elapsed
+  [LLM-moderator  60/300] won  |  906.6s elapsed
+  [LLM-moderator  61/300] won  |  919.6s elapsed
+  [LLM-moderator  62/300] won  |  934.9s elapsed
+  [LLM-moderator  63/300] won  |  955.0s elapsed
+  [LLM-moderator  64/300] won  |  967.7s elapsed
+  [LLM-moderator  65/300] won  |  979.6s elapsed
+  [LLM-moderator  66/300] won  |  996.1s elapsed
+  [LLM-moderator  67/300] won  | 1011.6s elapsed
+  [LLM-moderator  68/300] won  | 1026.3s elapsed
+  [LLM-moderator  69/300] won  | 1042.7s elapsed
+  [LLM-moderator  70/300] won  | 1054.0s elapsed
+  [LLM-moderator  71/300] won  | 1069.8s elapsed
+  [LLM-moderator  72/300] won  | 1082.5s elapsed
+  [LLM-moderator  73/300] won  | 1094.4s elapsed
+  [LLM-moderator  74/300] won  | 1105.6s elapsed
+  [LLM-moderator  75/300] won  | 1117.5s elapsed
+  [LLM-moderator  76/300] won  | 1128.8s elapsed
+  [LLM-moderator  77/300] won  | 1148.3s elapsed
+  [LLM-moderator  78/300] won  | 1159.9s elapsed
+  [LLM-moderator  79/300] won  | 1171.1s elapsed
+  [LLM-moderator  80/300] won  | 1182.8s elapsed
+  [LLM-moderator  81/300] won  | 1199.0s elapsed
+  [LLM-moderator  82/300] won  | 1210.3s elapsed
+  [LLM-moderator  83/300] won  | 1229.5s elapsed
+  [LLM-moderator  84/300] won  | 1240.8s elapsed
+  [LLM-moderator  85/300] won  | 1248.5s elapsed
+  [LLM-moderator  86/300] won  | 1259.9s elapsed
+  [LLM-moderator  87/300] won  | 1278.3s elapsed
+  [LLM-moderator  88/300] won  | 1293.4s elapsed
+  [LLM-moderator  89/300] won  | 1312.8s elapsed
+  [LLM-moderator  90/300] won  | 1324.8s elapsed
+  [LLM-moderator  91/300] won  | 1340.8s elapsed
+  [LLM-moderator  92/300] won  | 1352.1s elapsed
+  [LLM-moderator  93/300] won  | 1367.3s elapsed
+  [LLM-moderator  94/300] won  | 1382.5s elapsed
+  [LLM-moderator  95/300] won  | 1398.5s elapsed
+  [LLM-moderator  96/300] won  | 1405.8s elapsed
+  [LLM-moderator  97/300] won  | 1424.3s elapsed
+  [LLM-moderator  98/300] won  | 1436.1s elapsed
+  [LLM-moderator  99/300] won  | 1448.0s elapsed
+  [LLM-moderator 100/300] won  | 1458.7s elapsed
+  [LLM-moderator 101/300] won  | 1474.1s elapsed
+  [LLM-moderator 102/300] won  | 1489.9s elapsed
+  [LLM-moderator 103/300] won  | 1510.6s elapsed
+  [LLM-moderator 104/300] won  | 1521.6s elapsed
+  [LLM-moderator 105/300] won  | 1536.8s elapsed
+  [LLM-moderator 106/300] won  | 1544.8s elapsed
+  [LLM-moderator 107/300] won  | 1560.4s elapsed
+  [LLM-moderator 108/300] won  | 1571.9s elapsed
+  [LLM-moderator 109/300] won  | 1583.8s elapsed
+  [LLM-moderator 110/300] won  | 1595.6s elapsed
+  [LLM-moderator 111/300] won  | 1614.6s elapsed
+  [LLM-moderator 112/300] won  | 1629.7s elapsed
+  [LLM-moderator 113/300] won  | 1641.2s elapsed
+  [LLM-moderator 114/300] won  | 1657.4s elapsed
+  [LLM-moderator 115/300] won  | 1669.9s elapsed
+  [LLM-moderator 116/300] won  | 1678.2s elapsed
+  [LLM-moderator 117/300] won  | 1689.9s elapsed
+  [LLM-moderator 118/300] won  | 1704.9s elapsed
+  [LLM-moderator 119/300] won  | 1716.7s elapsed
+  [LLM-moderator 120/300] won  | 1724.3s elapsed
+  [LLM-moderator 121/300] won  | 1731.9s elapsed
+  [LLM-moderator 122/300] won  | 1743.9s elapsed
+  [LLM-moderator 123/300] won  | 1755.7s elapsed
+  [LLM-moderator 124/300] won  | 1771.6s elapsed
+  [LLM-moderator 125/300] won  | 1791.7s elapsed
+  [LLM-moderator 126/300] won  | 1810.6s elapsed
+  [LLM-moderator 127/300] won  | 1834.3s elapsed
+  [LLM-moderator 128/300] won  | 1845.8s elapsed
+  [LLM-moderator 129/300] won  | 1861.3s elapsed
+  [LLM-moderator 130/300] won  | 1876.6s elapsed
+  [LLM-moderator 131/300] won  | 1892.5s elapsed
+  [LLM-moderator 132/300] won  | 1904.4s elapsed
+  [LLM-moderator 133/300] won  | 1919.8s elapsed
+  [LLM-moderator 134/300] won  | 1935.4s elapsed
+  [LLM-moderator 135/300] won  | 1950.9s elapsed
+  [LLM-moderator 136/300] won  | 1971.1s elapsed
+  [LLM-moderator 137/300] won  | 1983.3s elapsed
+  [LLM-moderator 138/300] won  | 1999.3s elapsed
+  [LLM-moderator 139/300] won  | 2014.7s elapsed
+  [LLM-moderator 140/300] won  | 2031.3s elapsed
+  [LLM-moderator 141/300] won  | 2043.6s elapsed
+  [LLM-moderator 142/300] won  | 2059.4s elapsed
+  [LLM-moderator 143/300] won  | 2071.6s elapsed
+  [LLM-moderator 144/300] won  | 2084.1s elapsed
+  [LLM-moderator 145/300] won  | 2099.3s elapsed
+  [LLM-moderator 146/300] won  | 2111.3s elapsed
+  [LLM-moderator 147/300] won  | 2122.3s elapsed
+  [LLM-moderator 148/300] won  | 2134.3s elapsed
+  [LLM-moderator 149/300] won  | 2146.0s elapsed
+  [LLM-moderator 150/300] won  | 2164.5s elapsed
+  [LLM-moderator 151/300] won  | 2180.3s elapsed
+  [LLM-moderator 152/300] won  | 2193.2s elapsed
+  [LLM-moderator 153/300] won  | 2204.7s elapsed
+  [LLM-moderator 154/300] won  | 2223.2s elapsed
+  [LLM-moderator 155/300] won  | 2231.0s elapsed
+  [LLM-moderator 156/300] won  | 2246.6s elapsed
+  [LLM-moderator 157/300] won  | 2262.1s elapsed
+  [LLM-moderator 158/300] won  | 2278.1s elapsed
+  [LLM-moderator 159/300] won  | 2289.4s elapsed
+  [LLM-moderator 160/300] won  | 2301.1s elapsed
+  [LLM-moderator 161/300] won  | 2319.6s elapsed
+  [LLM-moderator 162/300] won  | 2334.7s elapsed
+  [LLM-moderator 163/300] won  | 2353.8s elapsed
+  [LLM-moderator 164/300] won  | 2370.9s elapsed
+  [LLM-moderator 165/300] won  | 2378.4s elapsed
+  [LLM-moderator 166/300] won  | 2390.5s elapsed
+  [LLM-moderator 167/300] won  | 2410.3s elapsed
+  [LLM-moderator 168/300] won  | 2430.9s elapsed
+  [LLM-moderator 169/300] won  | 2445.3s elapsed
+  [LLM-moderator 170/300] won  | 2461.4s elapsed
+  [LLM-moderator 171/300] won  | 2473.6s elapsed
+  [LLM-moderator 172/300] won  | 2489.1s elapsed
+  [LLM-moderator 173/300] won  | 2499.7s elapsed
+  [LLM-moderator 174/300] won  | 2515.5s elapsed
+  [LLM-moderator 175/300] won  | 2528.0s elapsed
+  [LLM-moderator 176/300] won  | 2553.4s elapsed
+  [LLM-moderator 177/300] won  | 2573.2s elapsed
+  [LLM-moderator 178/300] won  | 2588.8s elapsed
+  [LLM-moderator 179/300] won  | 2604.9s elapsed
+  [LLM-moderator 180/300] won  | 2616.5s elapsed
+  [LLM-moderator 181/300] won  | 2635.9s elapsed
+  [LLM-moderator 182/300] won  | 2656.1s elapsed
+  [LLM-moderator 183/300] won  | 2666.6s elapsed
+  [LLM-moderator 184/300] won  | 2686.3s elapsed
+  [LLM-moderator 185/300] won  | 2702.1s elapsed
+  [LLM-moderator 186/300] won  | 2714.4s elapsed
+  [LLM-moderator 187/300] won  | 2730.2s elapsed
+  [LLM-moderator 188/300] won  | 2746.6s elapsed
+  [LLM-moderator 189/300] won  | 2761.6s elapsed
+  [LLM-moderator 190/300] won  | 2778.5s elapsed
+  [LLM-moderator 191/300] won  | 2793.8s elapsed
+  [LLM-moderator 192/300] won  | 2805.3s elapsed
+  [LLM-moderator 193/300] won  | 2816.9s elapsed
+  [LLM-moderator 194/300] won  | 2829.7s elapsed
+  [LLM-moderator 195/300] won  | 2841.2s elapsed
+  [LLM-moderator 196/300] won  | 2864.5s elapsed
+  [LLM-moderator 197/300] won  | 2877.3s elapsed
+  [LLM-moderator 198/300] won  | 2889.5s elapsed
+  [LLM-moderator 199/300] won  | 2900.1s elapsed
+  [LLM-moderator 200/300] won  | 2911.7s elapsed
+  [LLM-moderator 201/300] won  | 2927.9s elapsed
+  [LLM-moderator 202/300] won  | 2943.9s elapsed
+  [LLM-moderator 203/300] won  | 2960.2s elapsed
+  [LLM-moderator 204/300] won  | 2972.0s elapsed
+  [LLM-moderator 205/300] won  | 2986.7s elapsed
+  [LLM-moderator 206/300] won  | 3001.7s elapsed
+  [LLM-moderator 207/300] won  | 3013.1s elapsed
+  [LLM-moderator 208/300] won  | 3029.1s elapsed
+  [LLM-moderator 209/300] won  | 3048.9s elapsed
+  [LLM-moderator 210/300] won  | 3064.6s elapsed
+  [LLM-moderator 211/300] won  | 3077.1s elapsed
+  [LLM-moderator 212/300] won  | 3089.1s elapsed
+  [LLM-moderator 213/300] won  | 3100.2s elapsed
+  [LLM-moderator 214/300] won  | 3115.5s elapsed
+  [LLM-moderator 215/300] won  | 3131.4s elapsed
+  [LLM-moderator 216/300] won  | 3143.0s elapsed
+  [LLM-moderator 217/300] won  | 3161.9s elapsed
+  [LLM-moderator 218/300] won  | 3174.4s elapsed
+  [LLM-moderator 219/300] won  | 3190.3s elapsed
+  [LLM-moderator 220/300] won  | 3202.4s elapsed
+  [LLM-moderator 221/300] won  | 3215.1s elapsed
+  [LLM-moderator 222/300] won  | 3226.9s elapsed
+  [LLM-moderator 223/300] won  | 3243.3s elapsed
+  [LLM-moderator 224/300] won  | 3263.0s elapsed
+  [LLM-moderator 225/300] won  | 3278.6s elapsed
+  [LLM-moderator 226/300] won  | 3295.7s elapsed
+  [LLM-moderator 227/300] won  | 3307.1s elapsed
+  [LLM-moderator 228/300] won  | 3323.0s elapsed
+  [LLM-moderator 229/300] won  | 3343.3s elapsed
+  [LLM-moderator 230/300] won  | 3367.3s elapsed
+  [LLM-moderator 231/300] won  | 3382.3s elapsed
+  [LLM-moderator 232/300] won  | 3393.6s elapsed
+  [LLM-moderator 233/300] won  | 3405.0s elapsed
+  [LLM-moderator 234/300] won  | 3425.7s elapsed
+  [LLM-moderator 235/300] won  | 3441.2s elapsed
+  [LLM-moderator 236/300] won  | 3453.1s elapsed
+  [LLM-moderator 237/300] won  | 3468.6s elapsed
+  [LLM-moderator 238/300] won  | 3484.0s elapsed
+  [LLM-moderator 239/300] won  | 3499.2s elapsed
+  [LLM-moderator 240/300] won  | 3511.4s elapsed
+  [LLM-moderator 241/300] won  | 3523.9s elapsed
+  [LLM-moderator 242/300] won  | 3540.6s elapsed
+  [LLM-moderator 243/300] won  | 3552.5s elapsed
+  [LLM-moderator 244/300] won  | 3568.2s elapsed
+  [LLM-moderator 245/300] won  | 3575.7s elapsed
+  [LLM-moderator 246/300] won  | 3587.8s elapsed
+  [LLM-moderator 247/300] won  | 3608.4s elapsed
+  [LLM-moderator 248/300] won  | 3625.2s elapsed
+  [LLM-moderator 249/300] won  | 3648.5s elapsed
+  [LLM-moderator 250/300] won  | 3655.8s elapsed
+  [LLM-moderator 251/300] won  | 3674.5s elapsed
+  [LLM-moderator 252/300] won  | 3685.9s elapsed
+  [LLM-moderator 253/300] won  | 3702.4s elapsed
+  [LLM-moderator 254/300] won  | 3719.2s elapsed
+  [LLM-moderator 255/300] won  | 3731.2s elapsed
+  [LLM-moderator 256/300] won  | 3746.9s elapsed
+  [LLM-moderator 257/300] won  | 3759.4s elapsed
+  [LLM-moderator 258/300] won  | 3775.2s elapsed
+  [LLM-moderator 259/300] won  | 3795.4s elapsed
+  [LLM-moderator 260/300] won  | 3812.3s elapsed
+  [LLM-moderator 261/300] won  | 3831.9s elapsed
+  [LLM-moderator 262/300] won  | 3843.3s elapsed
+  [LLM-moderator 263/300] won  | 3858.8s elapsed
+  [LLM-moderator 264/300] won  | 3873.4s elapsed
+  [LLM-moderator 265/300] won  | 3892.2s elapsed
+  [LLM-moderator 266/300] won  | 3908.2s elapsed
+  [LLM-moderator 267/300] won  | 3919.9s elapsed
+  [LLM-moderator 268/300] won  | 3928.0s elapsed
+  [LLM-moderator 269/300] won  | 3939.7s elapsed
+  [LLM-moderator 270/300] won  | 3952.0s elapsed
+  [LLM-moderator 271/300] won  | 3963.4s elapsed
+  [LLM-moderator 272/300] won  | 3978.9s elapsed
+  [LLM-moderator 273/300] won  | 3994.2s elapsed
+  [LLM-moderator 274/300] won  | 4011.1s elapsed
+  [LLM-moderator 275/300] won  | 4026.9s elapsed
+  [LLM-moderator 276/300] won  | 4035.4s elapsed
+  [LLM-moderator 277/300] won  | 4051.3s elapsed
+  [LLM-moderator 278/300] won  | 4059.1s elapsed
+  [LLM-moderator 279/300] won  | 4070.9s elapsed
+  [LLM-moderator 280/300] won  | 4087.0s elapsed
+  [LLM-moderator 281/300] won  | 4098.5s elapsed
+  [LLM-moderator 282/300] won  | 4113.8s elapsed
+  [LLM-moderator 283/300] won  | 4129.4s elapsed
+  [LLM-moderator 284/300] won  | 4148.6s elapsed
+  [LLM-moderator 285/300] won  | 4164.4s elapsed
+  [LLM-moderator 286/300] won  | 4175.1s elapsed
+  [LLM-moderator 287/300] won  | 4186.6s elapsed
+  [LLM-moderator 288/300] won  | 4199.1s elapsed
+  [LLM-moderator 289/300] won  | 4207.3s elapsed
+  [LLM-moderator 290/300] won  | 4219.4s elapsed
+  [LLM-moderator 291/300] won  | 4234.4s elapsed
+  [LLM-moderator 292/300] won  | 4248.9s elapsed
+  [LLM-moderator 293/300] won  | 4256.4s elapsed
+  [LLM-moderator 294/300] won  | 4276.5s elapsed
+  [LLM-moderator 295/300] won  | 4288.0s elapsed
+  [LLM-moderator 296/300] won  | 4303.9s elapsed
+  [LLM-moderator 297/300] won  | 4320.4s elapsed
+  [LLM-moderator 298/300] won  | 4332.3s elapsed
+  [LLM-moderator 299/300] won  | 4346.7s elapsed
+  [LLM-moderator 300/300] won  | 4362.4s elapsed
+  LLM-moderator half done in 4362.4s. Running the 300-game baseline (no Ollama calls, should be quick)...
+  Baseline half done in 1.3s.
+────────────────────────────────────────────────────────────
+Turns played: 1111  |  LLM cast a usable vote on 1111 of them (Ollama unreachable/unparsed on 0)
+  Agreed with trained moderator:   474 (42.7%)
+  Overrode trained moderator:      637 (57.3%)
+Win rate WITH LLM moderator:      100.0%  (300/300)
+Win rate baseline (trained only):  97.7%  (293/300)
+────────────────────────────────────────────────────────────
+ python scenario_english.py --games 1 --llm-moderator
+[English] Building pattern matrix for 968 words...
+[English] Pattern matrix ready.
+Weights loaded ← weights_english.npz
+
+[English] Running 1 SEEDED demo game(s) (base seed=42)...
+  [note] --llm/--llm-moderator make real per-turn Ollama calls; with --games 1 this will take a while.
+
+=============================================
+  ENGLISH WORDLE DEMO
+  Secret word: GRACE
+  LLM debate: Ollama (gemma3:4b) + moderator override
+=============================================
+  AGENT        GUESS    RESULT   CANDS
+  ──────────── ──────── ──────── ──────
+
+  --- Turn 1 debate (968 candidates left) ---
+    [Eliminator] TOWNS: Absolutely! 'TOWNS' has already ripped through the most common letters, eliminating a massive chunk of possibilities – a solid 94% elimination rate is fantastic. It's clearly a strong choice to keep narrowing down the field and quickly expose what's *really* left!
+    [Probabilist] HUMAN: While ‘TOWNS’ certainly grabbed a lot of common letters, ‘HUMAN’ remains a statistically sound choice – it’s a frequently used word with a high elimination rate, and a partition quality of 0.9 suggests it's revealing a lot of crucial information about the solution. We’ve already established ‘HUMAN’ is a likely contender, and continuing with it maximizes our chances of identifying the most probable word!
+    [RiskTaker] HOLES: “While ‘TOWNS’ and ‘HUMAN’ have made some headway, ‘HOLES’ is still the most efficient next step – its 96% elimination rate shows we’re already hitting key letters, and maintaining a balanced spread of possibilities like this is paramount for maximizing information gain, unlike simply chasing the most common words.”
+    [LLM moderator] would play Eliminator's 'TOWNS' instead of the trained moderator's RiskTaker pick — overriding.
+  Eliminator   TOWNS    .....    968
+
+  --- Turn 2 debate (145 candidates left) ---
+    [Eliminator] BEARS: "Absolutely, 'BEARS' is the only logical move – we've already nailed down the most common letters and significantly reduced the pool of possibilities with that 94% elimination rate!  Let's keep chipping away at the remaining incorrect letters with this aggressively informative guess."
+    [Probabilist] FIRED: While 'BEARS' certainly tries to aggressively eliminate, 'FIRED' remains the most statistically sound choice – my 95% elimination rate demonstrates we’ve already identified a very common word, and continuing with it maximizes our chances of quickly narrowing down the field.  It’s clear we need to stick with a high-probability guess like 'FIRED' to maintain this strong level of certainty!
+    [RiskTaker] THATS: While ‘BEARS’ and ‘FIRED’ both boast high elimination rates, ‘THATS’ is superior because it strategically targets a significantly larger number of remaining common letters – a crucial step in achieving that even split I prioritize.  It’s clear we need to consolidate information, and ‘THATS’ offers the best chance to evenly distribute eliminations across the remaining candidate pool, even if it doesn’t have the absolute highest single rate.
+    [LLM moderator] agrees with the trained pick: Probabilist.
+  Probabilist  FIRED    ..YY.    145
+
+  --- Turn 3 debate (16 candidates left) ---
+    [Eliminator] TOXIC: Absolutely! ‘TOXIC’ has already eliminated a huge chunk of the possibilities, and the 50% elimination rate shows we’re making serious progress – I need to keep hammering away at these common letters. This guess maximizes my ability to quickly rule out incorrect letters, which is precisely what I'm here to do!
+    [Probabilist] REACH: While 'TOXIC' certainly eliminated some less likely options, 'REACH' maintains a strong statistical foundation with a high elimination rate and decent frequency ranking – we need to continue targeting common vowels and consonants!  It’s a pragmatic choice, maximizing our chances of quickly narrowing down the possibilities, just as I aim to do.
+    [RiskTaker] MEDAL: “While ‘TOXIC’ was a bold move, ‘MEDAL’ strategically builds on our existing knowledge by focusing on a high-frequency letter like ‘D’ and solidifying the ‘A’ position, maximizing our chance to evenly split remaining candidates – a crucial step for RiskTaker!”
+    [LLM moderator] agrees with the trained pick: Probabilist.
+  Probabilist  REACH    YYGG.    16
+
+  --- Turn 4 debate (1 candidates left) ---
+    [Eliminator] GRACE: "We absolutely *have* to keep pushing for eliminations, and ‘GRACE’ has already revealed the most crucial information – it’s got a strong central vowel! Let’s see if we can ruthlessly cut out any remaining words that share those letters."
+    [Probabilist] GRACE: While I appreciate the focus on eliminations, ‘GRACE’ was already a solid choice – it revealed a prevalent central vowel and a high-frequency letter, giving us a strong foundation for further deductions. Let’s continue to leverage this information and identify words with similar characteristics for the most statistically sound next step.
+    [RiskTaker] GRACE: “I agree it’s been a strong start – seeing that central 'A' and ‘E’ really narrowed things down, and the high frequency of ‘R’ is proving invaluable for eliminating possibilities. While the Probabilist emphasizes leveraging existing data, a truly strategic approach *must* continue to pinpoint the most common letter combinations, just like ‘GRACE’ has shown us.”
+    [LLM moderator] agrees with the trained pick: Eliminator.
+  Eliminator   GRACE    GGGGG    1
+
+  ✓ Solved in 4 guesses!
+
+Result: 1/1 games won  (16.2s)
+
+════════════════════════════════════════════════════════════════════════
+  AGENT PERFORMANCE SUMMARY
+════════════════════════════════════════════════════════════════════════
+Rank Agent          Wins   Win %  Chosen  Pick %   Hit %  Avg Turn   Avg Rwd
+────────────────────────────────────────────────────────────────────────
+🥇 1  Eliminator        1  100.0%       2   50.0%   50.0%      4.00       nan
+🥈 2  Probabilist       0    0.0%       2   50.0%    0.0%       n/a       nan
+🥉 3  RiskTaker         0    0.0%       0    0.0%    0.0%       n/a       nan
+────────────────────────────────────────────────────────────────────────
+  Most winning guesses:  Eliminator (1 wins)
+  Fewest winning guesses: RiskTaker (0 wins)
+
+  Raw proposal accuracy (proposed the secret word, regardless of whether the moderator chose it):
+    Eliminator        1 / 4      ( 25.0%)
+    Probabilist       1 / 4      ( 25.0%)
+    RiskTaker         1 / 4      ( 25.0%)
+
+  Episodes played: 1
+  Total time: 16.2s  (16172.80 ms/episode)
+════════════════════════════════════════════════════════════════════════
