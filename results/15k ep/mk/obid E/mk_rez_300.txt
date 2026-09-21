@@ -1,0 +1,444 @@
+(.venv) PS C:\Users\Eva\PycharmProjects\Multi-Agent-Wordle-Game> python scenario_macedonian.py --games 1 --llm-moderator
+[Macedonian] Building pattern matrix for 967 words...
+[Macedonian] Pattern matrix ready.
+Weights loaded ← weights_macedonian_debate.npz
+
+[Macedonian] Demonstrating multi-agent debate and negotiation (seeded, base seed=42)...
+
+=================================================================
+  МАКЕДОНСКИ ВОРДЛ — ДЕБАТА И КООРДИНАЦИЈА НА АГЕНТИ
+  Тајниот збор: БЕНКА
+  LLM debate: Ollama (gemma3:4b) + moderator override
+=================================================================
+
+--- Обид 1 (Преостанати кандидати: 967) ---
+  [Eliminator] -> Секако, „СУЕТА“ е добар избор бидејќи го неуреди „К“ и „Е“, како и да го зборува можниот збор. Оваа комбинација ни дава најголем потенцијал за брзо сужавање на опциите.
+  [Probabilist] -> Секако, „БЛУЗА“ е добар предизвик, особено откако „СУЕТА“ се фокусира на неуредување на гласни. Нејзин висок процент на елиминација покажува дека тоа е сеуште валуабилна опција.
+  [RiskTaker] -> Секако, „ПЕКОЛ“ е одличен избор, бидејќи продолжува со нашата стратегија да ги неуреди буквите и да ги сужава кандидатите, како што го сметаше и Секако.  „СУЕТА“ беше добар, но „ПЕКОЛ“ ќе ги пробаме и останатите букви.
+    [LLM moderator] agrees with the trained pick: Eliminator.
+ МОДЕРАТОРОТ го избра агентот **Eliminator** со зборот **СУЕТА** | Резултат: ..Y.G
+
+--- Обид 2 (Преостанати кандидати: 30) ---
+  [Eliminator] -> Секако, ЏУМКА е одлична постапка, бидејќи го затамнува широк спектар на потенцијални зборови и ефикасно ги исклучува многу грешки. Тоа е многу важен чекор во процесот на наоѓање на правилниот збор.
+  [Probabilist] -> Секако, 'МЕНЗА' е добар избор, бидејќи ја потврдува високата претходна стопка на елиминација и останува многу релевантна опција.  Прекумерното затамнување не е потребно, а сега е важно да се задржи можнсот за 'МЕНЗА'.
+  [RiskTaker] -> Секако, 'СКЛАД' е одличен избор, бидејќи еден од главните цели е да се задржи најголем број на елиминирани опции, како што рече и Елиминаторот. Како и Пробабилистот, верувам дека 'СКЛАД' ќе помогне да се потврди нашата претходна анализа.
+    [LLM moderator] would play Eliminator's 'ЏУМКА' instead of the trained moderator's Probabilist pick — overriding.
+ МОДЕРАТОРОТ го избра агентот **Eliminator** со зборот **ЏУМКА** | Резултат: ...GG
+
+--- Обид 3 (Преостанати кандидати: 11) ---
+  [Eliminator] -> Секако, КУФЕР е добар избор, бидејќи веќе го истранивме многу потенцијални зборови и се фокусираме на брзо наоѓање на правилниот.  Оваа ставка е уште во игра и може да ја донесе до крајната победа.
+  [Probabilist] -> Секако, ЖЕНКА е добар избор, затоа што јас имам предвид честотата на зборовите и важна е позитивната разлика. Се надевам дека КУФЕР нема да биде воопшто корисен.
+  [RiskTaker] -> Секако, ХОКЕЈ е добар збор, бидејќи ни укажува на низа со гласни и согласки, а исто така е често користен. Неколку други агенти се фокусираат на честотата, но овој збор ќе даде многу информации за многу потенцијални зборови.
+    [LLM moderator] would play Eliminator's 'КУФЕР' instead of the trained moderator's Probabilist pick — overriding.
+ МОДЕРАТОРОТ го избра агентот **Eliminator** со зборот **КУФЕР** | Резултат: Y..Y.
+
+--- Обид 4 (Преостанати кандидати: 9) ---
+  [Eliminator] -> Секако, 'СРЕЌА' е добар избор, бидејќи веќе имаме подесено некои од знаците и е многу важно да го исклучиме поголем број на потенцијални зборови.
+  [Probabilist] -> Секако, 'ЖЕЛКА' е добар избор бидејќи имаме многу добра избалансирана информација и ја продолжуваме процесот на наоѓање на збор кој е со најголем потенцијал. Се разбира, важно е да продолжиме да ја тестираме јачината на познатите знаци.
+  [RiskTaker] -> Секако, ‘ГЕНИЈ’ е добар избор бидејќи го потврдува нашиот првичен избор и целосно ја користи информацијата добиена од претходните игри.  Неколкуте разговори покажуваат дека голем дел од кандидатите веќе се исклуени, па ‘ГЕНИЈ’ е наменет да ги заврши останатите.
+    [LLM moderator] would play Eliminator's 'СРЕЌА' instead of the trained moderator's Probabilist pick — overriding.
+ МОДЕРАТОРОТ го избра агентот **Eliminator** со зборот **СРЕЌА** | Резултат: ..Y.G
+
+--- Обид 5 (Преостанати кандидати: 9) ---
+  [Eliminator] -> Секако, 'БАКНЕ' е добар избор, бидејќи веќе елумираше многу букви и останува доста кандидати. Оваа анализа ни дава уште една опција за брзо допирање до точниот збор.
+  [Probabilist] -> Секако, 'ПЕЧКА' е добар избор бидејќи низата на неуспешни обиди ни дава силна основа да го промовираме.  Освен тоа, 'БАКНЕ' е добар, но 'ПЕЧКА' има многу поголем потенцијал за точни букви.
+  [RiskTaker] -> Секако, 'ПАЛКА' е добар предизвик, бидејќи веќе имам некои информации и се надевам дека ќе ги истражам сите букви во една рунда.  'БАКНЕ' е опција, но 'ПАЛКА' е поприфалива за сегашната ситуација.
+    [LLM moderator] agrees with the trained pick: Probabilist.
+ МОДЕРАТОРОТ го избра агентот **Probabilist** со зборот **ПЕЧКА** | Резултат: .G.GG
+
+--- Обид 6 (Преостанати кандидати: 8) ---
+  [Eliminator] -> „ИКОНА е добар избор, бидејќи веќс го прознаа од секоја буква во зборот, што ја забрзува нашата победа.“
+  [Probabilist] -> „ИКОНА не е најдобро, бидејќи во него има ретки букви. ЦЕВКА е многу погоден збор и сеуште има потенцијал да го пронареди.“
+  [RiskTaker] -> „ИКОНА не е најдобро, но ФАРМА продолжува да го покажува висок резулт во честотата на буквите, а исто така, еден од кандидатите за победа.“
+    [LLM moderator] agrees with the trained pick: Probabilist.
+ МОДЕРАТОРОТ го избра агентот **Probabilist** со зборот **ЦЕВКА** | Резултат: .G.GG
+
+  ✗ Неуспех. Зборот беше бенка (25889.2 ms)
+(.venv) PS C:\Users\Eva\PycharmProjects\Multi-Agent-Wordle-Game> python scenario_macedonian.py --games 1 --llm-moderator
+[Macedonian] Building pattern matrix for 967 words...
+[Macedonian] Pattern matrix ready.
+Weights loaded ← weights_macedonian_debate.npz
+
+[Macedonian] Demonstrating multi-agent debate and negotiation (seeded, base seed=42)...
+
+=================================================================
+  МАКЕДОНСКИ ВОРДЛ — ДЕБАТА И КООРДИНАЦИЈА НА АГЕНТИ
+  Тајниот збор: БЕНКА
+  LLM debate: Ollama (gemma3:4b) + moderator override
+=================================================================
+
+--- Обид 1 (Преостанати кандидати: 967) ---
+  [Eliminator] -> Секако, „СУЕТА“ е добар избор бидејќи веќе го елиминираше многу потенцијални зборови, а нивната честота во јазикот е многу висока.  Ќе ни помогне да ги намалиме кандидатите за уште повеќе.
+  [Probabilist] -> Секако, „БЛУЗА“ е најдобар предизвик, особено откако имаше така висока елиминација на потенцијални зборови.  Неколку други предложуваат почести честоти, но нашата анализа показува дека таа е многу заедно за да се задржи!
+  [RiskTaker] -> Секако, „ПЕКОЛ“ е најдоброто, особено откако „СУЕТА“ доеде многу точни резултати и „БЛУЗА“ се докажа како голем кандидат.  Нема потреба од други зборови, затоа што „ПЕКОЛ“ има најголем процент на елиминација!
+    [LLM moderator] would play Probabilist's 'БЛУЗА' instead of the trained moderator's Eliminator pick — overriding.
+ МОДЕРАТОРОТ го избра агентот **Probabilist** со зборот **БЛУЗА** | Резултат: G...G
+
+--- Обид 2 (Преостанати кандидати: 21) ---
+  [Eliminator] -> Секако, ЏОКЕЈ е одлична постапка, бидејќи еден од знаците е сигурно грешен, и сега можеме да ги елиминираме многу други потенцијални зборови.
+  [Probabilist] -> Секако, "БОЦКА" е одлична постапка, бидејќи секој знак е многу важен и може да го помогне нашиот предлог.  Претходно елиминирани се многу потенцијални зборови, така што се надевам дека ќе добиеме важни информации.
+  [RiskTaker] -> Секако, „СКУША“ е добар предизвик, бидејќи продолжува да ги тестира остатокот од потенцијалните зборови, како и да го ублажува резултатот на предходните информации. Се надевам дека ќе донесува нови информации за преостанатите кандидати.
+    [LLM moderator] would play Eliminator's 'ЏОКЕЈ' instead of the trained moderator's Probabilist pick — overriding.
+ МОДЕРАТОРОТ го избра агентот **Eliminator** со зборот **ЏОКЕЈ** | Резултат: ..YY.
+
+--- Обид 3 (Преостанати кандидати: 2) ---
+  [Eliminator] -> „Секако, БЕНКА е добар избор, затоа што го неутрализираше голем дел од ваквите гласни и е многу често среќен збор.“
+  [Probabilist] -> Се согласувам, БЕМКА е одлична комбинација, особено поради високата нејзина честота на појавување во речникот.  Постојаните очекувања за успешни резултати ја поттикнуваат оваа стратегија.
+  [RiskTaker] -> Се согласувам со вашите оценки, затоа БЕНКА е многу добар избор и го шири опсегот на информации што можеме да ги добиеме.  Неколкумина се фокусираа на честотата, но ја истакнувам нејзината ефективност во исклучување на многу опции.
+    [LLM moderator] would play Eliminator's 'БЕНКА' instead of the trained moderator's Probabilist pick — overriding.
+ МОДЕРАТОРОТ го избра агентот **Eliminator** со зборот **БЕНКА** | Резултат: GGGGG
+
+  ✓ Успех! Зборот е погоден за 3 обид/и! (13041.6 ms)
+  Winning guess proposed & played by: Eliminator
+(.venv) PS C:\Users\Eva\PycharmProjects\Multi-Agent-Wordle-Game> python scenario_macedonian.py --games 20 --compare-llm
+[Macedonian] Building pattern matrix for 967 words...
+[Macedonian] Pattern matrix ready.
+Weights loaded ← weights_macedonian_debate.npz
+
+[Macedonian] Comparing LLM moderator vs trained moderator over 20 games each...
+(this makes real Ollama calls for the LLM-moderator half — expect it to take a while)
+  [LLM-moderator   1/20] won  |   16.3s elapsed
+  [LLM-moderator   2/20] won  |   27.6s elapsed
+  [LLM-moderator   3/20] lost |   53.1s elapsed
+  [LLM-moderator   4/20] won  |   67.9s elapsed
+  [LLM-moderator   5/20] won  |   85.4s elapsed
+  [LLM-moderator   6/20] won  |   97.8s elapsed
+  [LLM-moderator   7/20] won  |  120.0s elapsed
+  [LLM-moderator   8/20] won  |  136.8s elapsed
+  [LLM-moderator   9/20] won  |  154.0s elapsed
+  [LLM-moderator  10/20] won  |  179.7s elapsed
+  [LLM-moderator  11/20] won  |  277.1s elapsed
+  [LLM-moderator  12/20] won  |  300.6s elapsed
+  [LLM-moderator  13/20] won  |  318.8s elapsed
+  [LLM-moderator  14/20] won  |  335.9s elapsed
+  [LLM-moderator  15/20] won  |  353.6s elapsed
+  [LLM-moderator  16/20] won  |  368.6s elapsed
+  [LLM-moderator  17/20] won  |  390.1s elapsed
+  [LLM-moderator  18/20] won  |  409.4s elapsed
+  [LLM-moderator  19/20] won  |  431.3s elapsed
+  [LLM-moderator  20/20] won  |  448.5s elapsed
+  LLM-moderator half done in 448.5s. Running the 20-game baseline (no Ollama calls, should be quick)...
+  Baseline half done in 0.1s.
+────────────────────────────────────────────────────────────
+Turns played: 87  |  LLM cast a usable vote on 87 of them (Ollama unreachable/unparsed on 0)
+  Agreed with trained moderator:    31 (35.6%)
+  Overrode trained moderator:       56 (64.4%)
+Win rate WITH LLM moderator:       95.0%  (19/20)
+Win rate baseline (trained only): 100.0%  (20/20)
+────────────────────────────────────────────────────────────
+(.venv) PS C:\Users\Eva\PycharmProjects\Multi-Agent-Wordle-Game> python scenario_macedonian.py --games 300 --compare-llm
+[Macedonian] Building pattern matrix for 967 words...
+[Macedonian] Pattern matrix ready.
+Weights loaded ← weights_macedonian_debate.npz
+
+[Macedonian] Comparing LLM moderator vs trained moderator over 300 games each...
+(this makes real Ollama calls for the LLM-moderator half — expect it to take a while)
+  [LLM-moderator   1/300] won  |   12.0s elapsed
+  [LLM-moderator   2/300] won  |   30.8s elapsed
+  [LLM-moderator   3/300] won  |   52.1s elapsed
+  [LLM-moderator   4/300] won  |   67.7s elapsed
+  [LLM-moderator   5/300] won  |   83.7s elapsed
+  [LLM-moderator   6/300] won  |   97.1s elapsed
+  [LLM-moderator   7/300] won  |  110.6s elapsed
+  [LLM-moderator   8/300] won  |  128.3s elapsed
+  [LLM-moderator   9/300] won  |  141.9s elapsed
+  [LLM-moderator  10/300] won  |  168.5s elapsed
+  [LLM-moderator  11/300] won  |  186.6s elapsed
+  [LLM-moderator  12/300] won  |  208.8s elapsed
+  [LLM-moderator  13/300] won  |  228.5s elapsed
+  [LLM-moderator  14/300] won  |  242.7s elapsed
+  [LLM-moderator  15/300] won  |  259.3s elapsed
+  [LLM-moderator  16/300] won  |  281.8s elapsed
+  [LLM-moderator  17/300] won  |  300.1s elapsed
+  [LLM-moderator  18/300] won  |  313.6s elapsed
+  [LLM-moderator  19/300] won  |  330.8s elapsed
+  [LLM-moderator  20/300] won  |  348.2s elapsed
+  [LLM-moderator  21/300] won  |  361.7s elapsed
+  [LLM-moderator  22/300] won  |  370.8s elapsed
+  [LLM-moderator  23/300] won  |  393.3s elapsed
+  [LLM-moderator  24/300] won  |  406.8s elapsed
+  [LLM-moderator  25/300] won  |  421.4s elapsed
+  [LLM-moderator  26/300] won  |  434.0s elapsed
+  [LLM-moderator  27/300] won  |  451.7s elapsed
+  [LLM-moderator  28/300] won  |  468.4s elapsed
+  [LLM-moderator  29/300] won  |  481.9s elapsed
+  [LLM-moderator  30/300] won  |  508.4s elapsed
+  [LLM-moderator  31/300] won  |  536.6s elapsed
+  [LLM-moderator  32/300] won  |  560.3s elapsed
+  [LLM-moderator  33/300] won  |  589.3s elapsed
+  [LLM-moderator  34/300] won  |  607.3s elapsed
+  [LLM-moderator  35/300] won  |  628.6s elapsed
+  [LLM-moderator  36/300] won  |  642.9s elapsed
+  [LLM-moderator  37/300] won  |  657.2s elapsed
+  [LLM-moderator  38/300] won  |  674.1s elapsed
+  [LLM-moderator  39/300] won  |  687.0s elapsed
+  [LLM-moderator  40/300] won  |  704.0s elapsed
+  [LLM-moderator  41/300] won  |  721.9s elapsed
+  [LLM-moderator  42/300] won  |  739.3s elapsed
+  [LLM-moderator  43/300] lost |  766.7s elapsed
+  [LLM-moderator  44/300] won  |  793.1s elapsed
+  [LLM-moderator  45/300] won  |  812.0s elapsed
+  [LLM-moderator  46/300] won  |  824.5s elapsed
+  [LLM-moderator  47/300] won  |  838.2s elapsed
+  [LLM-moderator  48/300] won  |  860.3s elapsed
+  [LLM-moderator  49/300] won  |  877.9s elapsed
+  [LLM-moderator  50/300] won  |  900.2s elapsed
+  [LLM-moderator  51/300] won  |  913.7s elapsed
+  [LLM-moderator  52/300] won  |  926.4s elapsed
+  [LLM-moderator  53/300] won  |  935.8s elapsed
+  [LLM-moderator  54/300] won  |  958.0s elapsed
+  [LLM-moderator  55/300] won  |  974.9s elapsed
+  [LLM-moderator  56/300] won  |  987.9s elapsed
+  [LLM-moderator  57/300] won  |  996.9s elapsed
+  [LLM-moderator  58/300] won  | 1023.6s elapsed
+  [LLM-moderator  59/300] won  | 1042.6s elapsed
+  [LLM-moderator  60/300] won  | 1065.0s elapsed
+  [LLM-moderator  61/300] won  | 1085.7s elapsed
+  [LLM-moderator  62/300] won  | 1105.4s elapsed
+  [LLM-moderator  63/300] won  | 1114.6s elapsed
+  [LLM-moderator  64/300] won  | 1127.0s elapsed
+  [LLM-moderator  65/300] won  | 1148.4s elapsed
+  [LLM-moderator  66/300] won  | 1158.9s elapsed
+  [LLM-moderator  67/300] won  | 1177.9s elapsed
+  [LLM-moderator  68/300] won  | 1200.3s elapsed
+  [LLM-moderator  69/300] won  | 1220.2s elapsed
+  [LLM-moderator  70/300] won  | 1237.0s elapsed
+  [LLM-moderator  71/300] won  | 1251.4s elapsed
+  [LLM-moderator  72/300] won  | 1264.0s elapsed
+  [LLM-moderator  73/300] won  | 1291.0s elapsed
+  [LLM-moderator  74/300] won  | 1309.2s elapsed
+  [LLM-moderator  75/300] won  | 1318.4s elapsed
+  [LLM-moderator  76/300] won  | 1336.5s elapsed
+  [LLM-moderator  77/300] won  | 1345.8s elapsed
+  [LLM-moderator  78/300] won  | 1358.7s elapsed
+  [LLM-moderator  79/300] won  | 1371.3s elapsed
+  [LLM-moderator  80/300] won  | 1389.6s elapsed
+  [LLM-moderator  81/300] won  | 1407.1s elapsed
+  [LLM-moderator  82/300] won  | 1426.8s elapsed
+  [LLM-moderator  83/300] won  | 1436.4s elapsed
+  [LLM-moderator  84/300] lost | 1459.6s elapsed
+  [LLM-moderator  85/300] won  | 1473.1s elapsed
+  [LLM-moderator  86/300] won  | 1495.1s elapsed
+  [LLM-moderator  87/300] won  | 1514.3s elapsed
+  [LLM-moderator  88/300] won  | 1528.3s elapsed
+  [LLM-moderator  89/300] won  | 1551.8s elapsed
+  [LLM-moderator  90/300] won  | 1564.9s elapsed
+  [LLM-moderator  91/300] won  | 1585.2s elapsed
+  [LLM-moderator  92/300] won  | 1609.6s elapsed
+  [LLM-moderator  93/300] won  | 1622.7s elapsed
+  [LLM-moderator  94/300] won  | 1634.5s elapsed
+  [LLM-moderator  95/300] won  | 1657.3s elapsed
+  [LLM-moderator  96/300] won  | 1669.1s elapsed
+  [LLM-moderator  97/300] won  | 1689.3s elapsed
+  [LLM-moderator  98/300] won  | 1703.7s elapsed
+  [LLM-moderator  99/300] won  | 1725.2s elapsed
+  [LLM-moderator 100/300] won  | 1743.5s elapsed
+  [LLM-moderator 101/300] won  | 1757.2s elapsed
+  [LLM-moderator 102/300] won  | 1779.2s elapsed
+  [LLM-moderator 103/300] won  | 1795.6s elapsed
+  [LLM-moderator 104/300] won  | 1816.7s elapsed
+  [LLM-moderator 105/300] won  | 1830.3s elapsed
+  [LLM-moderator 106/300] won  | 1842.5s elapsed
+  [LLM-moderator 107/300] won  | 1859.5s elapsed
+  [LLM-moderator 108/300] won  | 1873.4s elapsed
+  [LLM-moderator 109/300] won  | 1896.1s elapsed
+  [LLM-moderator 110/300] won  | 1919.4s elapsed
+  [LLM-moderator 111/300] won  | 1932.5s elapsed
+  [LLM-moderator 112/300] won  | 1946.1s elapsed
+  [LLM-moderator 113/300] won  | 1960.7s elapsed
+  [LLM-moderator 114/300] won  | 1978.6s elapsed
+  [LLM-moderator 115/300] won  | 1996.2s elapsed
+  [LLM-moderator 116/300] won  | 2010.6s elapsed
+  [LLM-moderator 117/300] won  | 2033.8s elapsed
+  [LLM-moderator 118/300] won  | 2050.8s elapsed
+  [LLM-moderator 119/300] won  | 2069.2s elapsed
+  [LLM-moderator 120/300] won  | 2091.8s elapsed
+  [LLM-moderator 121/300] won  | 2108.5s elapsed
+  [LLM-moderator 122/300] won  | 2121.7s elapsed
+  [LLM-moderator 123/300] won  | 2135.1s elapsed
+  [LLM-moderator 124/300] won  | 2147.5s elapsed
+  [LLM-moderator 125/300] won  | 2163.8s elapsed
+  [LLM-moderator 126/300] won  | 2176.6s elapsed
+  [LLM-moderator 127/300] won  | 2195.2s elapsed
+  [LLM-moderator 128/300] won  | 2214.5s elapsed
+  [LLM-moderator 129/300] won  | 2232.1s elapsed
+  [LLM-moderator 130/300] won  | 2245.7s elapsed
+  [LLM-moderator 131/300] won  | 2254.2s elapsed
+  [LLM-moderator 132/300] won  | 2280.6s elapsed
+  [LLM-moderator 133/300] won  | 2293.9s elapsed
+  [LLM-moderator 134/300] won  | 2306.2s elapsed
+  [LLM-moderator 135/300] won  | 2320.4s elapsed
+  [LLM-moderator 136/300] won  | 2334.3s elapsed
+  [LLM-moderator 137/300] won  | 2357.3s elapsed
+  [LLM-moderator 138/300] won  | 2374.8s elapsed
+  [LLM-moderator 139/300] won  | 2392.4s elapsed
+  [LLM-moderator 140/300] won  | 2412.4s elapsed
+  [LLM-moderator 141/300] won  | 2430.4s elapsed
+  [LLM-moderator 142/300] won  | 2448.2s elapsed
+  [LLM-moderator 143/300] won  | 2462.0s elapsed
+  [LLM-moderator 144/300] won  | 2472.9s elapsed
+  [LLM-moderator 145/300] won  | 2490.8s elapsed
+  [LLM-moderator 146/300] won  | 2514.4s elapsed
+  [LLM-moderator 147/300] won  | 2531.8s elapsed
+  [LLM-moderator 148/300] won  | 2547.4s elapsed
+  [LLM-moderator 149/300] won  | 2570.2s elapsed
+  [LLM-moderator 150/300] won  | 2587.6s elapsed
+  [LLM-moderator 151/300] won  | 2592.5s elapsed
+  [LLM-moderator 152/300] won  | 2606.9s elapsed
+  [LLM-moderator 153/300] won  | 2628.8s elapsed
+  [LLM-moderator 154/300] won  | 2646.8s elapsed
+  [LLM-moderator 155/300] won  | 2655.7s elapsed
+  [LLM-moderator 156/300] won  | 2673.0s elapsed
+  [LLM-moderator 157/300] won  | 2691.6s elapsed
+  [LLM-moderator 158/300] won  | 2701.3s elapsed
+  [LLM-moderator 159/300] won  | 2714.2s elapsed
+  [LLM-moderator 160/300] won  | 2736.3s elapsed
+  [LLM-moderator 161/300] won  | 2754.7s elapsed
+  [LLM-moderator 162/300] won  | 2768.0s elapsed
+  [LLM-moderator 163/300] won  | 2784.3s elapsed
+  [LLM-moderator 164/300] won  | 2797.5s elapsed
+  [LLM-moderator 165/300] won  | 2824.9s elapsed
+  [LLM-moderator 166/300] won  | 2849.4s elapsed
+  [LLM-moderator 167/300] won  | 2865.9s elapsed
+  [LLM-moderator 168/300] won  | 2879.2s elapsed
+  [LLM-moderator 169/300] won  | 2891.1s elapsed
+  [LLM-moderator 170/300] won  | 2908.5s elapsed
+  [LLM-moderator 171/300] won  | 2930.6s elapsed
+  [LLM-moderator 172/300] won  | 2958.3s elapsed
+  [LLM-moderator 173/300] won  | 2976.4s elapsed
+  [LLM-moderator 174/300] won  | 2994.3s elapsed
+  [LLM-moderator 175/300] lost | 3021.6s elapsed
+  [LLM-moderator 176/300] won  | 3043.9s elapsed
+  [LLM-moderator 177/300] won  | 3060.2s elapsed
+  [LLM-moderator 178/300] lost | 3089.0s elapsed
+  [LLM-moderator 179/300] won  | 3103.2s elapsed
+  [LLM-moderator 180/300] won  | 3116.5s elapsed
+  [LLM-moderator 181/300] won  | 3134.3s elapsed
+  [LLM-moderator 182/300] won  | 3146.5s elapsed
+  [LLM-moderator 183/300] won  | 3163.6s elapsed
+  [LLM-moderator 184/300] won  | 3192.0s elapsed
+  [LLM-moderator 185/300] won  | 3204.0s elapsed
+  [LLM-moderator 186/300] won  | 3232.1s elapsed
+  [LLM-moderator 187/300] won  | 3259.7s elapsed
+  [LLM-moderator 188/300] won  | 3280.7s elapsed
+  [LLM-moderator 189/300] won  | 3305.4s elapsed
+  [LLM-moderator 190/300] won  | 3325.7s elapsed
+  [LLM-moderator 191/300] won  | 3348.1s elapsed
+  [LLM-moderator 192/300] won  | 3366.0s elapsed
+  [LLM-moderator 193/300] won  | 3387.2s elapsed
+  [LLM-moderator 194/300] won  | 3407.8s elapsed
+  [LLM-moderator 195/300] won  | 3426.7s elapsed
+  [LLM-moderator 196/300] won  | 3442.2s elapsed
+  [LLM-moderator 197/300] won  | 3451.4s elapsed
+  [LLM-moderator 198/300] won  | 3462.7s elapsed
+  [LLM-moderator 199/300] won  | 3473.5s elapsed
+  [LLM-moderator 200/300] won  | 3487.0s elapsed
+  [LLM-moderator 201/300] won  | 3509.1s elapsed
+  [LLM-moderator 202/300] won  | 3529.7s elapsed
+  [LLM-moderator 203/300] won  | 3556.0s elapsed
+  [LLM-moderator 204/300] won  | 3578.8s elapsed
+  [LLM-moderator 205/300] won  | 3593.1s elapsed
+  [LLM-moderator 206/300] won  | 3609.3s elapsed
+  [LLM-moderator 207/300] won  | 3628.4s elapsed
+  [LLM-moderator 208/300] won  | 3647.3s elapsed
+  [LLM-moderator 209/300] won  | 3665.7s elapsed
+  [LLM-moderator 210/300] won  | 3678.1s elapsed
+  [LLM-moderator 211/300] won  | 3697.3s elapsed
+  [LLM-moderator 212/300] won  | 3714.9s elapsed
+  [LLM-moderator 213/300] won  | 3732.3s elapsed
+  [LLM-moderator 214/300] won  | 3740.5s elapsed
+  [LLM-moderator 215/300] won  | 3763.0s elapsed
+  [LLM-moderator 216/300] lost | 3789.4s elapsed
+  [LLM-moderator 217/300] won  | 3803.6s elapsed
+  [LLM-moderator 218/300] won  | 3819.2s elapsed
+  [LLM-moderator 219/300] won  | 3838.4s elapsed
+  [LLM-moderator 220/300] won  | 3851.2s elapsed
+  [LLM-moderator 221/300] won  | 3873.0s elapsed
+  [LLM-moderator 222/300] won  | 3888.8s elapsed
+  [LLM-moderator 223/300] won  | 3900.6s elapsed
+  [LLM-moderator 224/300] won  | 3919.0s elapsed
+  [LLM-moderator 225/300] won  | 3940.4s elapsed
+  [LLM-moderator 226/300] won  | 3956.9s elapsed
+  [LLM-moderator 227/300] won  | 3975.1s elapsed
+  [LLM-moderator 228/300] won  | 3997.0s elapsed
+  [LLM-moderator 229/300] won  | 4014.8s elapsed
+  [LLM-moderator 230/300] won  | 4027.7s elapsed
+  [LLM-moderator 231/300] won  | 4038.8s elapsed
+  [LLM-moderator 232/300] won  | 4052.2s elapsed
+  [LLM-moderator 233/300] won  | 4060.6s elapsed
+  [LLM-moderator 234/300] won  | 4086.0s elapsed
+  [LLM-moderator 235/300] won  | 4099.5s elapsed
+  [LLM-moderator 236/300] won  | 4103.6s elapsed
+  [LLM-moderator 237/300] won  | 4122.5s elapsed
+  [LLM-moderator 238/300] won  | 4145.4s elapsed
+  [LLM-moderator 239/300] won  | 4162.5s elapsed
+  [LLM-moderator 240/300] lost | 4189.1s elapsed
+  [LLM-moderator 241/300] won  | 4207.2s elapsed
+  [LLM-moderator 242/300] won  | 4216.0s elapsed
+  [LLM-moderator 243/300] won  | 4232.2s elapsed
+  [LLM-moderator 244/300] won  | 4245.7s elapsed
+  [LLM-moderator 245/300] won  | 4263.5s elapsed
+  [LLM-moderator 246/300] won  | 4285.8s elapsed
+  [LLM-moderator 247/300] won  | 4299.6s elapsed
+  [LLM-moderator 248/300] won  | 4312.0s elapsed
+  [LLM-moderator 249/300] won  | 4329.1s elapsed
+  [LLM-moderator 250/300] won  | 4351.5s elapsed
+  [LLM-moderator 251/300] won  | 4369.1s elapsed
+  [LLM-moderator 252/300] won  | 4391.2s elapsed
+  [LLM-moderator 253/300] won  | 4409.4s elapsed
+  [LLM-moderator 254/300] won  | 4424.9s elapsed
+  [LLM-moderator 255/300] won  | 4453.8s elapsed
+  [LLM-moderator 256/300] won  | 4477.4s elapsed
+  [LLM-moderator 257/300] won  | 4490.8s elapsed
+  [LLM-moderator 258/300] won  | 4503.7s elapsed
+  [LLM-moderator 259/300] won  | 4522.0s elapsed
+  [LLM-moderator 260/300] won  | 4538.9s elapsed
+  [LLM-moderator 261/300] won  | 4552.2s elapsed
+  [LLM-moderator 262/300] won  | 4565.6s elapsed
+  [LLM-moderator 263/300] won  | 4585.2s elapsed
+  [LLM-moderator 264/300] won  | 4598.8s elapsed
+  [LLM-moderator 265/300] won  | 4620.4s elapsed
+  [LLM-moderator 266/300] won  | 4638.2s elapsed
+  [LLM-moderator 267/300] won  | 4656.7s elapsed
+  [LLM-moderator 268/300] won  | 4672.6s elapsed
+  [LLM-moderator 269/300] lost | 4698.1s elapsed
+  [LLM-moderator 270/300] won  | 4723.2s elapsed
+  [LLM-moderator 271/300] won  | 4748.1s elapsed
+  [LLM-moderator 272/300] won  | 4767.3s elapsed
+  [LLM-moderator 273/300] won  | 4775.2s elapsed
+  [LLM-moderator 274/300] won  | 4792.9s elapsed
+  [LLM-moderator 275/300] won  | 4811.6s elapsed
+  [LLM-moderator 276/300] won  | 4828.9s elapsed
+  [LLM-moderator 277/300] won  | 4845.7s elapsed
+  [LLM-moderator 278/300] won  | 4863.4s elapsed
+  [LLM-moderator 279/300] won  | 4885.3s elapsed
+  [LLM-moderator 280/300] won  | 4898.1s elapsed
+  [LLM-moderator 281/300] won  | 4916.8s elapsed
+  [LLM-moderator 282/300] won  | 4932.5s elapsed
+  [LLM-moderator 283/300] won  | 4951.1s elapsed
+  [LLM-moderator 284/300] won  | 4969.3s elapsed
+  [LLM-moderator 285/300] won  | 4987.7s elapsed
+  [LLM-moderator 286/300] won  | 5005.2s elapsed
+  [LLM-moderator 287/300] won  | 5025.7s elapsed
+  [LLM-moderator 288/300] won  | 5042.9s elapsed
+  [LLM-moderator 289/300] won  | 5054.8s elapsed
+  [LLM-moderator 290/300] won  | 5072.0s elapsed
+  [LLM-moderator 291/300] won  | 5086.5s elapsed
+  [LLM-moderator 292/300] won  | 5100.9s elapsed
+  [LLM-moderator 293/300] won  | 5115.1s elapsed
+  [LLM-moderator 294/300] won  | 5131.5s elapsed
+  [LLM-moderator 295/300] won  | 5145.3s elapsed
+  [LLM-moderator 296/300] won  | 5159.4s elapsed
+  [LLM-moderator 297/300] won  | 5176.0s elapsed
+  [LLM-moderator 298/300] won  | 5188.4s elapsed
+  [LLM-moderator 299/300] won  | 5209.6s elapsed
+  [LLM-moderator 300/300] won  | 5225.7s elapsed
+  LLM-moderator half done in 5225.7s. Running the 300-game baseline (no Ollama calls, should be quick)...
+  Baseline half done in 1.0s.
+────────────────────────────────────────────────────────────
+Turns played: 1178  |  LLM cast a usable vote on 1178 of them (Ollama unreachable/unparsed on 0)
+  Agreed with trained moderator:   456 (38.7%)
+  Overrode trained moderator:      722 (61.3%)
+Win rate WITH LLM moderator:       97.7%  (293/300)
+Win rate baseline (trained only): 100.0%  (300/300)
+────────────────────────────────────────────────────────────
