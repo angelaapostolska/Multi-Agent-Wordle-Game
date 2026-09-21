@@ -70,7 +70,7 @@ SEED      = 42
 # ── Ollama config (LLM debate — demo/eval only, never used in train()) ─────────
 # Override with env vars, or --ollama-model / --ollama-host on the CLI.
 OLLAMA_HOST    = os.environ.get("OLLAMA_HOST", "http://localhost:11434")
-OLLAMA_MODEL   = os.environ.get("OLLAMA_MODEL", "llama3.2")
+OLLAMA_MODEL   = os.environ.get("OLLAMA_MODEL", "qwen3:4b")
 OLLAMA_TIMEOUT = 20  # seconds
 
 
