@@ -74,8 +74,8 @@ SEED      = 42
 
 # ── Ollama config ───────────────────────────────────────────────────────────────
 OLLAMA_HOST    = os.environ.get("OLLAMA_HOST", "http://localhost:11434")
-OLLAMA_MODEL   = os.environ.get("OLLAMA_MODEL", "qwen3:4b")
-OLLAMA_TIMEOUT = 20  # seconds
+OLLAMA_MODEL   = os.environ.get("OLLAMA_MODEL", "gemma3:4b")
+OLLAMA_TIMEOUT = None  # seconds
 
 
 # ── LLM Helpers ───────────────────────────────────────────────────────────────
@@ -710,6 +710,7 @@ def demo_game(
 def compare_llm_moderator(agents, moderator, n_games=20, base_seed=123):
     """Compare performance of LLM moderator vs trained moderator network."""
     print(f"\n[MultiWord] Comparing LLM moderator vs trained moderator over {n_games} games each...")
+    print(f"  Using Ollama model: {OLLAMA_MODEL}")
     print("(this makes real Ollama calls for the LLM-moderator half — expect it to take a while)")
 
     t0 = time.time()
@@ -970,8 +971,7 @@ if __name__ == "__main__":
                                llm_moderator=args.llm_moderator, stats=game_stats,
                                rng=rng, verbose=verbose)
         print(f"\nResult: {wins}/{args.games} games won")
-        if args.games > 1:
-            game_stats.print_summary(total_episodes=args.games)
+        game_stats.print_summary(total_episodes=args.games)
 
     if capture is not None:
         f, txt_path, ts = capture
