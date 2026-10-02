@@ -1,0 +1,118 @@
+ python scenario_english.py --demo --games 30000 --seed 123
+[English] Building pattern matrix for 968 words...
+[English] Pattern matrix ready.
+Weights loaded ← weights_english.npz
+
+[English] Running 30000 SEEDED demo game(s) (base seed=123)...
+
+Result: 29473/30000 games won  (seed base=123, 165.4s)
+
+════════════════════════════════════════════════════════════════════════
+  AGENT PERFORMANCE SUMMARY
+════════════════════════════════════════════════════════════════════════
+Rank Agent          Wins   Win %  Chosen  Pick %   Hit %  Avg Turn   Avg Rwd
+────────────────────────────────────────────────────────────────────────
+🥇 1  Eliminator    28460   96.6%   59089   52.9%   48.2%      3.73       nan
+🥈 2  Probabilist     982    3.3%   23247   20.8%    4.2%      2.32       nan
+🥉 3  RiskTaker        31    0.1%   29267   26.2%    0.1%      1.00       nan
+────────────────────────────────────────────────────────────────────────
+  Most winning guesses:  Eliminator (28460 wins)
+  Fewest winning guesses: RiskTaker (31 wins)
+
+  Raw proposal accuracy (proposed the secret word, regardless of whether the moderator chose it):
+    Eliminator    28488 / 111603 ( 25.5%)
+    Probabilist   31091 / 111603 ( 27.9%)
+    RiskTaker     28515 / 111603 ( 25.6%)
+
+  Episodes played: 30000
+  Total time: 165.4s  (5.51 ms/episode)
+════════════════════════════════════════════════════════════════════════
+
+
+
+
+((.venv) ) angelaapostolska@Mac Multi-Agent-Wordle-Game % python scenario_macedonian.py --stats-only --games 30000 --seed 123
+[Macedonian] Building pattern matrix for 967 words...
+[Macedonian] Pattern matrix ready.
+Weights loaded ← weights_macedonian_debate.npz
+
+[Macedonian] Playing 30000 SEEDED (base seed=123) games for stats only...
+
+════════════════════════════════════════════════════════════════════════
+  AGENT PERFORMANCE SUMMARY
+════════════════════════════════════════════════════════════════════════
+Rank Agent          Wins   Win %  Chosen  Pick %   Hit %  Avg Turn   Avg Rwd
+────────────────────────────────────────────────────────────────────────
+🥇 1  Probabilist   29781   99.9%   80005   72.8%   37.2%      3.65     1.371
+🥈 2  Eliminator       31    0.1%   29333   26.7%    0.1%      1.00     1.079
+🥉 3  RiskTaker         0    0.0%     583    0.5%    0.0%       n/a     1.075
+────────────────────────────────────────────────────────────────────────
+  Most winning guesses:  Probabilist (29781 wins)
+  Fewest winning guesses: RiskTaker (0 wins)
+
+  Raw proposal accuracy (proposed the secret word, regardless of whether the moderator chose it):
+    Eliminator    27846 / 109921 ( 25.3%)
+    Probabilist   29809 / 109921 ( 27.1%)
+    RiskTaker     27714 / 109921 ( 25.2%)
+
+  Episodes played: 30000
+  Total time: 44.7s  (1.49 ms/episode)
+════════════════════════════════════════════════════════════════════════
+
+────────────────────────────────────────────────────────────────────────
+  TIMING & GUESS-COUNT STATS
+────────────────────────────────────────────────────────────────────────
+  Episodes:            30000
+  Total time:          44.72s
+  Avg time / episode:  1.491 ms
+  Fastest episode:     1.041 ms
+  Slowest episode:     10.804 ms
+  Win rate:            99.4%
+  Avg guesses (won):   3.65
+  Best win (fewest guesses): 1
+  Worst win (most guesses):  6
+────────────────────────────────────────────────────────────────────────
+
+
+ python scenario_multiword.py --stats-only --games 30000 --seed 123
+[MultiWord] Building pattern matrix for 968 words...
+[MultiWord] Pattern matrix ready.
+Weights loaded ← weights_multiword.npz
+
+[MultiWord] Playing 30000 SEEDED (base seed=123) games for stats only...
+
+════════════════════════════════════════════════════════════════════════
+  AGENT PERFORMANCE SUMMARY
+════════════════════════════════════════════════════════════════════════
+Rank Agent          Wins   Win %  Chosen  Pick %   Hit %  Avg Turn   Avg Rwd
+────────────────────────────────────────────────────────────────────────
+🥇 1  Probabilist   59915   99.9%  232028   85.0%   25.8%      4.55     0.962
+🥈 2  RiskTaker        26    0.0%   30206   11.1%    0.1%      1.23     0.688
+🥉 3  Eliminator       13    0.0%   10758    3.9%    0.1%      1.08     0.723
+────────────────────────────────────────────────────────────────────────
+  Most winning guesses:  Probabilist (59915 wins)
+  Fewest winning guesses: Eliminator (13 wins)
+
+  Raw proposal accuracy (proposed a secret word, regardless of whether the moderator chose it):
+    Eliminator    54113 / 272992 ( 19.8%)
+    Probabilist   60129 / 272992 ( 22.0%)
+    RiskTaker     53996 / 272992 ( 19.8%)
+
+  Episodes played: 30000
+  Total time: 339.5s  (11.32 ms/episode)
+════════════════════════════════════════════════════════════════════════
+
+────────────────────────────────────────────────────────────────────────
+  TIMING & GUESS-COUNT STATS
+────────────────────────────────────────────────────────────────────────
+  Episodes:            30000
+  Total time:          339.51s
+  Avg time / episode:  11.317 ms
+  Fastest episode:     2.292 ms
+  Slowest episode:     62610.649 ms
+  Win rate:            99.9%
+  Avg guesses (won):   5.15
+  Best win (fewest guesses): 2
+  Worst win (most guesses):  8
+────────────────────────────────────────────────────────────────────────
+Weights saved → results\weights_multiword_20261002_124316.npz
